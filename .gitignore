@@ -1,23 +1,16 @@
-# Compiled class file
-*.class
+# Libs and stuff
+/bukkit
+/lib
+/jar
+dependency-reduced-pom.xml
 
-# Log file
-*.log
+# Eclipse Core
+/bin
 
-# BlueJ files
-*.ctxt
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+.project
+/.settings/
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Maven build
+/target/
