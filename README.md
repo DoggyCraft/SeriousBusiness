@@ -9,17 +9,25 @@ Serious Business
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
 
-![Werewolf](https://raw.githubusercontent.com/DoggyCraftDK/Werewolf/master/img/Werewolf.jpg)
+![Werewolf](http://www.mcintyre.co.za/wp-content/uploads/2019/03/business-meeting-ss-1920.jpg)
 
 The plugin for doing Serious Business on DoggyCraft.dk!
 
 Background
 ---------
-The goal is to provide as many business and financial mechanics as possible for players while still maintaining a "making sense" balance towards survival gameplay
+The goal is to provide as many business and financial mechanics as possible for players while still maintaining a "making sense" balance towards survival gameplay:
 
-*   Company registration
-*   Company budgets
-*	The Cryptocoin alt-currency "Nudes"
+* Company Headquarters
+* Company registration
+* Company budgets
+* Banking - Loans
+* Banking - Account Rates
+* Boring business jargon
+* Import/Export policies
+* Local policies and location taxes
+*	A Cryptocoin alt-currency called "Nudes"
+* Shady business practices such as money transferring, avoiding taxations
+* Financial fines
 *	Stock trading
 
 Installation
