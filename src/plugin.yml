@@ -1,13 +1,10 @@
-name: Serious Business
+name: SeriousBusiness
 author: DogOnFire
-version: "0.0.1"
+version: ${project.version}
+api-version: 1.14
 website: "http://dev.bukkit.org/server-mods/seriousbusiness"
 main: com.dogonfire.seriousbusiness.Company
 softdepend: 
-  - PermissionsBukkit
-  - PermissionsEx
-  - bPermissions
-  - GroupManager
   - WorldGuard
   - Vault
 commands:

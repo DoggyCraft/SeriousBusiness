@@ -27,8 +27,11 @@ import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 
 
 //
+// /companytax - Show company tax level (and development) in the current area
+// /company list - Show companies
+// /buy nudes <amount> - Buy <amount> nude coins at values from selected company 
+// /select company <id> - Select a company to deal with 
 // 
-//
 //
 //
 //
@@ -776,14 +779,15 @@ public class Commands
 			Player player = (Player)sender;
 			
 			UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
-			String companyName = this.plugin.getCompanyManager().getCompanyName(companyId);
-
-			int xp = plugin.getEmployeeManager().getXP(player.getUniqueId());			
-			int level = plugin.getEmployeeManager().getLevelForXP(xp);
-			String rank = plugin.getEmployeeManager().getRankForLevel(level, plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()));
-			
+								
 			if (companyId != null)
 			{
+				String companyName = this.plugin.getCompanyManager().getCompanyName(companyId);
+
+				int xp = plugin.getEmployeeManager().getXP(player.getUniqueId());			
+				int level = plugin.getEmployeeManager().getLevelForXP(xp);
+				String rank = plugin.getEmployeeManager().getRankForLevel(level, plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()));
+
 				sender.sendMessage(ChatColor.AQUA + "You are a level " + ChatColor.WHITE + level + " " + rank + ChatColor.AQUA + " in " + ChatColor.GOLD + companyName); 
 				/*
 				switch(plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()))

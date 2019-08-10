@@ -2,14 +2,14 @@ Serious Business
 ======
 
 [![Build Status](https://travis-ci.com/DoggyCraftDK/SeriousBusiness.svg?branch=master)](https://travis-ci.com/DoggyCraftDK/SeriousBusiness)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=alert_status)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=ncloc)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=bugs)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=alert_status)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=ncloc)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=bugs)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8296799b90684dbe8745823d38e26bf0)](https://www.codacy.com/app/Fido2603/Werewolf?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DoggyCraftDK/Werewolf&amp;utm_campaign=Badge_Grade)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
 
-![Werewolf](http://www.mcintyre.co.za/wp-content/uploads/2019/03/business-meeting-ss-1920.jpg)
+![Business](img/business.jpg)
 
 The plugin for doing Serious Business on DoggyCraft.dk!
 

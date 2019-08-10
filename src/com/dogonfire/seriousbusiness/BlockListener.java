@@ -42,7 +42,7 @@ public class BlockListener implements Listener
 {
 	private Company plugin;
 	private Random random = new Random();
-	private HashMap<String, Long> lastEatTimes = new HashMap();
+	private HashMap<String, Long> lastEatTimes = new HashMap<String, Long>();
 
 	BlockListener(Company p)
 	{
