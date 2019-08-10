@@ -40,7 +40,7 @@ Installation
 Links
 ---------
 
-Compiling Werewolf.jar
+Compiling SeriousBusiness.jar
 ---------
 *	SeriousBusiness must be compiled with Java 8 compliance. Make sure you have a JDK 8 installed.
 *	SeriousBusiness has been developed using Eclipse (But any other IDE should work as well)
