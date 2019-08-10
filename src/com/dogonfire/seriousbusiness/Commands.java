@@ -25,6 +25,13 @@ import com.dogonfire.seriousbusiness.Commands.Believer;
 import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
 import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 
+
+//
+// 
+//
+//
+//
+//
 public class Commands
 {
 	private Company plugin = null;
@@ -154,7 +161,7 @@ public class Commands
 		
 		if (sender != null)
 		{
-			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company info <companyname>" + ChatColor.AQUA + " to see information about that company", 40);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/business info <companyname>" + ChatColor.AQUA + " to see information about that company", 40);
 		}
 		
 		return true;
@@ -171,7 +178,7 @@ public class Commands
 		
 		if (player == null)
 		{
-			if (cmd.getName().equalsIgnoreCase("company"))
+			if (cmd.getName().equalsIgnoreCase("business"))
 			{
 				if ((args.length == 1) && args[0].equalsIgnoreCase("reload"))
 				{
@@ -188,19 +195,19 @@ public class Commands
 			return true;
 		}
 				
-		if (cmd.getName().equalsIgnoreCase("company"))
+		if (cmd.getName().equalsIgnoreCase("business"))
 		{
 			if (args.length == 0)
 			{
 				CommandCompany(sender);
-				this.plugin.log(sender.getName() + " /company");
+				this.plugin.log(sender.getName() + " /business");
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("reload"))
 			{
 				if (CommandReload(sender))
 				{
-					this.plugin.log(sender.getName() + " /company reload");
+					this.plugin.log(sender.getName() + " /business reload");
 				}
 				return true;
 			}
@@ -217,7 +224,7 @@ public class Commands
 			{
 				if (CommandCreate(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company report");
+					this.plugin.log(sender.getName() + " /business report");
 				}
 				
 				return true;
@@ -227,7 +234,7 @@ public class Commands
 			{
 				if (CommandReport(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company report");
+					this.plugin.log(sender.getName() + " /business report");
 				}
 				
 				return true;
@@ -255,7 +262,7 @@ public class Commands
 			{
 				if (CommandInfo(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company info");
+					this.plugin.log(sender.getName() + " /business info");
 				}
 				return true;
 			}
@@ -263,7 +270,7 @@ public class Commands
 			{
 				if (CommandChat(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company chat");
+					this.plugin.log(sender.getName() + " /business chat");
 				}
 				return true;
 			}
@@ -272,7 +279,7 @@ public class Commands
 			{
 				if (CommandItems(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company items");
+					this.plugin.log(sender.getName() + " /business items");
 				}
 				return true;
 			}
@@ -281,7 +288,7 @@ public class Commands
 			{
 				if (CommandList(sender))
 				{
-					this.plugin.log(sender.getName() + " /company list");
+					this.plugin.log(sender.getName() + " /business list");
 				}
 				return true;
 			}
@@ -290,7 +297,7 @@ public class Commands
 			{
 				if (CommandPeople(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company people");
+					this.plugin.log(sender.getName() + " /business people");
 				}
 				return true;
 			}
@@ -299,7 +306,7 @@ public class Commands
 			{
 				if (CommandWorkAs(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company workas");
+					this.plugin.log(sender.getName() + " /business workas");
 				}
 				return true;
 			}
@@ -308,7 +315,7 @@ public class Commands
 			{
 				if (CommandAd(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company ad");
+					this.plugin.log(sender.getName() + " /business ad");
 				}
 				return true;
 			}
@@ -317,7 +324,7 @@ public class Commands
 			{
 				if (CommandSetHome(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company sethome");
+					this.plugin.log(sender.getName() + " /business sethome");
 				}
 				return true;
 			}
@@ -326,7 +333,7 @@ public class Commands
 			{
 				if (CommandHome(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company home");
+					this.plugin.log(sender.getName() + " /business home");
 				}
 				return true;
 			}
@@ -335,7 +342,7 @@ public class Commands
 			{
 				if (CommandSetSellPrice(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setsellprice");
+					this.plugin.log(sender.getName() + " /business setsellprice");
 				}
 				return true;
 			}
@@ -344,7 +351,7 @@ public class Commands
 			{
 				if (CommandTrade(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company trade");
+					this.plugin.log(sender.getName() + " /business trade");
 				}
 				return true;
 			}
@@ -374,7 +381,7 @@ public class Commands
 					{
 						if (CommandHelpSales(sender, args))
 						{
-							this.plugin.log(sender.getName() + " /company help sales" + args[1]);
+							this.plugin.log(sender.getName() + " /business help sales" + args[1]);
 						}
 						return true;
 					}
@@ -383,7 +390,7 @@ public class Commands
 					{
 						if (CommandHelpProduction(sender, args))
 						{
-							this.plugin.log(sender.getName() + " /company help production" + args[1]);
+							this.plugin.log(sender.getName() + " /business help production" + args[1]);
 						}
 						return true;
 					}
@@ -392,14 +399,14 @@ public class Commands
 					{
 						if (CommandHelpManager(sender, args))
 						{
-							this.plugin.log(sender.getName() + " /company help production" + args[1]);
+							this.plugin.log(sender.getName() + " /business help production" + args[1]);
 						}
 						return true;
 					}
 				}
 				else if (CommandHelp(sender))
 				{
-					this.plugin.log(sender.getName() + " /company help");
+					this.plugin.log(sender.getName() + " /business help");
 				}
 				
 				return true;
@@ -409,7 +416,7 @@ public class Commands
 			{
 				if (CommandSetSalesWage(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setsaleswage " + args[1]);
+					this.plugin.log(sender.getName() + " /business setsaleswage " + args[1]);
 				}
 				return true;
 			}
@@ -418,7 +425,7 @@ public class Commands
 			{
 				if (CommandSetProductionWage(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setproductionwage " + args[1]);
+					this.plugin.log(sender.getName() + " /business setproductionwage " + args[1]);
 				}
 				return true;
 			}
@@ -427,7 +434,7 @@ public class Commands
 			{
 				if (CommandSetRequiredProduction(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setrequiredproduction " + args[1]);
+					this.plugin.log(sender.getName() + " /business setrequiredproduction " + args[1]);
 				}
 				return true;
 			}
@@ -436,7 +443,7 @@ public class Commands
 			{
 				if (CommandSetRequiredSales(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setrequiredsales " + args[1]);
+					this.plugin.log(sender.getName() + " /business setrequiredsales " + args[1]);
 				}
 				return true;
 			}
@@ -445,7 +452,7 @@ public class Commands
 			{
 				if (CommandSetProductName(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setproductname " + args[1]);
+					this.plugin.log(sender.getName() + " /business setproductname " + args[1]);
 				}
 				return true;
 			}
@@ -454,7 +461,7 @@ public class Commands
 			{
 				if (CommandSetProductName(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setproductname " + args[1]);
+					this.plugin.log(sender.getName() + " /business setproductname " + args[1]);
 				}
 				return true;
 			}
@@ -463,7 +470,7 @@ public class Commands
 			{
 				if (CommandSetProductInfo(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setproductinfo " + args[1]);
+					this.plugin.log(sender.getName() + " /business setproductinfo " + args[1]);
 				}
 				return true;
 			}
@@ -472,7 +479,7 @@ public class Commands
 			{
 				if (CommandInvite(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company invite " + args[1]);
+					this.plugin.log(sender.getName() + " /business invite " + args[1]);
 				}
 				return true;
 			}
@@ -516,13 +523,13 @@ public class Commands
 			{
 				if (args.length!=2)
 				{
-					sender.sendMessage(ChatColor.WHITE + "/company fire <playername>");
+					sender.sendMessage(ChatColor.WHITE + "/business fire <playername>");
 					return false;
 				}				
 
 				if (CommandFire(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company fire " + args[1]);
+					this.plugin.log(sender.getName() + " /business fire " + args[1]);
 				}
 				
 				return true;
@@ -532,7 +539,7 @@ public class Commands
 			{
 				if (CommandSetDescription(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /gods desc " + args[1]);
+					this.plugin.log(sender.getName() + " /business desc " + args[1]);
 				}
 				return true;
 			}
@@ -644,8 +651,8 @@ public class Commands
 		sender.sendMessage(ChatColor.AQUA + " Sales employees: " + ChatColor.WHITE + this.plugin.getEmployeeManager().getEmployeesInCompanyByPosition(companyId, EmployeePosition.Sales).size());
 		sender.sendMessage(ChatColor.AQUA + " Production employees: " + ChatColor.WHITE + this.plugin.getEmployeeManager().getEmployeesInCompanyByPosition(companyId, EmployeePosition.Production).size());
 		
-		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company people" + ChatColor.AQUA +  " to view the people employed by a company", 40);
-		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company report" + ChatColor.AQUA +  " to view the latest financial report for the company", 80);
+		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/business people" + ChatColor.AQUA +  " to view the people employed by a company", 40);
+		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/business report" + ChatColor.AQUA +  " to view the latest financial report for the company", 80);
 
 				
 		return true;
@@ -882,7 +889,7 @@ public class Commands
 						
 			sender.sendMessage("" + ChatColor.AQUA);
 
-			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help" + ChatColor.AQUA + " to view help and commands", 40);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/business help" + ChatColor.AQUA + " to view help and commands", 40);
 			//this.plugin.sendInfo(player.getUniqueId(), LanguageManager.LANGUAGESTRING.AltarHelp, ChatColor.AQUA, 0, ChatColor.WHITE + "/g help altar", 160);
 			
 		}
@@ -1009,14 +1016,14 @@ public class Commands
 		sender.sendMessage("");
 		sender.sendMessage(ChatColor.AQUA + "A sales worker can also set the company shop by using");
 		sender.sendMessage("");
-		sender.sendMessage(ChatColor.WHITE + "  /company setshop 1");
+		sender.sendMessage(ChatColor.WHITE + "  /business setshop 1");
 		sender.sendMessage("");
 		sender.sendMessage(ChatColor.AQUA + "A sales worker can customize the name and info for a product by using");
 		sender.sendMessage("");
-		sender.sendMessage(ChatColor.WHITE + "  /company setproductname <itemname> <name>");
-		sender.sendMessage(ChatColor.WHITE + "  /company setproductinfo <itemname> <name>");
+		sender.sendMessage(ChatColor.WHITE + "  /business setproductname <itemname> <name>");
+		sender.sendMessage(ChatColor.WHITE + "  /business setproductinfo <itemname> <name>");
 		sender.sendMessage("");
-		sender.sendMessage(ChatColor.AQUA + "Any player can then use /company shop <companyname> 1 to go to that shop");
+		sender.sendMessage(ChatColor.AQUA + "Any player can then use /business shop <companyname> 1 to go to that shop");
 		sender.sendMessage(ChatColor.AQUA + "It is up to the sales person to attract customers to buy from their shops");
 		sender.sendMessage(ChatColor.AQUA + "As a sales worker, you will earn wanks pr turn if you sell a certain amount of items within that turn");
 
@@ -1042,14 +1049,14 @@ public class Commands
 		sender.sendMessage(ChatColor.YELLOW + "--------------- How to work as a Manager ---------------");
 		sender.sendMessage(ChatColor.AQUA + "Use the following commands to control your company:");
 		sender.sendMessage("");
-		sender.sendMessage(ChatColor.WHITE + "  /company invite <playername>");
-		sender.sendMessage(ChatColor.WHITE + "  /company fire <playername>");
-		sender.sendMessage(ChatColor.WHITE + "  /company trade <itemname>");
-		sender.sendMessage(ChatColor.WHITE + "  /company setsaleprice <itemname> <price>");
-		sender.sendMessage(ChatColor.WHITE + "  /company setsaleswage <itemname> <price>");
-		sender.sendMessage(ChatColor.WHITE + "  /company setproductionwage <wage>");
-		sender.sendMessage(ChatColor.WHITE + "  /company setrequiredproduction <amount>");
-		sender.sendMessage(ChatColor.WHITE + "  /company setrequiredsales <amount>");		
+		sender.sendMessage(ChatColor.WHITE + "  /business invite <playername>");
+		sender.sendMessage(ChatColor.WHITE + "  /business fire <playername>");
+		sender.sendMessage(ChatColor.WHITE + "  /business trade <itemname>");
+		sender.sendMessage(ChatColor.WHITE + "  /business setsaleprice <itemname> <price>");
+		sender.sendMessage(ChatColor.WHITE + "  /business setsaleswage <itemname> <price>");
+		sender.sendMessage(ChatColor.WHITE + "  /business setproductionwage <wage>");
+		sender.sendMessage(ChatColor.WHITE + "  /business setrequiredproduction <amount>");
+		sender.sendMessage(ChatColor.WHITE + "  /business setrequiredsales <amount>");		
 		sender.sendMessage("");
 		sender.sendMessage(ChatColor.AQUA + "As a manager, you will earn 5 % of your company profit pr turn, so a manager must make sure that the company is making profit if he wants to get paid.");
 
@@ -1069,60 +1076,60 @@ public class Commands
 		sender.sendMessage(ChatColor.YELLOW + "------------------ " + this.plugin.getDescription().getFullName() + " ------------------");
 		sender.sendMessage(ChatColor.AQUA + "");
 		sender.sendMessage(ChatColor.YELLOW + "Getting started:");
-		sender.sendMessage(ChatColor.AQUA + "/company help sales" + ChatColor.WHITE + " - How to work in sales");
-		sender.sendMessage(ChatColor.AQUA + "/company help production" + ChatColor.WHITE + " - How to work in production");
-		sender.sendMessage(ChatColor.AQUA + "/company help manager" + ChatColor.WHITE + " - How to work as a manager");
+		sender.sendMessage(ChatColor.AQUA + "/business help sales" + ChatColor.WHITE + " - How to work in sales");
+		sender.sendMessage(ChatColor.AQUA + "/business help production" + ChatColor.WHITE + " - How to work in production");
+		sender.sendMessage(ChatColor.AQUA + "/business help manager" + ChatColor.WHITE + " - How to work as a manager");
 		
 		sender.sendMessage(ChatColor.AQUA + "");
 
 		sender.sendMessage(ChatColor.YELLOW + "Commands:");
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.create")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company create" + ChatColor.WHITE + " - Create a company");
+			sender.sendMessage(ChatColor.AQUA + "/business create" + ChatColor.WHITE + " - Create a company");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.items")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company items" + ChatColor.WHITE + " - Show items in your company storage");
+			sender.sendMessage(ChatColor.AQUA + "/business items" + ChatColor.WHITE + " - Show items in your company storage");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.report")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company report" + ChatColor.WHITE + " - Show the latest report for your company");
+			sender.sendMessage(ChatColor.AQUA + "/business report" + ChatColor.WHITE + " - Show the latest report for your company");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.report")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company report <companyname>" + ChatColor.WHITE + " - Show the latest report any company");
+			sender.sendMessage(ChatColor.AQUA + "/business report <companyname>" + ChatColor.WHITE + " - Show the latest report any company");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.setproductname")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company setproductname <itemname> <customname>" + ChatColor.WHITE + " - Customize a item name for the company");
+			sender.sendMessage(ChatColor.AQUA + "/business setproductname <itemname> <customname>" + ChatColor.WHITE + " - Customize a item name for the company");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.setproductname")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company setproductinfo <itemname> <custominfo>" + ChatColor.WHITE + " - Customize item info for the company");
+			sender.sendMessage(ChatColor.AQUA + "/business setproductinfo <itemname> <custominfo>" + ChatColor.WHITE + " - Customize item info for the company");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.list")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company list" + ChatColor.WHITE + " - List of all companies");
+			sender.sendMessage(ChatColor.AQUA + "/business list" + ChatColor.WHITE + " - List of all companies");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.info")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company info" + ChatColor.WHITE + " - Show info about your company");
+			sender.sendMessage(ChatColor.AQUA + "/business info" + ChatColor.WHITE + " - Show info about your company");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.info")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company info <companyname>" + ChatColor.WHITE + " - Show info about a specific company");
+			sender.sendMessage(ChatColor.AQUA + "/business info <companyname>" + ChatColor.WHITE + " - Show info about a specific company");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.people")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company people" + ChatColor.WHITE + " - Show the employees in your Company");
+			sender.sendMessage(ChatColor.AQUA + "/business people" + ChatColor.WHITE + " - Show the employees in your Company");
 		}		
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.people")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company people <companyname>" + ChatColor.WHITE + " - Show employees in a Company");
+			sender.sendMessage(ChatColor.AQUA + "/business people <companyname>" + ChatColor.WHITE + " - Show employees in a Company");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.trade")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company trade" + ChatColor.WHITE + " - Toggles trading an item type for the company");
+			sender.sendMessage(ChatColor.AQUA + "/business trade" + ChatColor.WHITE + " - Toggles trading an item type for the company");
 		}
 
 		
@@ -1143,7 +1150,7 @@ public class Commands
 		this.plugin.getEmployeeManager().load();
 
 		sender.sendMessage(ChatColor.YELLOW + this.plugin.getDescription().getFullName() + ": " + ChatColor.WHITE + "Reloaded configuration.");
-		this.plugin.log(sender.getName() + " /company reload");
+		this.plugin.log(sender.getName() + " /business reload");
 
 		return true;
 	}
@@ -1196,7 +1203,7 @@ public class Commands
 		
 		this.plugin.getServer().broadcastMessage(ChatColor.WHITE + player.getName() + ChatColor.AQUA + " founded the company " + ChatColor.GOLD + newCompanyName);
 		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "You founded the company " + ChatColor.GOLD + newCompanyName, 1);
-		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company desc" + ChatColor.AQUA +  " to give your company a description", 3*20);
+		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/business desc" + ChatColor.AQUA +  " to give your company a description", 3*20);
 
 		return true;
 	}
@@ -1248,7 +1255,7 @@ public class Commands
 
 		this.plugin.sendInfo(invitedPlayer.getUniqueId(), ChatColor.GOLD + companyName + ChatColor.AQUA + " invited you to join their company!", 10);
 
-		this.plugin.sendInfo(invitedPlayer.getUniqueId(), ChatColor.AQUA + "Answer the question by using " + ChatColor.WHITE + "/company yes or /company no", 40);
+		this.plugin.sendInfo(invitedPlayer.getUniqueId(), ChatColor.AQUA + "Answer the question by using " + ChatColor.WHITE + "/business yes or /business no", 40);
 
 		player.sendMessage(ChatColor.AQUA + "You invited " + ChatColor.WHITE + playerName + ChatColor.AQUA + " to join " + ChatColor.GOLD + companyName + ChatColor.AQUA + "!");
 
@@ -1771,7 +1778,7 @@ public class Commands
 		{
 			believer.sendMessage(ChatColor.RED + "You were FIRED from company " + ChatColor.GOLD + companyName + ChatColor.AQUA + "!");
 		}
-		this.plugin.log(sender.getName() + " /company fire " + emplyoee);
+		this.plugin.log(sender.getName() + " /business fire " + emplyoee);
 
 		return true;
 	}
@@ -1894,7 +1901,7 @@ public class Commands
 			EmployeePosition employeePosition = plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId());
 			sender.sendMessage(ChatColor.GREEN + "You are working in " + employeePosition.name() + " in " + companyName);
 
-			plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company workas <positionname>" + ChatColor.AQUA + " to change your working position within your company" , 60);
+			plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/business workas <positionname>" + ChatColor.AQUA + " to change your working position within your company" , 60);
 		}
 		else
 		{

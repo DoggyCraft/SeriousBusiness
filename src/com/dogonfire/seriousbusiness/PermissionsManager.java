@@ -24,8 +24,7 @@ public class PermissionsManager
 
 	public void load()
 	{
-		this.pluginManager = this.plugin.getServer().getPluginManager();
-		
+		this.pluginManager = this.plugin.getServer().getPluginManager();		
 	}
 
 	public Plugin getPlugin()
@@ -44,12 +43,9 @@ public class PermissionsManager
 	}
 
 	public boolean isGroup(String groupName)
-	{
-		
-
-		return false;
+	{		
+		return true;
 	}
-
 	
 	public String getGroup(String playerName)
 	{
