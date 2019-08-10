@@ -15,11 +15,19 @@ The plugin for doing Serious Business on DoggyCraft.dk!
 
 Background
 ---------
-The goal is to provide as many business and financial mechanics as possible for players while still maintaining a "making sense" balance towards survival gameplay
+The goal is to provide as many business and financial mechanics as possible for players while still maintaining a "making sense" balance towards survival gameplay:
 
-*   Company registration
-*   Company budgets
-*	The Cryptocoin alt-currency "Nudes"
+* Company Headquarters
+* Company registration
+* Company budgets
+* Banking - Loans
+* Banking - Account Rates
+* Boring business jargon
+* Import/Export policies
+* Local policies and location taxes
+*	A Cryptocoin alt-currency called "Nudes"
+* Shady business practices such as money transferring, avoiding taxations
+* Financial fines
 *	Stock trading
 
 Installation
