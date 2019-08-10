@@ -1,7 +1,7 @@
 Serious Business
 ======
 
-[![Build Status](https://travis-ci.com/DoggyCraftDK/Werewolf.svg?branch=master)](https://travis-ci.com/DoggyCraftDK/SeriousBusiness)
+[![Build Status](https://travis-ci.com/DoggyCraftDK/SeriousBusiness.svg?branch=master)](https://travis-ci.com/DoggyCraftDK/SeriousBusiness)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=alert_status)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=ncloc)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=bugs)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)

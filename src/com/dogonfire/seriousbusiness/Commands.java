@@ -83,14 +83,14 @@ public class Commands
 			this.plugin.log("--------- The companies in " + this.plugin.serverName + " ---------");
 		}
 		
-		Collections.sort(companies, new TopGodsComparator());
+		Collections.sort(companies, new TopCompanyComparator());
 
 		int l = companies.size();
 
-		List<CompanyStockValue> topGods = companies;
+		List<CompanyStockValue> topCompanies = companies;
 		if (l > 15)
 		{
-			topGods = ((List) topGods).subList(0, 15);
+			topCompanies = ((List) topCompanies).subList(0, 15);
 		}
 		
 		int n = 1;
@@ -99,33 +99,32 @@ public class Commands
 		DecimalFormat df = new DecimalFormat();
 		df.setMaximumFractionDigits(2);
 
-		for (CompanyStockValue company : topGods)
+		for (CompanyStockValue companyStock : topCompanies)
 		{
-			String fullGodName = String.format("%-16s", String.format("%-16s", company.name) );
-			
-					
+			String fullGodName = String.format("%-16s", String.format("%-16s", companyStock.companyId) );
+								
 			if (sender != null)
 			{
 				String changeColor = ChatColor.WHITE + "";
 				
-				if(company.stockChange > 0)
+				if(companyStock.stockChange > 0)
 				{
 					changeColor = ChatColor.GREEN + "+";
 				}
-				else if(company.stockChange < 0)
+				else if(companyStock.stockChange < 0)
 				{
 					changeColor = ChatColor.RED + "";
 				}
 
-				if (playerGod != null && company.name.equals(playerGod))
+				if (playerGod != null && companyStock.companyId.equals(playerGod))
 				{
 					playerGodShown = true;
 										
-					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullGodName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(company.stockValue)).append(changeColor + " (").append(df.format(company.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + company.numberOfEmployees).toString(), 2));
+					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullGodName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.stockValue)).append(changeColor + " (").append(df.format(companyStock.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.numberOfEmployees).toString(), 2));
 				}
 				else
 				{
-					sender.sendMessage(ChatColor.YELLOW + String.format("%2d", n) + ChatColor.GOLD + " - " + fullGodName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(company.stockValue)).append(changeColor + " (").append(df.format(company.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + company.numberOfEmployees).toString(), 2));
+					sender.sendMessage(ChatColor.YELLOW + String.format("%2d", n) + ChatColor.GOLD + " - " + fullGodName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.stockValue)).append(changeColor + " (").append(df.format(companyStock.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.numberOfEmployees).toString(), 2));
 				}
 			}
 			//else
@@ -142,9 +141,9 @@ public class Commands
 		{
 			for (CompanyStockValue company : companies)
 			{
-				String fullGodName = String.format("%-16s", new Object[] { company.name }) + "   " + String.format("%-16s", company.name );
+				String fullGodName = String.format("%-16s", new Object[] { company.companyId }) + "   " + String.format("%-16s", company.companyId );
 				
-				if ((playerGod != null) && (company.name.equals(playerGod)))
+				if ((playerGod != null) && (company.companyId.equals(playerGod)))
 				{
 					playerGodShown = true;
 					sender.sendMessage("" + ChatColor.GOLD + n + " - " + fullGodName + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(company.stockValue).toString(), 2) + StringUtils.rightPad(new StringBuilder().append(" Employees ").append(company.numberOfEmployees).toString(), 2));
@@ -2091,21 +2090,21 @@ public class Commands
 	{
 		public double stockValue;
 		public double stockChange;
-		public String name;
+		public UUID companyId;
 		public int numberOfEmployees;
 
-		CompanyStockValue(String companyName, double stockValue, double stockChange, int numberOfEmployees)
+		CompanyStockValue(UUID companyId, double stockValue, double stockChange, int numberOfEmployees)
 		{
 			this.stockValue = stockValue;
 			this.stockChange = stockChange;
-			this.name = new String(companyName);
+			this.companyId = companyId;
 			this.numberOfEmployees = numberOfEmployees;
 		}
 	}
 
-	public class TopGodsComparator implements Comparator
+	public class TopCompanyComparator implements Comparator
 	{
-		public TopGodsComparator()
+		public TopCompanyComparator()
 		{
 		}
 
