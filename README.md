@@ -9,7 +9,7 @@ Serious Business
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=DogOnFire_SeriousBusiness&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=DogOnFire_SeriousBusiness)
 
-![Werewolf](https://raw.githubusercontent.com/DoggyCraftDK/Werewolf/master/img/Werewolf.jpg)
+![Werewolf](http://www.mcintyre.co.za/wp-content/uploads/2019/03/business-meeting-ss-1920.jpg)
 
 The plugin for doing Serious Business on DoggyCraft.dk!
 
