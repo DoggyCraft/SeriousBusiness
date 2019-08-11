@@ -221,7 +221,7 @@ public class CompanyManager
 		saveTimed();
 	}
 	
-	public void setHomeForGod(UUID companyId, Location location)
+	public void setHomeForCompany(UUID companyId, Location location)
 	{
 		this.companyConfig.set(companyId.toString() + ".Home.X", Double.valueOf(location.getX()));
 		this.companyConfig.set(companyId.toString() + ".Home.Y", Double.valueOf(location.getY()));
@@ -722,12 +722,7 @@ public class CompanyManager
 
 	public boolean companyExist(String companyName)
 	{
-		String name = this.companyConfig.getString(formatCompanyName(companyName) + ".Created");
-		if (name == null)
-		{
-			return false;
-		}
-		return true;
+		return getCompanyIdByName(companyName) != null;
 	}
 
 	public String formatCompanyName(String companyName)
@@ -745,7 +740,7 @@ public class CompanyManager
 		
 		UUID companyId = UUID.randomUUID();
 		
-		setHomeForGod(companyId, location);
+		setHomeForCompany(companyId, location);
 
 		this.setTimeUntilTurnEnd(companyId, plugin.turnTimeInSeconds);
 		this.setTimeUntilRoundEnd(companyId, plugin.roundTimeInSeconds);
@@ -913,11 +908,11 @@ public class CompanyManager
 			return false;			
 		}
 
-		if(player.getItemInHand().getType()!=Material.AIR)
+		if(player.getInventory().getItemInMainHand().getType()!=Material.AIR)
 		{
-			if(player.getItemInHand().getType()==itemType)
+			if(player.getInventory().getItemInMainHand().getType()==itemType)
 			{
-				player.getInventory().getItemInHand().setAmount(player.getInventory().getItemInHand().getAmount()+1);				
+				player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()+1);				
 			}
 			else
 			{
@@ -977,7 +972,7 @@ public class CompanyManager
 			return false;
 		}
 
-		if(player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR || player.getItemInHand().getAmount() < 1)
+		if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR || player.getInventory().getItemInMainHand().getAmount() < 1)
 		{
 			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You do not have anything in your hand to supply to the company.", 2);	
 			return false;
@@ -1000,7 +995,7 @@ public class CompanyManager
 
 		UUID companyId = plugin.getCompanyManager().getCompanyIdByName(companyName);
 		
-		Material itemType = player.getItemInHand().getType();
+		Material itemType = player.getInventory().getItemInMainHand().getType();
 		int itemAmount = 1;
 
 		if(!plugin.getCompanyManager().isCompanyTradingItem(companyId, itemType))
@@ -1009,18 +1004,18 @@ public class CompanyManager
 			return false;
 		}		
 		
-		plugin.getCompanyManager().increaseItemStock(companyId, player.getItemInHand().getType(), itemAmount);
+		plugin.getCompanyManager().increaseItemStock(companyId, player.getInventory().getItemInMainHand().getType(), itemAmount);
 		
 		plugin.getEmployeeManager().addWork(player.getUniqueId(), companyName, EmployeePosition.Production);
 		plugin.getEmployeeManager().addXP(player.getUniqueId(), 1);
 		
-		if(player.getInventory().getItemInHand().getAmount() > itemAmount)
+		if(player.getInventory().getItemInMainHand().getAmount() > itemAmount)
 		{
-			player.getInventory().getItemInHand().setAmount(player.getInventory().getItemInHand().getAmount()-1);
+			player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
 		}
 		else
 		{
-			player.getInventory().removeItem(player.getInventory().getItemInHand());
+			player.getInventory().removeItem(player.getInventory().getItemInMainHand());
 		}
 		
 		plugin.sendInfo(player.getUniqueId(), "You supplied " + ChatColor.WHITE + itemAmount + " " + itemType.name() + ChatColor.AQUA + " to " + ChatColor.WHITE + companyName, 2);
@@ -1083,16 +1078,6 @@ public class CompanyManager
 		save();
 	}
 
-/*
-	public void GodsSayToBelievers(String message, int delay)
-	{
-		for (UUID companyId : getOnlineCompanies())
-		{
-			companySayToEmployees(companyId, message, delay);
-		}
-	}
-	*/
-
 	public void companySayToEmployees(UUID companyId, String message, int delay)
 	{
 		for (UUID playerId : this.plugin.getEmployeeManager().getPlayersInCompany(companyId))
@@ -1105,7 +1090,7 @@ public class CompanyManager
 		}
 	}
 
-	public void sendInfoToBelievers(UUID companyId, String message, ChatColor color, int delay)
+	public void sendInfoToEmployees(UUID companyId, String message, ChatColor color, int delay)
 	{
 		for (UUID playerId : this.plugin.getEmployeeManager().getPlayersInCompany(companyId))
 		{
@@ -1118,7 +1103,7 @@ public class CompanyManager
 		}
 	}
 
-	public void sendInfoToBelievers(UUID companyId, String message, ChatColor color, String name, int amount1, int amount2, int delay)
+	public void sendInfoToEmployees(UUID companyId, String message, ChatColor color, String name, int amount1, int amount2, int delay)
 	{
 		for (UUID playerId : this.plugin.getEmployeeManager().getPlayersInCompany(companyId))
 		{
@@ -1331,7 +1316,7 @@ public class CompanyManager
 			
 			long timeAfter = System.currentTimeMillis();
 
-			this.plugin.logDebug("Processed " + godNames.size() + " offline Gods in " + (timeAfter - timeBefore) + " ms");
+			this.plugin.logDebug("Processed " + godNames.size() + " offline Companies in " + (timeAfter - timeBefore) + " ms");
 		}
 
 		List<UUID> companyNames = getOnlineCompanies();

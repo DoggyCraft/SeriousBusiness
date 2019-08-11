@@ -14,21 +14,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.util.Vector;
 
-import com.dogonfire.seriousbusiness.Commands.Believer;
 import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
 import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 
 
 //
-// /companytax - Show company tax level (and development) in the current area
+// /companytax - Show company tax level (and development of it) in the current area
 // /company list - Show companies
+// /sethq - Set hq to be right here in this area (enables /company home and tax payments)
 // /buy nudes <amount> - Buy <amount> nude coins at values from selected company 
 // /select company <id> - Select a company to deal with 
 // 
@@ -54,7 +51,7 @@ public class Commands
 		
 		Player player = (Player)sender;
 		List<CompanyStockValue> companies = new ArrayList<CompanyStockValue>();
-		String playerGod = null;
+		String playerCompany = null;
 		
 		Set<UUID> list = plugin.getCompanyManager().getTopCompanies();
 		for (UUID companyId : list)
@@ -104,14 +101,14 @@ public class Commands
 		}
 		
 		int n = 1;
-		boolean playerGodShown = false;
+		boolean playerCompanyShown = false;
 		
 		DecimalFormat df = new DecimalFormat();
 		df.setMaximumFractionDigits(2);
 
 		for (CompanyStockValue companyStock : topCompanies)
 		{
-			String fullGodName = String.format("%-16s", String.format("%-16s", companyStock.companyId) );
+			String fullGodName = String.format("%-16s", String.format("%-16s", plugin.getCompanyManager().getCompanyName(companyStock.companyId)) );
 								
 			if (sender != null)
 			{
@@ -126,9 +123,9 @@ public class Commands
 					changeColor = ChatColor.RED + "";
 				}
 
-				if (playerGod != null && companyStock.companyId.equals(playerGod))
+				if (playerCompany != null && companyStock.companyId.equals(playerCompany))
 				{
-					playerGodShown = true;
+					playerCompanyShown = true;
 										
 					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullGodName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.stockValue)).append(changeColor + " (").append(df.format(companyStock.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.numberOfEmployees).toString(), 2));
 				}
@@ -147,16 +144,16 @@ public class Commands
 		
 		n = 1;
 		
-		if (playerGod != null && !playerGodShown)
+		if (playerCompany != null && !playerCompanyShown)
 		{
 			for (CompanyStockValue company : companies)
 			{
-				String fullGodName = String.format("%-16s", new Object[] { company.companyId }) + "   " + String.format("%-16s", company.companyId );
+				String fullCompanyName = String.format("%-16s", new Object[] { company.companyId }) + "   " + String.format("%-16s", plugin.getCompanyManager().getCompanyName(company.companyId) );
 				
-				if ((playerGod != null) && (company.companyId.equals(playerGod)))
+				if ((playerCompany != null) && (company.companyId.equals(playerCompany)))
 				{
-					playerGodShown = true;
-					sender.sendMessage("" + ChatColor.GOLD + n + " - " + fullGodName + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(company.stockValue).toString(), 2) + StringUtils.rightPad(new StringBuilder().append(" Employees ").append(company.numberOfEmployees).toString(), 2));
+					playerCompanyShown = true;
+					sender.sendMessage("" + ChatColor.GOLD + n + " - " + fullCompanyName + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(company.stockValue).toString(), 2) + StringUtils.rightPad(new StringBuilder().append(" Employees ").append(company.numberOfEmployees).toString(), 2));
 				}
 				n++;
 			}
@@ -227,7 +224,7 @@ public class Commands
 			{
 				if (CommandCreate(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /business report");
+					this.plugin.log(sender.getName() + " /business create");
 				}
 				
 				return true;
@@ -500,7 +497,7 @@ public class Commands
 			{
 				if (CommandPeople(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /gods followers " + args[1]);
+					this.plugin.log(sender.getName() + " /business followers " + args[1]);
 				}
 				return true;
 			}
@@ -509,7 +506,7 @@ public class Commands
 			{
 				if (args.length!=2)
 				{
-					sender.sendMessage(ChatColor.WHITE + "/g check <godname>");
+					sender.sendMessage(ChatColor.WHITE + "/business check <companyname>");
 					return false;
 				}				
 
@@ -517,7 +514,7 @@ public class Commands
 												
 				if (CommandCheck(sender, otherPlayer))
 				{
-					this.plugin.log(sender.getName() + " /gods check " + args[1]);
+					this.plugin.log(sender.getName() + " /business check " + args[1]);
 				}
 				return true;
 			}
@@ -600,13 +597,14 @@ public class Commands
 		if (companyName == null)
 		{
 			companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
-			companyName = this.plugin.getCompanyManager().getCompanyName(companyId);
-			
-			if (companyName == null)
+			if (companyId == null)
 			{
 				sender.sendMessage(ChatColor.RED + "You do not have a job.");
 				return true;
-			}
+			}			
+			
+			companyName = this.plugin.getCompanyManager().getCompanyName(companyId);
+			
 		}
 		else
 		{
@@ -1083,6 +1081,7 @@ public class Commands
 		sender.sendMessage(ChatColor.AQUA + "/business help sales" + ChatColor.WHITE + " - How to work in sales");
 		sender.sendMessage(ChatColor.AQUA + "/business help production" + ChatColor.WHITE + " - How to work in production");
 		sender.sendMessage(ChatColor.AQUA + "/business help manager" + ChatColor.WHITE + " - How to work as a manager");
+		sender.sendMessage(ChatColor.AQUA + "/business help career" + ChatColor.WHITE + " - How to handle your career");
 		
 		sender.sendMessage(ChatColor.AQUA + "");
 
@@ -1811,7 +1810,7 @@ public class Commands
 			return false;
 		}		
 
-		this.plugin.getCompanyManager().setHomeForGod(companyId, player.getLocation());
+		this.plugin.getCompanyManager().setHomeForCompany(companyId, player.getLocation());
 		
 		this.plugin.getCompanyManager().companySayToEmployees(companyId, "The headquarters for your company was just set by " + player.getName(), 2);
 
