@@ -8,35 +8,35 @@ softdepend:
   - WorldGuard
   - Vault
 commands:
-  business:
-    description: "Controls the Serious Business system"
-    usage: /business
+  company:
+    description: "Controls the Serious Business companies"
+    usage: /company
+  tax:
+    description: "Controls the Serious Business tax system"
+    usage: /tax
 permissions: 
   company.*: 
     children: 
-      business.listen: true
-      business.followers: true
-      business.help: true
-      business.home: true
-      business.info: true
-      business.list: true
-      business.ceo: true
-      business.ceo.invite: true
-      business.ceo.description: true
-      business.ceo.fire: true
-      business.reload: true
-      business.sethome: true
+      company.listen: true
+      company.followers: true
+      company.help: true
+      company.home: true
+      company.info: true
+      company.list: true
+      company.ceo: true
+      company.ceo.invite: true
+      company.ceo.description: true
+      company.ceo.fire: true
+      company.reload: true
+      company.sethome: true
     default: false
     description: "Gives access to all Serious Business commands"
-  business.pray: 
-    default: true
-    description: "Player can pray directly to their Gods using /g prayfor command"
-  business.listen: 
+  company.listen: 
     default: true
     description: "Player can hear Gods speaking"
-  business.updates: 
+  company.updates: 
     default: false
     description: "Player gets notifications about updates to Gods plugin"
-  business.love: 
+  company.love: 
     default: true
     description: "Allows the Player to love his partner"
