@@ -21,7 +21,6 @@ permissions:
   company.*: 
     children: 
       company.listen: true
-      company.followers: true
       company.help: true
       company.home.hq: true
       company.home.sales: true
@@ -38,6 +37,7 @@ permissions:
       company.shop: true
       company.shop.goto: true
       company.shop.search: true
+      company.invite: true
     default: false
     description: "Gives access to all Serious Business commands"
   company.listen: 

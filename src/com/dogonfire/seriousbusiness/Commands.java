@@ -1261,12 +1261,12 @@ public class Commands
 		sender.sendMessage("");
 		sender.sendMessage(ChatColor.AQUA + "A sales worker can also set the company shop by using");
 		sender.sendMessage("");
-		sender.sendMessage(ChatColor.WHITE + "  /business setshop 1");
+		sender.sendMessage(ChatColor.WHITE + "  /company setshop 1");
 		sender.sendMessage("");
 		sender.sendMessage(ChatColor.AQUA + "A sales worker can customize the name and info for a product by using");
 		sender.sendMessage("");
-		sender.sendMessage(ChatColor.WHITE + "  /business setproductname <itemname> <name>");
-		sender.sendMessage(ChatColor.WHITE + "  /business setproductinfo <itemname> <name>");
+		sender.sendMessage(ChatColor.WHITE + "  /company setproductname <itemname> <name>");
+		sender.sendMessage(ChatColor.WHITE + "  /company setproductinfo <itemname> <name>");
 		sender.sendMessage("");
 		sender.sendMessage(ChatColor.AQUA + "Any player can then use /business shop <companyname> 1 to go to that shop");
 		sender.sendMessage(ChatColor.AQUA + "It is up to the sales person to attract customers to buy from their shops");
@@ -1294,14 +1294,14 @@ public class Commands
 		sender.sendMessage(ChatColor.YELLOW + "--------------- How to work as a Manager ---------------");
 		sender.sendMessage(ChatColor.AQUA + "Use the following commands to control your company:");
 		sender.sendMessage("");
-		sender.sendMessage(ChatColor.WHITE + "  /business invite <playername>");
-		sender.sendMessage(ChatColor.WHITE + "  /business fire <playername>");
-		sender.sendMessage(ChatColor.WHITE + "  /business trade <itemname>");
-		sender.sendMessage(ChatColor.WHITE + "  /business setsaleprice <itemname> <price>");
-		sender.sendMessage(ChatColor.WHITE + "  /business setsaleswage <itemname> <price>");
-		sender.sendMessage(ChatColor.WHITE + "  /business setproductionwage <wage>");
-		sender.sendMessage(ChatColor.WHITE + "  /business setrequiredproduction <amount>");
-		sender.sendMessage(ChatColor.WHITE + "  /business setrequiredsales <amount>");		
+		sender.sendMessage(ChatColor.WHITE + "  /company invite <playername>");
+		sender.sendMessage(ChatColor.WHITE + "  /company fire <playername>");
+		sender.sendMessage(ChatColor.WHITE + "  /company trade <itemname>");
+		sender.sendMessage(ChatColor.WHITE + "  /company setsaleprice <itemname> <price>");
+		sender.sendMessage(ChatColor.WHITE + "  /company setsaleswage <itemname> <price>");
+		sender.sendMessage(ChatColor.WHITE + "  /company setproductionwage <wage>");
+		sender.sendMessage(ChatColor.WHITE + "  /company setrequiredproduction <amount>");
+		sender.sendMessage(ChatColor.WHITE + "  /company setrequiredsales <amount>");		
 		sender.sendMessage("");
 		sender.sendMessage(ChatColor.AQUA + "As a manager, you will earn 5 % of your company profit pr turn, so a manager must make sure that the company is making profit if he wants to get paid.");
 
@@ -1425,6 +1425,11 @@ public class Commands
 		}
 		
 		String newCompanyName = args[1];
+		
+		for(int a=2; a<args.length; a++)
+		{
+			newCompanyName += " " + args[a];
+		}
 
 		if (newCompanyName==null || newCompanyName.length() < 3)
 		{
@@ -1492,11 +1497,10 @@ public class Commands
 			return false;
 		}
 		
-		UUID invitedPlayerCompany = this.plugin.getEmployeeManager().getCompanyForEmployee(invitedPlayer.getUniqueId());
-		String invitedPlayerCompanyName = this.plugin.getCompanyManager().getCompanyName(invitedPlayerCompany);
-		
+		UUID invitedPlayerCompany = this.plugin.getEmployeeManager().getCompanyForEmployee(invitedPlayer.getUniqueId());		
 		if (invitedPlayerCompany != null && invitedPlayerCompany.equals(companyId))
 		{
+			String invitedPlayerCompanyName = this.plugin.getCompanyManager().getCompanyName(invitedPlayerCompany);
 			player.sendMessage(ChatColor.YELLOW + playerName + ChatColor.RED + " is already working in '" + ChatColor.GOLD + invitedPlayerCompanyName + ChatColor.RED + "!");
 			return false;
 		}

@@ -39,26 +39,40 @@ public class CompanyManager
 	private String						pattern			= "HH:mm:ss dd-MM-yyyy";
 	DateFormat							formatter		= new SimpleDateFormat(this.pattern);
 
-	public class FinancialReport
+	final public class FinancialReport
 	{
-		public HashMap<Material, Integer> itemsSoldAmount = new HashMap<Material, Integer>();
-		public HashMap<Material, Double> itemsSoldValues = new HashMap<Material, Double>();
+		final public HashMap<Material, Integer> itemsSoldAmount;
+		final public HashMap<Material, Double> itemsSoldValues;		
+		final public HashMap<Material, Integer> itemsProducedAmount;
+		final public HashMap<EmployeePosition, Double> wagesPaid;
 		
-		public HashMap<Material, Integer> itemsProducedAmount = new HashMap<Material, Integer>();
-
-		public HashMap<EmployeePosition, Double> wagesPaid = new HashMap<EmployeePosition, Double>();
+		final public double companyTaxPercent;
+		final public double salesTaxPercent;
 		
-		public double companyTaxPercent;
-		public double salesTaxPercent;
+		final public double income;
+		final public double profit;
 		
-		public double income;
-		public double profit;
-		
-		public double stockStartValue;
-		public double stockEndValue;
-		public double stockValueChange;		
+		final public double stockStartValue;
+		final public double stockEndValue;
+		final public double stockValueChange;		
 				
-		public double balance;
+		final public double balance;
+		
+		FinancialReport(double companyTaxPercent, double salesTaxPercent, double income, double profit, double stockStartValue, double stockEndValue, double stockValueChange, double balance, HashMap<Material, Integer> itemsSoldAmount, HashMap<Material, Double> itemsSoldValues, HashMap<Material, Integer> itemsProducedAmount, HashMap<EmployeePosition, Double> wagesPaid)		
+		{
+			this.companyTaxPercent = companyTaxPercent;
+			this.salesTaxPercent = salesTaxPercent;
+			this.income = income;
+			this.profit = profit;
+			this.stockStartValue = stockStartValue;
+			this.stockEndValue = stockEndValue;
+			this.stockValueChange = stockValueChange;
+			this.balance = balance;
+			this.itemsSoldAmount = itemsSoldAmount;
+			this.itemsSoldValues = itemsSoldValues;
+			this.itemsProducedAmount = itemsProducedAmount;
+			this.wagesPaid = wagesPaid;
+		}
 	}
 
 	CompanyManager(Company p)
@@ -169,53 +183,59 @@ public class CompanyManager
 
 	public FinancialReport getFinancialReport(UUID companyId, int round)
 	{
-		FinancialReport report = new FinancialReport();
+		HashMap<Material, Integer> itemsSoldAmount = new HashMap<Material, Integer>();
+		HashMap<Material, Double> itemsSoldValues = new HashMap<Material, Double>();		
+		HashMap<Material, Integer> itemsProducedAmount = new HashMap<Material, Integer>();
+		HashMap<EmployeePosition, Double> wagesPaid = new HashMap<EmployeePosition, Double>();
 		double totalSoldValue = 0;
 		
 		for(Material soldItem : this.getItemsSoldThisRound(companyId, round))
 		{
 			double soldValue = this.getItemSoldValueThisRound(companyId, soldItem, round);
 			
-			report.itemsSoldAmount.put(soldItem, this.getItemSoldAmountThisRound(companyId, soldItem, round));
-			report.itemsSoldValues.put(soldItem, soldValue);
+			itemsSoldAmount.put(soldItem, this.getItemSoldAmountThisRound(companyId, soldItem, round));
+			itemsSoldValues.put(soldItem, soldValue);
 			
 			totalSoldValue += soldValue;
 		}
 
-		report.income = totalSoldValue;
+		double income = totalSoldValue;
 		
 		for(Material producedItem : this.getItemsProducedThisRound(companyId, round))
 		{
-			report.itemsProducedAmount.put(producedItem, this.getItemProducedAmountThisRound(companyId, producedItem, round));
+			itemsProducedAmount.put(producedItem, this.getItemProducedAmountThisRound(companyId, producedItem, round));
 		}		
 		
 		double wagesPaidProduction = this.getProductionWagesPaidThisRound(companyId, round);
 		double wagesPaidSales = this.getSalesWagesPaidThisRound(companyId, round);
 		double wagesPaidManagers = this.getManagerWagesPaidThisRound(companyId, round);
 		
-		report.wagesPaid.put(EmployeePosition.Production, wagesPaidProduction);
-		report.wagesPaid.put(EmployeePosition.Sales, wagesPaidSales);
-		report.wagesPaid.put(EmployeePosition.Manager, wagesPaidManagers);
+		wagesPaid.put(EmployeePosition.Production, wagesPaidProduction);
+		wagesPaid.put(EmployeePosition.Sales, wagesPaidSales);
+		wagesPaid.put(EmployeePosition.Manager, wagesPaidManagers);
 
 		long headquartersLandHash = this.companyConfig.getLong(companyId.toString() + ".Home.Headquarters.Land");
 		LandReport landReport = LandManager.instance().getLandReport(headquartersLandHash);
-		report.companyTaxPercent = landReport.companyTaxEndValue;
-		report.salesTaxPercent = landReport.salesTaxEndValue;
-			
-		double taxesPaid = (landReport.companyTaxEndValue + landReport.salesTaxEndValue) * report.income / 100;
-				
-		report.balance = this.companyConfig.getDouble(companyId.toString() + ".Balance");
-
-		report.profit = totalSoldValue - wagesPaidProduction - wagesPaidSales - taxesPaid;
-	
-		report.stockStartValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.StartValue");
-		report.stockEndValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.EndValue");
-		report.stockValueChange = report.profit / report.stockStartValue;
 		
-		if(report.stockEndValue == 0)
+		double companyTaxPercent = landReport.companyTaxEndValue;
+		double salesTaxPercent = landReport.salesTaxEndValue;
+			
+		double taxesPaid = (landReport.companyTaxEndValue + landReport.salesTaxEndValue) * income / 100;
+				
+		double balance = this.companyConfig.getDouble(companyId.toString() + ".Balance");
+
+		double profit = totalSoldValue - wagesPaidProduction - wagesPaidSales - taxesPaid;
+	
+		double stockStartValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.StartValue");
+		double stockEndValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.EndValue");
+		double stockValueChange = profit / stockStartValue;
+		
+		if(stockEndValue == 0)
 		{
-			report.stockEndValue = report.stockStartValue + report.stockValueChange;			
+			stockEndValue = stockStartValue + stockValueChange;			
 		}
+		
+		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid);
 		
 		return report;		
 	}
