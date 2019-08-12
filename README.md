@@ -17,41 +17,54 @@ Background
 ---------
 The goal is to provide as many business and financial mechanics as possible for players while still maintaining a "making sense" balance towards survival gameplay:
 
-* Boring business jargon
-* Work in Sales/Marketing
- ...Set sell signs where customers can buy company products
- ...Set sales store location that customers can teleport to
- ...Broadcast advertisements in the server chat
-* Work in Production
- ...Craft and produce the company products 
- ...Set production (factory) location that all employees can teleport to
- ...Store items in a company chest. Instantly shared with rest of company.
-* Work in Management
- ...Register Headquarters in land with lower company taxes
- ...Register Sales stores in land with lower sales taxes
- ...Register up to 3 other sub-companies
- ...Move money around to other companies to avoid taxes
- ...Hire people
- ...Fire people
- ...Rise to CEO
- ...Business-2-business contracts for import/export
- ...Get fined at contract breach
- ...Take loans in other companies
-* A Cryptocoin alt-currency called "Nudes"
-* Insurance
- ...Provide life insurance policies to minecraft players
-* Shady business practices
- ...Outragous bonuses
- ...Find creative ways to avoid paying customers their insurance
- ...Money transferring to other companies to avoid taxation and legal investigations
- ...Produce crappy goods at a loss to force competitors out of business
-* Law & Order system
- ...Financial fines
- ...Bribes to reduce local land taxes
- ...Sabotage competing companies
- ...Accuse competing companies for any of the above and win!
-* Trade company stock on the stock market
-* Manipulate the state of other companies and harvest the result on the stock market
+# Boring business jargon
+
+* Such as Disintermediation
+
+# Work in Sales/Marketing
+
+* Set sell signs where customers can buy company products  
+* Set sales store location that customers can teleport to  
+* Broadcast advertisements in the server chat  
+
+# Work in Production
+
+* Craft and produce the company products 
+* Set production (factory) location that all employees can teleport to
+* Store items in a company chest. Instantly shared with rest of company.
+ 
+# Work in Management
+
+* Register Headquarters in land with lower company taxes
+* Register Sales stores in land with lower sales taxes
+* Register up to 3 other sub-companies
+* Move money around to other companies to avoid taxes
+* Hire people
+* Fire people
+* Rise to CEO
+* Business-2-business contracts for import/export
+* Get fined at contract breach
+* Take loans in other companies
+# A Cryptocoin alt-currency called "Nudes"
+# Insurance
+
+* Provide life insurance policies to minecraft players
+# Shady business practices
+
+* Outragous bonuses
+* Find creative ways to avoid paying customers their insurance
+* Money transferring to other companies to avoid taxation and legal investigations
+* Produce crappy goods at a loss to force competitors out of business
+ 
+# Law & Order system
+
+* Financial fines
+* Bribes to reduce local land taxes
+* Sabotage competing companies
+* Accuse competing companies for any of the above and win!  
+ 
+# Trade company stock on the stock market
+# Manipulate the state of other companies and harvest the result on the stock market
 
 Installation
 ---------
