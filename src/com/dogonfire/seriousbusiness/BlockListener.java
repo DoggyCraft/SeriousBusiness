@@ -83,7 +83,7 @@ public class BlockListener implements Listener
 
 				companyName = sign.getLine(1);
 
-				if (companyName == null)
+				if (companyName.trim().length() == 0)
 				{
 					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 2.", 1);
 					return;
@@ -101,7 +101,7 @@ public class BlockListener implements Listener
 
 				String itemName = sign.getLine(2);
 
-				if (itemName == null)
+				if (itemName.trim().length() == 0)
 				{
 					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A item name must be on line 3.", 1);
 					return;
@@ -144,7 +144,7 @@ public class BlockListener implements Listener
 
 				companyName = sign.getLine(2);
 
-				if (companyName == null)
+				if (companyName.trim().length() == 0)
 				{
 					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 3.", 1);
 					return;

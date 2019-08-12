@@ -5,8 +5,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.dogonfire.seriousbusiness.LandManager.LandReport;
 import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 
 public class CompanyManager
@@ -34,7 +33,7 @@ public class CompanyManager
 	private FileConfiguration			companyConfig		= null;
 	private File						companyConfigFile	= null;
 	private Random						random			= new Random();
-	private List<UUID>					onlineCompanies		= new ArrayList();
+	private List<UUID>					onlineCompanies		= new ArrayList<UUID>();
 	private long						lastSaveTime;
 	private String						pattern			= "HH:mm:ss dd-MM-yyyy";
 	DateFormat							formatter		= new SimpleDateFormat(this.pattern);
@@ -48,12 +47,16 @@ public class CompanyManager
 
 		public HashMap<EmployeePosition, Double> wagesPaid = new HashMap<EmployeePosition, Double>();
 		
+		public double companyTaxPercent;
+		public double salesTaxPercent;
+		
+		public double income;
 		public double profit;
 		
 		public double stockStartValue;
 		public double stockEndValue;
 		public double stockValueChange;		
-		
+				
 		public double balance;
 	}
 
@@ -108,7 +111,7 @@ public class CompanyManager
 	public List<UUID> getOfflineCompanies()
 	{
 		Set<String> allGods = this.companyConfig.getKeys(false);
-		List<UUID> offlineCompanies = new ArrayList();
+		List<UUID> offlineCompanies = new ArrayList<UUID>();
 		for (String companyIdString : allGods)
 		{
 			UUID companyId = UUID.fromString(companyIdString);
@@ -173,6 +176,8 @@ public class CompanyManager
 			totalSoldValue += soldValue;
 		}
 
+		report.income = totalSoldValue;
+		
 		for(Material producedItem : this.getItemsProducedThisRound(companyId, round))
 		{
 			report.itemsProducedAmount.put(producedItem, this.getItemProducedAmountThisRound(companyId, producedItem, round));
@@ -185,10 +190,17 @@ public class CompanyManager
 		report.wagesPaid.put(EmployeePosition.Production, wagesPaidProduction);
 		report.wagesPaid.put(EmployeePosition.Sales, wagesPaidSales);
 		report.wagesPaid.put(EmployeePosition.Manager, wagesPaidManagers);
+
+		long headquartersLandHash = this.companyConfig.getLong(companyId.toString() + ".Home.Headquarters.Land");
+		LandReport landReport = LandManager.instance().getLandReport(headquartersLandHash);
+		report.companyTaxPercent = landReport.companyTaxEndValue;
+		report.salesTaxPercent = landReport.salesTaxEndValue;
 			
+		double taxesPaid = (landReport.companyTaxEndValue + landReport.salesTaxEndValue) * report.income / 100;
+				
 		report.balance = this.companyConfig.getDouble(companyId.toString() + ".Balance");
 
-		report.profit = totalSoldValue - wagesPaidProduction - wagesPaidSales;
+		report.profit = totalSoldValue - wagesPaidProduction - wagesPaidSales - taxesPaid;
 	
 		report.stockStartValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.StartValue");
 		report.stockEndValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.EndValue");
@@ -199,8 +211,7 @@ public class CompanyManager
 			report.stockEndValue = report.stockStartValue + report.stockValueChange;			
 		}
 		
-		return report;
-		
+		return report;		
 	}
 
 	public int getCurrentRound(UUID companyId)
@@ -221,36 +232,70 @@ public class CompanyManager
 		saveTimed();
 	}
 	
-	public void setHomeForCompany(UUID companyId, Location location)
+	public void setHeadquartersHomeForCompany(UUID companyId, Location location, Location previousLocation)
 	{
-		this.companyConfig.set(companyId.toString() + ".Home.X", Double.valueOf(location.getX()));
-		this.companyConfig.set(companyId.toString() + ".Home.Y", Double.valueOf(location.getY()));
-		this.companyConfig.set(companyId.toString() + ".Home.Z", Double.valueOf(location.getZ()));
-		this.companyConfig.set(companyId.toString() + ".Home.World", location.getWorld().getName());
+		long hash = this.plugin.getLandManager().registerCompanyLocation(companyId, location, previousLocation);
+		
+		this.companyConfig.set(companyId.toString() + ".Home.Headquarters.X", location.getX());
+		this.companyConfig.set(companyId.toString() + ".Home.Headquarters.Y", location.getY());
+		this.companyConfig.set(companyId.toString() + ".Home.Headquarters.Z", location.getZ());
+		this.companyConfig.set(companyId.toString() + ".Home.Headquarters.World", location.getWorld().getName());
+		this.companyConfig.set(companyId.toString() + ".Home.Headquarters.Land", hash);
 
 		saveTimed();
 	}
 
-	public Location getHomeForCompany(UUID companyId)
+	public void setSalesHomeForCompany(UUID companyId, Location location, Location previousLocation)
+	{
+		long hash = this.plugin.getLandManager().registerCompanyLocation(companyId, location, previousLocation);
+
+		this.companyConfig.set(companyId.toString() + ".Home.Sales.X", location.getX());
+		this.companyConfig.set(companyId.toString() + ".Home.Sales.Y", location.getY());
+		this.companyConfig.set(companyId.toString() + ".Home.Sales.Z", location.getZ());
+		this.companyConfig.set(companyId.toString() + ".Home.Sales.World", location.getWorld().getName());
+		this.companyConfig.set(companyId.toString() + ".Home.Sales.Land", hash);
+
+		saveTimed();
+	}
+
+	public Location getHeadquartersForCompany(UUID companyId)
 	{
 		Location location = new Location(null, 0.0D, 0.0D, 0.0D);
 
-		String worldName = this.companyConfig.getString(companyId + ".Home.World");
+		String worldName = this.companyConfig.getString(companyId + ".Home.Headquarters.World");
+		if (worldName == null)
+		{
+			return null;
+		}
+		
+		location.setWorld(this.plugin.getServer().getWorld(worldName));
+
+		location.setX(this.companyConfig.getDouble(companyId + ".Home.Headquarters.X"));
+		location.setY(this.companyConfig.getDouble(companyId + ".Home.Headquarters.Y"));
+		location.setZ(this.companyConfig.getDouble(companyId + ".Home.Headquarters.Z"));
+
+		return location;
+	}
+	
+	
+	public Location getSalesHomeForCompany(UUID companyId)
+	{
+		Location location = new Location(null, 0.0D, 0.0D, 0.0D);
+
+		String worldName = this.companyConfig.getString(companyId + ".Home.Sales.World");
 		if (worldName == null)
 		{
 			return null;
 		}
 		location.setWorld(this.plugin.getServer().getWorld(worldName));
 
-		location.setX(this.companyConfig.getDouble(companyId + ".Home.X"));
-		location.setY(this.companyConfig.getDouble(companyId + ".Home.Y"));
-		location.setZ(this.companyConfig.getDouble(companyId + ".Home.Z"));
+		location.setX(this.companyConfig.getDouble(companyId + ".Home.Sales.X"));
+		location.setY(this.companyConfig.getDouble(companyId + ".Home.Sales.Y"));
+		location.setZ(this.companyConfig.getDouble(companyId + ".Home.Sales.Z"));
 
 		return location;
 	}
 	
-
-
 	public int getManagerWagesPaidThisRound(UUID companyId, int round)
 	{
 		return companyConfig.getInt(companyId.toString() + ".Round." + round + ".ManagerWages");
@@ -740,7 +785,7 @@ public class CompanyManager
 		
 		UUID companyId = UUID.randomUUID();
 		
-		setHomeForCompany(companyId, location);
+		setHeadquartersHomeForCompany(companyId, location, null);
 
 		this.setTimeUntilTurnEnd(companyId, plugin.turnTimeInSeconds);
 		this.setTimeUntilRoundEnd(companyId, plugin.roundTimeInSeconds);
@@ -833,16 +878,18 @@ public class CompanyManager
 
 		if (pendingCompanyInvitation != null)
 		{
+			String pendingCompanyName = this.plugin.getCompanyManager().getCompanyName(pendingCompanyInvitation);
 			this.plugin.logDebug("pendingGodInvitation is " + pendingCompanyInvitation);
 			
 			plugin.getEmployeeManager().setCompanyForEmployee(employeeId, pendingCompanyInvitation);
 
 			//this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "You joined " + ChatColor.GOLD + pendingCompanyInvitation + "!", 2);
-			this.plugin.log(player.getName() + " accepted the invitation to join " + pendingCompanyInvitation);
-			plugin.getServer().broadcastMessage(ChatColor.AQUA + player.getName() + " joined " + ChatColor.GOLD + pendingCompanyInvitation);
+			this.plugin.log(player.getName() + " accepted the invitation to join " + pendingCompanyName);
+			plugin.getServer().broadcastMessage(ChatColor.AQUA + player.getName() + " joined " + ChatColor.GOLD + pendingCompanyName);
 
 			//this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Welcome to " + ChatColor.GOLD + pendingCompanyInvitation + "!", 40);
-			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company quit" + ChatColor.AQUA +  " to quit your company", 45);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company quit" + ChatColor.AQUA +  " to quit your company", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company workas" + ChatColor.AQUA +  " to choose a job position in " + ChatColor.GOLD + pendingCompanyName, 6*20);
 			
 			return;
 		}

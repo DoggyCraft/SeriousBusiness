@@ -17,18 +17,29 @@ Background
 ---------
 The goal is to provide as many business and financial mechanics as possible for players while still maintaining a "making sense" balance towards survival gameplay:
 
-* Company Headquarters
-* Company registration
-* Company budgets
-* Banking - Loans
-* Banking - Account Rates
 * Boring business jargon
-* Import/Export policies
-* Local policies and location taxes
-*	A Cryptocoin alt-currency called "Nudes"
-* Shady business practices such as money transferring, avoiding taxations
+* Work in Sales/Marketing
+** Set sell signs where customers can buy company products
+** Broadcast advertisements in the server chat
+* Work in Production
+** Craft and produce the company products 
+** Store items in a company chest. Instantly shared with rest of company.
+* Work in Management
+** Register Headquarters in land with lower company taxes
+** Register Sales stores in land with lower sales taxes
+** Register up to 3 other sub-companies
+** Move money around to other companies to avoid taxes
+** Hire people
+** Fire people
+** Rise to CEO
+** Business-2-business contracts for import/export
+** Get fined at contract breach
+** Take loans in other companies
+* A Cryptocoin alt-currency called "Nudes"
+* Shady business practices such as money transferring
 * Financial fines
-*	Stock trading
+* Trade company stock on the stock market
+* Manipulate the state of other companies and harvest the result on the stock market
 
 Installation
 ---------

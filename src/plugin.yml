@@ -20,9 +20,11 @@ permissions:
       company.listen: true
       company.followers: true
       company.help: true
-      company.home: true
+      company.home.hq: true
+      company.home.sales: true
       company.info: true
       company.list: true
+      company.land: true
       company.ceo: true
       company.ceo.invite: true
       company.ceo.description: true
@@ -33,10 +35,7 @@ permissions:
     description: "Gives access to all Serious Business commands"
   company.listen: 
     default: true
-    description: "Player can hear Gods speaking"
+    description: "Player gets information about his Company"
   company.updates: 
     default: false
-    description: "Player gets notifications about updates to Gods plugin"
-  company.love: 
-    default: true
-    description: "Allows the Player to love his partner"
+    description: "Player gets notifications about updates to Company plugin"

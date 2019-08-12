@@ -19,6 +19,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
+import com.dogonfire.seriousbusiness.LandManager.LandReport;
 import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 
 
@@ -51,7 +52,7 @@ public class Commands
 		
 		Player player = (Player)sender;
 		List<CompanyStockValue> companies = new ArrayList<CompanyStockValue>();
-		String playerCompany = null;
+		UUID playerCompanyId = plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
 		
 		Set<UUID> list = plugin.getCompanyManager().getTopCompanies();
 		for (UUID companyId : list)
@@ -71,11 +72,11 @@ public class Commands
 		{
 			if (sender != null)
 			{
-				sender.sendMessage(ChatColor.GOLD + "There are no Companies in " + this.plugin.serverName + "!");
+				sender.sendMessage(ChatColor.RED + "There are no Companies in " + this.plugin.serverName + "!");
 			}
 			else
 			{
-				this.plugin.log("There are no Gods in " + this.plugin.serverName + "!");
+				this.plugin.log("There are no Companies in " + this.plugin.serverName + "!");
 			}
 			return true;
 		}
@@ -108,7 +109,7 @@ public class Commands
 
 		for (CompanyStockValue companyStock : topCompanies)
 		{
-			String fullGodName = String.format("%-16s", String.format("%-16s", plugin.getCompanyManager().getCompanyName(companyStock.companyId)) );
+			String fullCompanyName = String.format("%-16s", String.format("%-16s", plugin.getCompanyManager().getCompanyName(companyStock.companyId)) );
 								
 			if (sender != null)
 			{
@@ -123,15 +124,15 @@ public class Commands
 					changeColor = ChatColor.RED + "";
 				}
 
-				if (playerCompany != null && companyStock.companyId.equals(playerCompany))
+				if (playerCompanyId != null && companyStock.companyId.equals(playerCompanyId))
 				{
 					playerCompanyShown = true;
 										
-					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullGodName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.stockValue)).append(changeColor + " (").append(df.format(companyStock.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.numberOfEmployees).toString(), 2));
+					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.stockValue)).append(changeColor + " (").append(df.format(companyStock.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.numberOfEmployees).toString(), 2));
 				}
 				else
 				{
-					sender.sendMessage(ChatColor.YELLOW + String.format("%2d", n) + ChatColor.GOLD + " - " + fullGodName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.stockValue)).append(changeColor + " (").append(df.format(companyStock.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.numberOfEmployees).toString(), 2));
+					sender.sendMessage(ChatColor.YELLOW + String.format("%2d", n) + ChatColor.GOLD + " - " + fullCompanyName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.stockValue)).append(changeColor + " (").append(df.format(companyStock.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.numberOfEmployees).toString(), 2));
 				}
 			}
 			//else
@@ -144,13 +145,13 @@ public class Commands
 		
 		n = 1;
 		
-		if (playerCompany != null && !playerCompanyShown)
+		if (playerCompanyId != null && !playerCompanyShown)
 		{
 			for (CompanyStockValue company : companies)
 			{
 				String fullCompanyName = String.format("%-16s", new Object[] { company.companyId }) + "   " + String.format("%-16s", plugin.getCompanyManager().getCompanyName(company.companyId) );
 				
-				if ((playerCompany != null) && (company.companyId.equals(playerCompany)))
+				if (playerCompanyId != null && company.companyId.equals(playerCompanyId))
 				{
 					playerCompanyShown = true;
 					sender.sendMessage("" + ChatColor.GOLD + n + " - " + fullCompanyName + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(company.stockValue).toString(), 2) + StringUtils.rightPad(new StringBuilder().append(" Employees ").append(company.numberOfEmployees).toString(), 2));
@@ -200,44 +201,36 @@ public class Commands
 			if (args.length == 0)
 			{
 				CommandCompany(sender);
-				this.plugin.log(sender.getName() + " /company");
 				return true;
 			}
 			if (args[0].equalsIgnoreCase("reload"))
 			{
 				if (CommandReload(sender))
 				{
-					this.plugin.log(sender.getName() + " /company reload");
+					return true;
 				}
-				return true;
 			}
-//			if (args[0].equalsIgnoreCase("regen"))
-//			{
-//				EndManager endManager = new EndManager(this.plugin);
-//				endManager.init();
-//
-//				this.plugin.log(sender.getName() + " /gods regen");
-//
-//				return true;
-//			}
+			if (args[0].equalsIgnoreCase("land"))
+			{
+				if (CommandLand(sender, args))
+				{
+					return true;
+				}
+			}
 			if (args[0].equalsIgnoreCase("create"))
 			{
 				if (CommandCreate(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company create");
-				}
-				
-				return true;
+					return true;
+				}				
 			}
 			
 			if (args[0].equalsIgnoreCase("report"))
 			{
 				if (CommandReport(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company report");
+					return true;
 				}
-				
-				return true;
 			}
 			
 			if (args[0].equalsIgnoreCase("quit"))
@@ -262,98 +255,87 @@ public class Commands
 			{
 				if (CommandInfo(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company info");
+					return true;
 				}
-				return true;
 			}
 			if ((args[0].equalsIgnoreCase("c")) || (args[0].equalsIgnoreCase("chat")))
 			{
 				if (CommandChat(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company chat");
+					return true;
 				}
-				return true;
 			}
 			
-			if (args[0].equalsIgnoreCase("items"))
+			if (args[0].equalsIgnoreCase("products"))
 			{
-				if (CommandItems(sender, args))
+				if (CommandProducts(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company items");
+					return true;
 				}
-				return true;
 			}
 
 			if (args[0].equalsIgnoreCase("list"))
 			{
 				if (CommandList(sender))
 				{
-					this.plugin.log(sender.getName() + " /company list");
+					return true;
 				}
-				return true;
 			}
 			
 			if (args[0].equalsIgnoreCase("people"))
 			{
 				if (CommandPeople(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company people");
+					return true;
 				}
-				return true;
 			}
 			
 			if (args[0].equalsIgnoreCase("workas"))
 			{
 				if (CommandWorkAs(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company workas");
+					return true;
 				}
-				return true;
 			}
 
 			if (args[0].equalsIgnoreCase("ad"))
 			{
 				if (CommandAd(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company ad");
+					return true;
 				}
-				return true;
 			}
 
 			if (args[0].equalsIgnoreCase("sethome"))
 			{
-				if (CommandSetHome(player, args))
+				if (CommandSetHeadquartersHome(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company sethome");
+					return true;
 				}
-				return true;
 			}
 
 			if (args[0].equalsIgnoreCase("home"))
 			{
-				if (CommandHome(player, args))
+				if (CommandHeadquarters(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company home");
+					return true;
 				}
-				return true;
 			}
 			
 			if (args[0].equalsIgnoreCase("setsellprice"))
 			{
 				if (CommandSetSellPrice(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setsellprice");
+					return true;
 				}
-				return true;
 			}
 			
 			if (args[0].equalsIgnoreCase("trade"))
 			{
 				if (CommandTrade(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company trade");
+					return true;
 				}
-				return true;
 			}
 
 			if (args[0].equalsIgnoreCase("quit"))
@@ -381,132 +363,131 @@ public class Commands
 					{
 						if (CommandHelpSales(sender, args))
 						{
-							this.plugin.log(sender.getName() + " /company help sales" + args[1]);
+							return true;
 						}
-						return true;
+						return false;
 					}
 					
 					if (args[1].equalsIgnoreCase("production"))
 					{
 						if (CommandHelpProduction(sender, args))
 						{
-							this.plugin.log(sender.getName() + " /company help production" + args[1]);
+							return true;
 						}
-						return true;
+						return false;
 					}
 					
 					if (args[1].equalsIgnoreCase("manager"))
 					{
 						if (CommandHelpManager(sender, args))
 						{
-							this.plugin.log(sender.getName() + " /company help production" + args[1]);
+							return true;
 						}
-						return true;
+						return false;
 					}
 				}
 				else if (CommandHelp(sender))
 				{
-					this.plugin.log(sender.getName() + " /company help");
+					return true;
 				}
 				
-				return true;
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("setsaleswage"))
 			{
 				if (CommandSetSalesWage(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setsaleswage " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 			
 			if (args[0].equalsIgnoreCase("setproductionwage"))
 			{
 				if (CommandSetProductionWage(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setproductionwage " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("setrequiredproduction"))
 			{
 				if (CommandSetRequiredProduction(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setrequiredproduction " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("setrequiredsales"))
 			{
 				if (CommandSetRequiredSales(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setrequiredsales " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 			
 			if (args[0].equalsIgnoreCase("setproductname"))
 			{
 				if (CommandSetProductName(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setproductname " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("setproductName"))
 			{
 				if (CommandSetProductName(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setproductname " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("setproductInfo"))
 			{
 				if (CommandSetProductInfo(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company setproductinfo " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("invite"))
 			{
 				if (CommandInvite(player, args))
 				{
-					this.plugin.log(sender.getName() + " /company invite " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("info"))
 			{
 				if (CommandInfo(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company info " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("followers"))
 			{
 				if (CommandPeople(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company followers " + args[1]);
+					return true;
 				}
-				return true;
+				return false;
 			}
 			
 			if (args[0].equalsIgnoreCase("check"))
 			{
 				if (args.length!=2)
 				{
-					sender.sendMessage(ChatColor.WHITE + "/company check <companyname>");
 					return false;
 				}				
 
@@ -514,25 +495,26 @@ public class Commands
 												
 				if (CommandCheck(sender, otherPlayer))
 				{
-					this.plugin.log(sender.getName() + " /company check " + args[1]);
+					return true;
 				}
-				return true;
+
+				return false;
 			}
 			
 			if (args[0].equalsIgnoreCase("fire"))
 			{
 				if (args.length!=2)
 				{
-					sender.sendMessage(ChatColor.WHITE + "/company fire <playername>");
+					//sender.sendMessage(ChatColor.WHITE + "/company fire <playername>");
 					return false;
 				}				
 
 				if (CommandFire(sender, args))
 				{
-					this.plugin.log(sender.getName() + " /company fire " + args[1]);
+					return true;
 				}
 				
-				return true;
+				return false;
 			}
 			
 			if (args[0].equalsIgnoreCase("desc"))
@@ -541,7 +523,8 @@ public class Commands
 				{
 					this.plugin.log(sender.getName() + " /company desc " + args[1]);
 				}
-				return true;
+				
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("yes"))
@@ -579,12 +562,17 @@ public class Commands
 
 	private boolean CommandInfo(CommandSender sender, String[] args)
 	{
-		if ((sender != null) && !sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.info"))
+		if(sender == null)
+		{
+			return false;
+		}
+
+		if (!sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.info"))
 		{
 			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
 			return false;
 		}
-		
+			
 		Player player = (Player)sender;
 		String companyName = null;
 		UUID companyId = null;
@@ -603,8 +591,7 @@ public class Commands
 				return true;
 			}			
 			
-			companyName = this.plugin.getCompanyManager().getCompanyName(companyId);
-			
+			companyName = this.plugin.getCompanyManager().getCompanyName(companyId);			
 		}
 		else
 		{
@@ -635,15 +622,15 @@ public class Commands
 		
 		if(report.stockValueChange > 0)
 		{
-			sender.sendMessage(ChatColor.AQUA + " StockValue: " + report.stockEndValue + "(" + ChatColor.GREEN + df.format(100 * (report.stockValueChange / report.stockStartValue)) + ChatColor.AQUA + "%)");
+			sender.sendMessage(ChatColor.AQUA + " StockValue: " + report.stockEndValue + ChatColor.GREEN + "+" + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%");
 		}
 		else if(report.stockValueChange == 0)
 		{
-			sender.sendMessage(ChatColor.AQUA + " StockValue: " + report.stockEndValue + "(" + ChatColor.WHITE + df.format(100 * (report.stockValueChange / report.stockStartValue)) + ChatColor.AQUA + "%)");			
+			sender.sendMessage(ChatColor.AQUA + " StockValue: " + report.stockEndValue);			
 		}		
 		else
 		{
-			sender.sendMessage(ChatColor.AQUA + " StockValue: " + report.stockEndValue + "(" + ChatColor.RED + df.format(100 * (report.stockValueChange / report.stockStartValue)) + ChatColor.AQUA + "%)");			
+			sender.sendMessage(ChatColor.AQUA + " StockValue: " + report.stockEndValue + ChatColor.RED + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%");			
 		}		
 		
 		sender.sendMessage(ChatColor.YELLOW + "People:");
@@ -659,10 +646,82 @@ public class Commands
 		return true;
 	}
 
-	
-	private boolean CommandItems(CommandSender sender, String[] args)
+	private boolean CommandLand(CommandSender sender, String[] args)
 	{
-		if (sender != null && !sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.items"))
+		if(sender == null)
+		{
+			return false;
+		}
+
+		if (!sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.land"))
+		{
+			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
+			return false;
+		}
+			
+		Player player = (Player)sender;
+			
+		LandReport report = plugin.getLandManager().getLandReport(player.getLocation());
+	
+		sender.sendMessage(ChatColor.YELLOW + "Land information:");
+		sender.sendMessage(ChatColor.YELLOW + "  Name: " + ChatColor.AQUA + report.name);
+		
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(2);
+		df.setMinimumFractionDigits(2);
+		
+		if(report.companyTaxValueChange > 0)
+		{
+			sender.sendMessage(ChatColor.YELLOW + "  Company Tax: " + ChatColor.AQUA + df.format(report.companyTaxEndValue) + "%" + ChatColor.RED + "   +" + df.format(100 * (report.companyTaxValueChange / report.companyTaxStartValue)) + "%");
+		}
+		else if(report.companyTaxValueChange == 0)
+		{
+			sender.sendMessage(ChatColor.YELLOW + "  Company Tax: " + ChatColor.AQUA + df.format(report.companyTaxEndValue) + "%" + ChatColor.WHITE + "   " + df.format(100 * (report.companyTaxValueChange / report.companyTaxStartValue)) + "%");			
+		}		
+		else
+		{
+			sender.sendMessage(ChatColor.YELLOW + "  Company Tax: " + ChatColor.AQUA + df.format(report.companyTaxEndValue) + "%" + ChatColor.GREEN + "   " + df.format(100 * (report.companyTaxValueChange / report.companyTaxStartValue)) + "%");			
+		}		
+		
+		if(report.salesTaxValueChange > 0)
+		{
+			sender.sendMessage(ChatColor.YELLOW + "  Sales Tax: " + ChatColor.AQUA + df.format(report.salesTaxEndValue) + "%" + ChatColor.RED + "   +" + df.format(100 * (report.salesTaxValueChange / report.salesTaxStartValue)) + "%");
+		}
+		else if(report.salesTaxValueChange == 0)
+		{
+			sender.sendMessage(ChatColor.YELLOW + "  Sales Tax: " + ChatColor.AQUA + df.format(report.salesTaxEndValue) + "%" + ChatColor.WHITE + "   " + df.format(100 * (report.salesTaxValueChange / report.salesTaxStartValue)) + "%");			
+		}		
+		else
+		{
+			sender.sendMessage(ChatColor.YELLOW + "  Sales Tax: " + ChatColor.AQUA + df.format(report.salesTaxEndValue) + "%" + ChatColor.YELLOW + "   " + ChatColor.GREEN + df.format(100 * (report.salesTaxValueChange / report.salesTaxStartValue)) + "%");			
+		}		
+
+		List<UUID> companies = LandManager.instance().getCompanies(player.getLocation());
+		
+		if(companies!=null && companies.size() > 0)
+		{	
+			sender.sendMessage(ChatColor.YELLOW + "Companies:");
+
+			for(UUID landCompanyId : companies)
+			{
+				sender.sendMessage(ChatColor.YELLOW + "  " + plugin.getCompanyManager().getCompanyName(landCompanyId));
+			}	
+		}
+		
+		//this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company people" + ChatColor.AQUA +  " to view the people employed by a company", 40);
+		//this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company report" + ChatColor.AQUA +  " to view the latest financial report for the company", 80);
+				
+		return true;
+	}
+	
+	private boolean CommandProducts(CommandSender sender, String[] args)
+	{
+		if(sender == null)
+		{
+			return false;
+		}
+
+		if (!sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.items"))
 		{
 			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
 			return false;
@@ -736,7 +795,12 @@ public class Commands
 	
 	private boolean CommandCheck(CommandSender sender, Player believer)
 	{
-		if ((sender != null) && (!sender.isOp()) && (!this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.check")))
+		if(sender == null)
+		{
+			return false;
+		}
+
+		if ((!sender.isOp()) && (!this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.check")))
 		{
 			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
 			return false;
@@ -765,7 +829,7 @@ public class Commands
 
 	private boolean CommandCompany(CommandSender sender)
 	{
-		sender.sendMessage(ChatColor.YELLOW + "------------------ " + this.plugin.getDescription().getFullName() + " ------------------");
+		sender.sendMessage(ChatColor.YELLOW + "------------ " + this.plugin.getDescription().getFullName() + " ------------");
 		sender.sendMessage(ChatColor.AQUA + "By DogOnFire");
 		//sender.sendMessage("" + ChatColor.AQUA);
 		//sender.sendMessage("" + ChatColor.WHITE + this.plugin.getEmployeeManager().getEmployees().size() + ChatColor.AQUA + " workers in " + this.plugin.serverName);
@@ -948,7 +1012,7 @@ public class Commands
 		
 		sender.sendMessage(ChatColor.YELLOW + "------------ Financial Report for round " + currentRound + " ------------");
 
-		sender.sendMessage(ChatColor.YELLOW + "Income:");
+		sender.sendMessage(ChatColor.YELLOW + "Income from sales:");
 
 		if(report.itemsSoldAmount.keySet().size()==0)
 		{
@@ -959,14 +1023,17 @@ public class Commands
 		{
 			sender.sendMessage(ChatColor.GREEN + " +" + report.itemsSoldValues.get(material) + " wanks - Sold " + report.itemsSoldAmount.get(material) + " "  + material.toString());
 		}
-		
+
+		sender.sendMessage(ChatColor.YELLOW + "Total Income: " + ChatColor.GREEN + report.income);
+
 		sender.sendMessage(ChatColor.YELLOW + "Expenses:");
 
 		if(report.wagesPaid.keySet().size()==0)
 		{
 			sender.sendMessage(ChatColor.WHITE + " None.");						
 		}
-		
+
+		// Wages paid
 		for(EmployeePosition employeePosition : report.wagesPaid.keySet())
 		{
 			double wages = report.wagesPaid.get(employeePosition);
@@ -976,6 +1043,29 @@ public class Commands
 				sender.sendMessage(ChatColor.RED + " -" + wages + " wanks - Paid wages to " + employeePosition.name() + ".");
 			}
 		}
+				
+		sender.sendMessage(ChatColor.YELLOW + "Taxes:");
+		double totalTax = 0;
+		
+		// Company Taxes 
+		Location headquartersLocation = plugin.getCompanyManager().getHeadquartersForCompany(companyId);
+		if(headquartersLocation != null)
+		{
+			LandReport landReport = plugin.getLandManager().getLandReport(headquartersLocation);
+			totalTax += landReport.companyTaxEndValue;
+			sender.sendMessage(ChatColor.RED + "" + df.format(landReport.companyTaxEndValue) + "% company taxes (HQ in " + plugin.getLandManager().getLandName(headquartersLocation) + "):   " + report.income * landReport.companyTaxEndValue);
+		}
+
+		// Sales Taxes 
+		Location salesLocation = plugin.getCompanyManager().getSalesHomeForCompany(companyId);
+		if(salesLocation != null)
+		{
+			LandReport landReport = plugin.getLandManager().getLandReport(salesLocation);
+			totalTax += landReport.salesTaxEndValue;
+			sender.sendMessage(ChatColor.RED + "" + df.format(landReport.salesTaxEndValue) + "% sales taxes (Store in " + plugin.getLandManager().getLandName(salesLocation) + "):   " + report.income * landReport.salesTaxEndValue);
+		}
+
+		sender.sendMessage(ChatColor.YELLOW + "Total Taxes: " + ChatColor.RED + report.income * totalTax + "%");
 
 		sender.sendMessage(ChatColor.YELLOW + "Total:");
 
@@ -1160,6 +1250,11 @@ public class Commands
 
 	private boolean CommandCreate(CommandSender sender, String[] args)
 	{		
+		if(sender == null)
+		{
+			return false;
+		}
+
 		Player player = (Player)sender;
 				
 		if (!player.isOp() && !this.plugin.getPermissionsManager().hasPermission(player, "company.ceo.create"))
@@ -1207,6 +1302,7 @@ public class Commands
 		this.plugin.getServer().broadcastMessage(ChatColor.WHITE + player.getName() + ChatColor.AQUA + " founded the company " + ChatColor.GOLD + newCompanyName);
 		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "You founded the company " + ChatColor.GOLD + newCompanyName, 1);
 		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company desc" + ChatColor.AQUA +  " to give your company a description", 3*20);
+		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company workas" + ChatColor.AQUA +  " to choose a job position in your company", 6*20);
 
 		return true;
 	}
@@ -1252,7 +1348,7 @@ public class Commands
 			return false;
 		}
 		
-		this.plugin.getEmployeeManager().setInvitation(invitedPlayer.getUniqueId(), companyName);
+		this.plugin.getEmployeeManager().setInvitation(invitedPlayer.getUniqueId(), companyId);
 
 		this.plugin.log(companyName + " invited to " + invitedPlayer.getName() + " to join the religion");
 
@@ -1410,7 +1506,6 @@ public class Commands
 		}
 
 		double wage = 0;
-		Material itemType;
 		
 		try
 		{
@@ -1452,7 +1547,6 @@ public class Commands
 		}
 
 		double wage = 0;
-		Material itemType;
 		
 		try
 		{
@@ -1494,7 +1588,6 @@ public class Commands
 		}
 
 		int amount = 0;
-		Material itemType;
 		
 		try
 		{
@@ -1536,7 +1629,6 @@ public class Commands
 		}
 
 		int amount = 0;
-		Material itemType;
 		
 		try
 		{
@@ -1786,11 +1878,11 @@ public class Commands
 		return true;
 	}
 
-	private boolean CommandSetHome(CommandSender sender, String[] args)
+	private boolean CommandSetHeadquartersHome(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;
 
-		if ((!player.isOp()) && (!this.plugin.getPermissionsManager().hasPermission(player, "company.sethome")))
+		if ((!player.isOp()) && (!this.plugin.getPermissionsManager().hasPermission(player, "company.sethome.headquarters")))
 		{
 			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
 			return false;
@@ -1810,18 +1902,18 @@ public class Commands
 			return false;
 		}		
 
-		this.plugin.getCompanyManager().setHomeForCompany(companyId, player.getLocation());
+		this.plugin.getCompanyManager().setHeadquartersHomeForCompany(companyId, player.getLocation(), this.plugin.getCompanyManager().getHeadquartersForCompany(companyId));		
 		
 		this.plugin.getCompanyManager().companySayToEmployees(companyId, "The headquarters for your company was just set by " + player.getName(), 2);
 
 		return true;
 	}
 
-	private boolean CommandHome(CommandSender sender, String[] args)
+	private boolean CommandHeadquarters(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;
 
-		if (!player.isOp() && (!this.plugin.getPermissionsManager().hasPermission(player, "gods.home")))
+		if (!player.isOp() && (!this.plugin.getPermissionsManager().hasPermission(player, "company.home.hq")))
 		{
 			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
 			return false;
@@ -1835,10 +1927,11 @@ public class Commands
 			return false;
 		}
 		
-		Location location = this.plugin.getCompanyManager().getHomeForCompany(companyId);
+		Location location = this.plugin.getCompanyManager().getHeadquartersForCompany(companyId);
 		
 		if (location == null)
 		{
+			sender.sendMessage(ChatColor.RED + "No HQ location is set for this company");
 			return false;
 		}
 
@@ -1847,6 +1940,68 @@ public class Commands
 		return true;
 	}
 
+	private boolean CommandSetSalesHome(CommandSender sender, String[] args)
+	{
+		Player player = (Player) sender;
+
+		if ((!player.isOp()) && (!this.plugin.getPermissionsManager().hasPermission(player, "company.sethome.sales")))
+		{
+			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
+			return false;
+		}
+		
+		UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+		
+		if (companyId == null)
+		{
+			sender.sendMessage(ChatColor.RED + "You do not work in a company");
+			return false;
+		}
+				
+		if (plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=EmployeePosition.Manager)
+		{
+			sender.sendMessage(ChatColor.RED + "Only managers can set the headquarters for your company");
+			return false;
+		}		
+
+		this.plugin.getCompanyManager().setSalesHomeForCompany(companyId, player.getLocation(), this.plugin.getCompanyManager().getHeadquartersForCompany(companyId));		
+		
+		this.plugin.getCompanyManager().companySayToEmployees(companyId, "The Store for your company was just set by " + player.getName(), 2);
+
+		return true;
+	}
+
+	private boolean CommandSalesHome(CommandSender sender, String[] args)
+	{
+		Player player = (Player) sender;
+
+		if (!player.isOp() && (!this.plugin.getPermissionsManager().hasPermission(player, "company.home.sales")))
+		{
+			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
+			return false;
+		}
+		
+		UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+		
+		if (companyId == null)
+		{
+			sender.sendMessage(ChatColor.RED + "You do not work in a company");
+			return false;
+		}
+		
+		Location location = this.plugin.getCompanyManager().getSalesHomeForCompany(companyId);
+		
+		if (location == null)
+		{
+			sender.sendMessage(ChatColor.RED + "No store location is set for this company");
+			return false;
+		}
+
+		player.teleport(location);
+
+		return true;
+	}
+		
 	private boolean CommandChat(CommandSender sender, String[] args)
 	{
 		Player player = (Player) sender;

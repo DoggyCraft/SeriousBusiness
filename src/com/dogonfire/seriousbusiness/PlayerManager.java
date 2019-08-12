@@ -82,7 +82,7 @@ public class PlayerManager
 				{
 					switch (level)
 					{
-						case 0:	return "Sales student";
+						case 0:	return "Sales intern";
 						case 1: return "Sales worker";
 						case 2: return "Salesperson";
 						case 3:	return "Experienced Salesperson";
@@ -99,7 +99,7 @@ public class PlayerManager
 			{
 				switch (level)
 				{
-					case 0:	return "Production student";
+					case 0:	return "Production intern";
 					case 1: return "Production worker";
 					case 2: return "Fulltime production worker";
 					case 3:	return "Experienced production worker";
@@ -116,7 +116,7 @@ public class PlayerManager
 			{
 				switch (level)
 				{
-					case 0:	return "Manager student";
+					case 0:	return "Manager assistant";
 					case 1: return "Manager-in-training";
 					case 2: return "Fulltime Manager";
 					case 3:	return "Experienced Manager";
@@ -283,7 +283,7 @@ public class PlayerManager
 	{
 		try
 		{
-			return UUID.fromString(this.employeesConfig.getString(believerId + ".Company"));
+			return UUID.fromString(this.employeesConfig.getString(believerId + ".CompanyId"));
 		}
 		catch(Exception ex)
 		{
@@ -583,7 +583,7 @@ public class PlayerManager
 	
 	public void setCompanyForEmployee(UUID employeeId, UUID companyId)
 	{
-		this.employeesConfig.set(employeeId + ".Company", companyId.toString());
+		this.employeesConfig.set(employeeId + ".CompanyId", companyId.toString());
 
 		clearInvitation(employeeId);				
 
@@ -656,14 +656,14 @@ public class PlayerManager
 
 	
 
-	public void setInvitation(UUID believerId, String godName)
+	public void setInvitation(UUID employeeId, UUID companyId)
 	{
 		String pattern = "HH:mm:ss dd-MM-yyyy";
 		DateFormat formatter = new SimpleDateFormat(pattern);
 		Date thisDate = new Date();
 
-		this.employeesConfig.set(believerId.toString() + ".Invitation.Time", formatter.format(thisDate));
-		this.employeesConfig.set(believerId.toString() + ".Invitation.Company", godName);
+		this.employeesConfig.set(employeeId.toString() + ".Invitation.Time", formatter.format(thisDate));
+		this.employeesConfig.set(employeeId.toString() + ".Invitation.CompanyId", companyId.toString());
 
 		saveTimed();
 	}
@@ -698,7 +698,7 @@ public class PlayerManager
 		
 		try
 		{
-			return UUID.fromString(this.employeesConfig.getString(believerId.toString() + ".Invitation.Company"));
+			return UUID.fromString(this.employeesConfig.getString(believerId.toString() + ".Invitation.CompanyId"));
 		}
 		catch(Exception ex)
 		{
@@ -729,28 +729,30 @@ public class PlayerManager
 
 	public void removeEmployee(UUID companyId, UUID employeeId)
 	{
-		String employeeCompanyName = this.employeesConfig.getString(employeeId.toString() + ".Company");
+		String employeeCompanyIdString = this.employeesConfig.getString(employeeId.toString() + ".CompanyId");
 
-		if (employeeCompanyName != null && !employeeCompanyName.equals(companyId))
+		if (employeeCompanyIdString != null && !UUID.fromString(employeeCompanyIdString).equals(companyId))
 		{
 			return;
 		}
 		
 		this.employeesConfig.set(employeeId.toString(), null);
 
-		this.plugin.log(employeeCompanyName + " lost " + employeeId + " as employee");
+		this.plugin.log(plugin.getCompanyManager().getCompanyName(companyId) + " lost " + employeeId + " as employee");
 
 		saveTimed();
 	}
 
 	public void believerLeave(UUID companyId, UUID employeeId)
 	{
-		String employeeCompanyName = this.employeesConfig.getString(employeeId + ".Company");
-		if (!employeeCompanyName.equals(companyId))
+		String employeeCompanyIdString = this.employeesConfig.getString(employeeId + ".CompanyId");
+		
+		if (!UUID.fromString(employeeCompanyIdString).equals(companyId))
 		{
 			return;
 		}
-		this.employeesConfig.set(employeeId + ".Company", null);
+		
+		this.employeesConfig.set(employeeId + ".CompanyId", null);
 
 		saveTimed();
 	}
@@ -851,35 +853,5 @@ public class PlayerManager
 		Date thisDate = new Date();
 
 		this.employeesConfig.set(believerId + ".LastPrayer", formatter.format(thisDate));
-	}
-
-	public boolean reducePrayer(UUID believerId, int n)
-	{
-		int prayers = this.employeesConfig.getInt(believerId + ".Prayers");
-
-		prayers -= n;
-		if (prayers < 0)
-		{
-			prayers = 0;
-		}
-		this.employeesConfig.set(believerId + ".Prayers", Integer.valueOf(prayers));
-
-		saveTimed();
-
-		return true;
-	}
-
-	public boolean incPrayer(UUID believerId, String godName)
-	{
-		int prayers = this.employeesConfig.getInt(believerId + ".Prayers");
-
-		prayers++;
-
-		this.employeesConfig.set(believerId + ".God", godName);
-		this.employeesConfig.set(believerId + ".Prayers", Integer.valueOf(prayers));
-
-		saveTimed();
-
-		return true;
-	}
+	}	
 }

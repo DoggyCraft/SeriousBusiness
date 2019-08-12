@@ -24,9 +24,11 @@ public class Company extends JavaPlugin
 	private PlayerManager playerManager = null;
 	private SignManager signManager = null;
 	private ChestManager chestManager = null;
+	private LandManager landManager = null;
 	private PermissionsManager permissionsManager = null;
 	private FileConfiguration config = null;
 	private Commands commands = null;
+	static private Company instance;
 	
 	public boolean debug = false;
 	public String serverName = "Your Server";
@@ -35,6 +37,16 @@ public class Company extends JavaPlugin
 	public int maxCEOOfflineTimeInMinutes = 10;
 	public int maxEmployeeOfflineTimeInDays = 14;
 	public int newCompanyCost = 10000;
+	
+	static public Company instance()
+	{
+		return instance;
+	}
+	
+	public LandManager getLandManager()
+	{
+		return landManager;
+	}
 	
 	public PermissionsManager getPermissionsManager()
 	{
@@ -133,13 +145,15 @@ public class Company extends JavaPlugin
 
 	public void onEnable()
 	{
-		this.permissionsManager = new PermissionsManager(this);
+		this.instance = this;
+
+		this.permissionsManager = new PermissionsManager();
 		this.companyManager = new CompanyManager(this);
 		this.playerManager = new PlayerManager(this);
 		this.signManager = new SignManager(this);
 		this.chestManager = new ChestManager(this);
+		this.landManager = new LandManager();
 		this.commands = new Commands(this);
-
 		
 		PluginManager pm = getServer().getPluginManager();
 
@@ -164,9 +178,9 @@ public class Company extends JavaPlugin
 		loadSettings();
 		saveSettings();
 
-		this.permissionsManager.load();
 		this.companyManager.load();
 		this.playerManager.load();
+		this.landManager.load();
 		
 		getServer().getPluginManager().registerEvents(new BlockListener(this), this);
 		//getServer().getPluginManager().registerEvents(new ChatListener(this), this);
@@ -176,11 +190,10 @@ public class Company extends JavaPlugin
 			public void run()
 			{
 				Company.this.companyManager.update();
+				Company.this.landManager.update();
 			}
 		};
 		
-		// Async WONT work with some calls
-		//getServer().getScheduler().runTaskTimerAsynchronously(this, updateTask, 20L, 200L);
 		getServer().getScheduler().runTaskTimer(this, updateTask, 200L, 20L);		
 	}
 

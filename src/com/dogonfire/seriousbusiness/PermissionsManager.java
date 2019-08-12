@@ -1,35 +1,20 @@
 package com.dogonfire.seriousbusiness;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
+
+import net.milkbowl.vault.permission.Permission;
 
 public class PermissionsManager
 {
 	private String pluginName = "null";
-	private PluginManager pluginManager = null;
-	private Company plugin;
+	private Permission	vaultPermission	= null;
 	
-	public PermissionsManager(Company p)
+	public PermissionsManager()
 	{
-		this.plugin = p;
-	}
-
-	public void load()
-	{
-		this.pluginManager = this.plugin.getServer().getPluginManager();		
-	}
-
-	public Plugin getPlugin()
-	{
-		return this.plugin;
+		RegisteredServiceProvider<Permission> permissionProvider = Company.instance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+		vaultPermission = permissionProvider.getProvider();
 	}
 
 	public String getPermissionPluginName()
@@ -38,17 +23,7 @@ public class PermissionsManager
 	}
 
 	public boolean hasPermission(Player player, String node)
-	{		
-		return player.hasPermission(node);
-	}
-
-	public boolean isGroup(String groupName)
-	{		
-		return true;
-	}
-	
-	public String getGroup(String playerName)
 	{
-		return "";
-	}
+		return vaultPermission.has(player, node);
+	}	
 }
