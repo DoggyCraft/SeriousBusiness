@@ -2076,6 +2076,10 @@ public class Commands
 			catch (Exception ex)
 			{
 				plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "That is not a valid working position.", 1);
+				plugin.sendInfo(player.getUniqueId(), "", 1);
+				plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company workas Manager" + ChatColor.AQUA + " to work as a Manager" , 20);
+				plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company workas Sales" + ChatColor.AQUA + " to work as a Sales person" , 20);
+				plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company workas Production" + ChatColor.AQUA + " to work as a Production worker" , 20);
 			}
 
 		}

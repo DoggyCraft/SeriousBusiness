@@ -1,27 +1,23 @@
 package com.dogonfire.seriousbusiness;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 
 import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 
-public class SignManager
+public class SignManager implements Listener
 {
 	private Company plugin;
 	private Random random = new Random();
@@ -88,6 +84,50 @@ public class SignManager
 		return true;
 	}
 
+	@EventHandler
+	public void onSignChange(SignChangeEvent event)
+	{
+		Player player = event.getPlayer();
+		
+		if (player == null || !this.plugin.isEnabledInWorld(player.getWorld()))
+		{
+			return;
+		}
+				
+		Block block = event.getBlock();
+		
+		if (this.plugin.getSignManager().isSellSign(block, event.getLine(0)))
+		{			
+			plugin.log(player.getName() + " isSellSign");
+
+			if (!this.plugin.getSignManager().handleNewSellSign(event))
+			{
+				event.setCancelled(true);
+				event.getBlock().setType(Material.AIR);
+				event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(Material.OAK_SIGN, 1));
+				return;
+			}
+			
+			plugin.log(player.getName() + " placed a sell sign.");
+			
+			return;
+		}
+		
+		if (this.plugin.getSignManager().isSupplySign(block, event.getLine(0)))
+		{
+			if (!this.plugin.getChestManager().handleNewSupplyChest(event))
+			{
+				event.setCancelled(true);
+				event.getBlock().setType(Material.AIR);
+				event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(Material.OAK_SIGN, 1));
+				return;
+			}
+			
+			plugin.log(player.getName() + " placed a supply sign.");
+
+			return;
+		}
+	}
 	
 	public boolean handleNewSellSign(SignChangeEvent event)
 	{
@@ -113,12 +153,19 @@ public class SignManager
 			if(event.getLine(2)!=null)
 			{
 				this.plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "There is no item called '" + ChatColor.WHITE + event.getLine(2) + ChatColor.RED + "'", 1);
+				this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name: '" + ChatColor.WHITE + Material.DIAMOND_SWORD + ChatColor.AQUA + "'", 3*20);
+				this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.CAKE + ChatColor.AQUA + "'", 3*20);
+				this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.PUMPKIN + ChatColor.AQUA + "'", 3*20);
+				this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.OAK_LOG + ChatColor.AQUA + "'", 3*20);
 			}
 			else
 			{
-				this.plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You must put a valid item name on line 3.", 1);								
+				this.plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You must put a item name on line 3.", 1);								
 			}
 			
+			this.plugin.sendInfo(player.getUniqueId(), "", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "See full list of item/material names at " + ChatColor.WHITE + "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html" + ChatColor.AQUA + "", 3*20);
+
 			return false;
 		}
 		

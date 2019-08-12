@@ -1,42 +1,22 @@
 package com.dogonfire.seriousbusiness;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.Server;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitScheduler;
 
 public class BlockListener implements Listener
 {
@@ -55,7 +35,7 @@ public class BlockListener implements Listener
 		Player player = event.getPlayer();
 		String companyName = null;
 		
-		if (player == null || !this.plugin.isEnabledInWorld(player.getWorld()))
+		if (!this.plugin.isEnabledInWorld(player.getWorld()))
 		{
 			return;
 		}
@@ -140,8 +120,6 @@ public class BlockListener implements Listener
 					return;
 				}
 
-				Block block = event.getClickedBlock();
-
 				companyName = sign.getLine(2);
 
 				if (companyName.trim().length() == 0)
@@ -188,50 +166,7 @@ public class BlockListener implements Listener
 	}
 	
 
-	@EventHandler
-	public void OnSignChange(SignChangeEvent event)
-	{
-		Player player = event.getPlayer();
-		
-		if (player == null || !this.plugin.isEnabledInWorld(player.getWorld()))
-		{
-			return;
-		}
-				
-		Block block = event.getBlock();
-		
-		if (this.plugin.getSignManager().isSellSign(block, event.getLine(0)))
-		{			
-			plugin.log(player.getName() + " isSellSign");
-
-			if (!this.plugin.getSignManager().handleNewSellSign(event))
-			{
-				event.setCancelled(true);
-				event.getBlock().setType(Material.AIR);
-				event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(Material.OAK_SIGN, 1));
-				return;
-			}
-			
-			plugin.log(player.getName() + " placed a sell sign.");
-			
-			return;
-		}
-		
-		if (this.plugin.getSignManager().isSupplySign(block, event.getLine(0)))
-		{
-			if (!this.plugin.getChestManager().handleNewSupplyChest(event))
-			{
-				event.setCancelled(true);
-				event.getBlock().setType(Material.AIR);
-				event.getBlock().getWorld().dropItem(event.getBlock().getLocation(), new ItemStack(Material.OAK_SIGN, 1));
-				return;
-			}
-			
-			plugin.log(player.getName() + " placed a supply sign.");
-
-			return;
-		}
-	}
+	
 
 	
 }

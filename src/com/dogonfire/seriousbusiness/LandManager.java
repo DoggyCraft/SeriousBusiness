@@ -153,8 +153,8 @@ public class LandManager implements Listener
 			return this.landLocations.get(location).longValue();
 		}
 		
-		int chunkX = location.getBlockX() / 512;
-		int chunkZ = location.getBlockZ() / 512;
+		long chunkX = location.getBlockX() / 512;
+		long chunkZ = location.getBlockZ() / 512;
 		
 		long x = chunkX << 32;
 		long z = chunkZ & 0xFFFFFFFF;
@@ -172,7 +172,7 @@ public class LandManager implements Listener
 		
 		List<String> companies = this.landConfig.getStringList("Land." + hash + ".Companies");
 		
-		if(!companies.contains(companyId))
+		if(!companies.contains(companyId.toString()))
 		{
 			companies.add(companyId.toString());
 			

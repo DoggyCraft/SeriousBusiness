@@ -183,7 +183,7 @@ public class Company extends JavaPlugin
 		this.landManager.load();
 		
 		getServer().getPluginManager().registerEvents(new BlockListener(this), this);
-		//getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+		getServer().getPluginManager().registerEvents(new SignManager(this), this);
 
 		Runnable updateTask = new Runnable()
 		{
