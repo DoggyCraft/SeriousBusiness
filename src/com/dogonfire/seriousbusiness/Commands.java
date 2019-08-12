@@ -71,7 +71,8 @@ public class Commands
 			}
 		}
 
-		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/shop goto <id>" + ChatColor.AQUA + " to go to a shop now", 40);
+		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/shop search <itemtype>" + ChatColor.AQUA + " to search for a shop selling something", 3*20);
+		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/shop goto <id>" + ChatColor.AQUA + " to go to a shop now", 6*20);
 		
 		return true;
 	}

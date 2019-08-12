@@ -30,23 +30,36 @@ public class LandManager implements Listener
 
 	private Random 					random 			= new Random();
 
-	public class LandReport
+	final public class LandReport
 	{
-		public String name;
-			
-		public int numberOfCompanies;
+		final public String name;
+				
+		final public double companyTaxStartValue;
+		final public double companyTaxEndValue;
+		final public double companyTaxValueChange;		
 		
-		public double companyTaxStartValue;
-		public double companyTaxEndValue;
-		public double companyTaxValueChange;		
-		
-		public double salesTaxStartValue;
-		public double salesTaxEndValue;
-		public double salesTaxValueChange;		
+		final public double salesTaxStartValue;
+		final public double salesTaxEndValue;
+		final public double salesTaxValueChange;		
 
-		public double incomeTaxStartValue;
-		public double incomeTaxEndValue;
-		public double incomeTaxValueChange;		
+		final public double incomeTaxStartValue;
+		final public double incomeTaxEndValue;
+		final public double incomeTaxValueChange;
+		
+		LandReport(String name, double companyTaxStartValue, double companyTaxEndValue, double salesTaxStartValue, double salesTaxEndValue, double incomeTaxStartValue, double incomeTaxEndValue)
+		{
+			this.name = name;
+			this.companyTaxStartValue = companyTaxStartValue;
+			this.companyTaxEndValue = companyTaxEndValue;
+			this.salesTaxStartValue = salesTaxStartValue;
+			this.salesTaxEndValue = salesTaxEndValue;
+			this.incomeTaxStartValue = incomeTaxStartValue;
+			this.incomeTaxEndValue = incomeTaxEndValue;
+
+			this.companyTaxValueChange = companyTaxEndValue - companyTaxStartValue;
+			this.salesTaxValueChange = salesTaxEndValue - salesTaxStartValue;
+			this.incomeTaxValueChange = incomeTaxEndValue - incomeTaxStartValue;
+		}
 	}
 	
 	public LandManager()
@@ -71,18 +84,16 @@ public class LandManager implements Listener
 
 	public LandReport getLandReport(long hash)
 	{	
-		LandReport report = new LandReport();
-		report.name = this.landConfig.getString("Land." + hash + ".Name") + " (" + hash + ")";
-		report.companyTaxStartValue = this.landConfig.getDouble("Land." + hash + ".CompanyTax.Previous");		
-		report.companyTaxEndValue = this.landConfig.getDouble("Land." + hash + ".CompanyTax.Current");		
-		report.companyTaxValueChange = report.companyTaxEndValue - report.companyTaxStartValue;	
-		report.salesTaxStartValue = this.landConfig.getDouble("Land." + hash + ".SalesTax.Previous");		
-		report.salesTaxEndValue = this.landConfig.getDouble("Land." + hash + ".SalesTax.Current");		
-		report.salesTaxValueChange = report.salesTaxEndValue - report.salesTaxStartValue;	
-		report.incomeTaxStartValue = this.landConfig.getDouble("Land." + hash + ".IncomeTax.Previous");		
-		report.incomeTaxEndValue = this.landConfig.getDouble("Land." + hash + ".IncomeTax.Current");		
-		report.incomeTaxValueChange = report.incomeTaxEndValue - report.incomeTaxStartValue;	
-		
+		LandReport report = new LandReport(
+				this.landConfig.getString("Land." + hash + ".Name") + " (" + hash + ")",
+				this.landConfig.getDouble("Land." + hash + ".CompanyTax.Previous"),	
+				this.landConfig.getDouble("Land." + hash + ".CompanyTax.Current"),
+				this.landConfig.getDouble("Land." + hash + ".SalesTax.Previous"),
+				this.landConfig.getDouble("Land." + hash + ".SalesTax.Current"),
+				this.landConfig.getDouble("Land." + hash + ".IncomeTax.Previous"),
+				this.landConfig.getDouble("Land." + hash + ".IncomeTax.Current")
+				);
+				
 		return report;
 	}
 
