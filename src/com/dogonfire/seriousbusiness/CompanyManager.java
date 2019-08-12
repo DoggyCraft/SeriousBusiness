@@ -582,12 +582,12 @@ public class CompanyManager
 		companyConfig.set(companyId.toString() + ".ItemDetails." + material.name() + ".SalePrice", price);		
 	}
 	
-	public double getItemStock(UUID companyId, Material material)
+	public int getItemStock(UUID companyId, Material material)
 	{		
-		return companyConfig.getDouble(companyId.toString() + ".ItemDetails." + material.name() + ".InStock");		
+		return companyConfig.getInt(companyId.toString() + ".ItemDetails." + material.name() + ".InStock");		
 	}
 	
-	public void setItemStock(UUID companyId, Material material, double stock)
+	public void setItemStock(UUID companyId, Material material, int stock)
 	{		
 		companyConfig.set(companyId.toString() + ".ItemDetails." + material.name() + ".InStock", stock);		
 	}
@@ -788,7 +788,7 @@ public class CompanyManager
 
 		for(Material material : Material.values())
 		{
-			setItemSalesPrice(companyId, material, 10 + random.nextInt(1000));
+			setItemSalesPrice(companyId, material, 10.0 + (double)random.nextInt(1000));
 			setCompanyTradingItem(companyId, material, false);
 		}
 		

@@ -24,14 +24,12 @@ import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 
 
 //
-// /companytax - Show company tax level (and development of it) in the current area
-// /company list - Show companies
 // /sethq - Set hq to be right here in this area (enables /company home and tax payments)
 // /buy nudes <amount> - Buy <amount> nude coins at values from selected company 
 // /select company <id> - Select a company to deal with 
-// 
-//
-//
+// /shop search <itemtype> 
+// /shop list
+// /shop goto <id>
 //
 public class Commands
 {
@@ -42,9 +40,142 @@ public class Commands
 		this.plugin = p;
 	}
 
+	private boolean CommandShop(CommandSender sender)
+	{
+		Player player = (Player)sender;
+
+		if (!sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.shop"))
+		{
+			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
+			return false;
+		}
+				
+		Set<UUID> topCompanies = plugin.getCompanyManager().getTopCompanies();
+		
+		if (topCompanies.size() == 0)
+		{
+			this.plugin.log(ChatColor.RED + "There are no companies in " + this.plugin.serverName + "!");
+			return true;
+		}
+		
+		int n = 1;
+		
+		for (UUID companyId : topCompanies)
+		{
+			Location shopLocation = this.plugin.getCompanyManager().getSalesHomeForCompany(companyId);
+		
+			if (shopLocation != null)
+			{
+				player.sendMessage(ChatColor.YELLOW + "" + n + ") " + this.plugin.getCompanyManager().getCompanyName(companyId));
+				n++;
+			}
+		}
+
+		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/shop goto <id>" + ChatColor.AQUA + " to go to a shop now", 40);
+		
+		return true;
+	}
+	
+	private boolean CommandShopSearch(CommandSender sender, String[] args)
+	{
+		Player player = (Player)sender;
+
+		if (!sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.shop.search"))
+		{
+			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
+			return false;
+		}
+				
+		Set<UUID> topCompanies = plugin.getCompanyManager().getTopCompanies();
+		
+		if (topCompanies.size() == 0)
+		{
+			this.plugin.log(ChatColor.RED + "There are no companies in " + this.plugin.serverName + "!");
+			return true;
+		}
+				
+		try
+		{
+			Material selectedMaterial = Material.getMaterial(args[1]);
+		
+			int n = 1;
+		
+			for (UUID companyId : topCompanies)
+			{		
+				int stock = this.plugin.getCompanyManager().getCompanyItemStockAmount(companyId, selectedMaterial);
+				//if (stock > 0)
+				//{
+					player.sendMessage(ChatColor.YELLOW + "" + n + ") " + this.plugin.getCompanyManager().getCompanyName(companyId) + " For sale: " + stock);
+					n++;				
+				//}
+			}
+
+			if(n==1)
+			{
+				this.plugin.log(ChatColor.RED + "No shop is selling" + selectedMaterial.name());
+			}
+		}
+		catch(Exception ex)
+		{
+			this.plugin.log(ChatColor.RED + "That is not a valid item type");			
+		}
+	
+		return true;
+	}
+	
+	private boolean CommandShopGoto(CommandSender sender, String[] args)
+	{
+		Player player = (Player)sender;
+
+		if (!sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.shop.goto"))
+		{
+			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
+			return false;
+		}
+				
+		Set<UUID> topCompanies = plugin.getCompanyManager().getTopCompanies();
+		
+		if (topCompanies.size() == 0)
+		{
+			this.plugin.log(ChatColor.RED + "There are no companies in " + this.plugin.serverName + "!");
+			return true;
+		}
+				
+		try
+		{
+			int selectedIndex = Integer.parseInt(args[1]);
+		
+			int n = 1;
+		
+			for (UUID companyId : topCompanies)
+			{
+				Location shopLocation = this.plugin.getCompanyManager().getSalesHomeForCompany(companyId);
+		
+				if (shopLocation != null)
+				{
+					if(n==selectedIndex)
+					{
+						player.teleport(shopLocation);
+						this.plugin.log(ChatColor.GREEN + "You arrived in the shop of " + ChatColor.GOLD + plugin.getCompanyManager().getCompanyName(companyId));
+						return true;
+					}
+					n++;				
+				}
+			}
+
+			this.plugin.log(ChatColor.RED + "That is not a valid shop id");			
+		}
+		catch(Exception ex)
+		{
+			this.plugin.log(ChatColor.RED + "That is not a valid shop id");			
+		}
+	
+		return true;
+	}
+	
 	private boolean CommandList(CommandSender sender)
 	{
-		if (sender != null && !sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.list"))
+		if (!sender.isOp() && !this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.list"))
 		{
 			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
 			return false;
@@ -70,26 +201,11 @@ public class Commands
 		
 		if (companies.size() == 0)
 		{
-			if (sender != null)
-			{
-				sender.sendMessage(ChatColor.RED + "There are no Companies in " + this.plugin.serverName + "!");
-			}
-			else
-			{
-				this.plugin.log("There are no Companies in " + this.plugin.serverName + "!");
-			}
+			sender.sendMessage(ChatColor.RED + "There are no Companies in " + this.plugin.serverName + "!");
 			return true;
 		}
 		
-		if (sender != null)
-		{
-			//playerGod = this.plugin.getBelieverManager().getGodForBeliever(player.getUniqueId());
-			sender.sendMessage(ChatColor.YELLOW + "--------- The companies in " + this.plugin.serverName + " ---------");
-		}
-		else
-		{
-			this.plugin.log("--------- The companies in " + this.plugin.serverName + " ---------");
-		}
+		sender.sendMessage(ChatColor.YELLOW + "--------- The companies in " + this.plugin.serverName + " ---------");
 		
 		Collections.sort(companies, new TopCompanyComparator());
 
@@ -195,7 +311,30 @@ public class Commands
 			}
 			return true;
 		}
-				
+
+		if (cmd.getName().equalsIgnoreCase("shop"))
+		{
+			if (args.length == 0)
+			{
+				CommandShop(sender);
+				return true;
+			}
+			if (args[0].equalsIgnoreCase("search"))
+			{
+				if (CommandShopSearch(sender, args))
+				{
+					return true;
+				}
+			}
+			if (args[0].equalsIgnoreCase("goto"))
+			{
+				if (CommandShopGoto(sender, args))
+				{
+					return true;
+				}
+			}
+		}
+		
 		if (cmd.getName().equalsIgnoreCase("company"))
 		{
 			if (args.length == 0)
