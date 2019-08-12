@@ -1,17 +1,11 @@
 package com.dogonfire.seriousbusiness;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.material.Attachable;
@@ -22,7 +16,6 @@ import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 public class ChestManager
 {
 	private Company plugin;
-	private Random random = new Random();
 
 	ChestManager(Company p)
 	{
@@ -63,7 +56,6 @@ public class ChestManager
 		}
 		
 		MaterialData m = block.getState().getData();
-
 		
 		return true;
 	}

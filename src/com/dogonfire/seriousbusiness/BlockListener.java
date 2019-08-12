@@ -1,8 +1,5 @@
 package com.dogonfire.seriousbusiness;
 
-import java.util.HashMap;
-import java.util.Random;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,17 +9,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class BlockListener implements Listener
 {
 	private Company plugin;
-	private Random random = new Random();
-	private HashMap<String, Long> lastEatTimes = new HashMap<String, Long>();
 
 	BlockListener(Company p)
 	{

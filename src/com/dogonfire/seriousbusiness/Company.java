@@ -145,7 +145,7 @@ public class Company extends JavaPlugin
 
 	public void onEnable()
 	{
-		this.instance = this;
+		Company.instance = this;
 
 		this.permissionsManager = new PermissionsManager();
 		this.companyManager = new CompanyManager(this);

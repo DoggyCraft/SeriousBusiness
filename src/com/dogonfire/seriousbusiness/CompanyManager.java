@@ -27,6 +27,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.dogonfire.seriousbusiness.LandManager.LandReport;
 import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 
+
 public class CompanyManager
 {
 	private Company						plugin;
@@ -159,6 +160,11 @@ public class CompanyManager
 	public List<UUID> getOnlineCompanies()
 	{
 		return this.onlineCompanies;
+	}
+	
+	public double getBalance(UUID companyId)
+	{
+		return this.companyConfig.getDouble(companyId.toString() + ".Balance");		
 	}
 
 	public FinancialReport getFinancialReport(UUID companyId, int round)
@@ -341,12 +347,7 @@ public class CompanyManager
 	public void increaseItemsSoldThisRound(UUID companyId, int round, Material itemType, int amount, double value)
 	{
 		List<String> itemsList = companyConfig.getStringList(companyId.toString() + ".Round." + round + ".ItemsSold");	
-		
-		if(itemsList==null)
-		{
-			itemsList = new ArrayList<String>();
-		}
-				
+						
 		if(!itemsList.contains(itemType.name()))
 		{
 			itemsList.add(itemType.name());
@@ -462,11 +463,6 @@ public class CompanyManager
 	public void increaseItemsProducedThisRound(UUID companyId, int round, Material itemType, int amount)
 	{
 		List<String> itemsList = companyConfig.getStringList(companyId.toString() + ".Round." + round + ".ItemsProduced");	
-
-		if(itemsList==null)
-		{
-			itemsList = new ArrayList<String>();
-		}
 		
 		if(!itemsList.contains(itemType.name()))
 		{
@@ -514,11 +510,6 @@ public class CompanyManager
 		ArrayList<Material> currentStock = new ArrayList<Material>();
 		
 		List<String> itemsList = companyConfig.getStringList(companyId.toString() + ".Items");	
-
-		if(itemsList==null)
-		{
-			itemsList = new ArrayList<String>();
-		}
 		
 		for(String itemName : itemsList)
 		{
@@ -534,11 +525,6 @@ public class CompanyManager
 	public void increaseItemStock(UUID companyId, Material material, int amount)
 	{		
 		List<String> itemsList = companyConfig.getStringList(companyId.toString() + ".Items");	
-
-		if(itemsList==null)
-		{
-			itemsList = new ArrayList<String>();
-		}
 		
 		if(!itemsList.contains(material.name()))
 		{
@@ -943,7 +929,7 @@ public class CompanyManager
 
 		double price = plugin.getCompanyManager().getItemSalesPrice(companyId, itemType);
 
-		if(!plugin.getEconomyManager().has(player.getName(), price))
+		if(!plugin.getEconomyManager().has(player, price))
 		{
 			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You do not have enough wanks for that", 2);				
 			return false;
@@ -978,13 +964,13 @@ public class CompanyManager
 			
 			item.setItemMeta(itemMeta);
 			
-			player.getInventory().setItemInHand(item);		
+			player.getInventory().setItemInMainHand(item);		
 		}
 		
 		int currentRound = plugin.getCompanyManager().getCurrentRound(companyId);	
 		int amount = 1;
 		
-		plugin.getEconomyManager().withdrawPlayer(player.getName(), price);
+		plugin.getEconomyManager().withdrawPlayer(player, price);
 		plugin.getCompanyManager().depositCompanyBalance(companyId, price);		
 		plugin.getCompanyManager().increaseItemsSoldThisRound(companyId, currentRound, itemType, amount, amount*plugin.getCompanyManager().getItemSalesPrice(companyId, itemType));
 				
@@ -1274,7 +1260,7 @@ public class CompanyManager
 			{				
 				OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(employeeId);
 				
-				plugin.getEconomyManager().depositPlayer(offlinePlayer.getName(), wage);
+				plugin.getEconomyManager().depositPlayer(offlinePlayer, wage);
 				
 				Player player = plugin.getServer().getPlayer(employeeId);
 				if(player!=null)

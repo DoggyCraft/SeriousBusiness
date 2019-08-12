@@ -1,6 +1,5 @@
 package com.dogonfire.seriousbusiness;
 
-import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -20,7 +19,6 @@ import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 public class SignManager implements Listener
 {
 	private Company plugin;
-	private Random random = new Random();
 
 	SignManager(Company p)
 	{

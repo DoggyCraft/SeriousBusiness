@@ -31,7 +31,7 @@ The goal is to provide as many business and financial mechanics as possible for 
 
 * Craft and produce the company products 
 * Set production (factory) location that all employees can teleport to
-* Store items in a company chest. Instantly shared with rest of company.
+* Store items in a company chest. Items are instantly shared with rest of company.
  
 # Work in Management
 
@@ -45,7 +45,11 @@ The goal is to provide as many business and financial mechanics as possible for 
 * Business-2-business contracts for import/export
 * Get fined at contract breach
 * Take loans in other companies
+
 # A Cryptocoin alt-currency called "Nudes"
+* Wildly swings in value
+* No company pays wages in Nudes
+
 # Insurance
 
 * Provide life insurance policies to minecraft players

@@ -696,6 +696,19 @@ public class Commands
 			sender.sendMessage(ChatColor.YELLOW + "  Sales Tax: " + ChatColor.AQUA + df.format(report.salesTaxEndValue) + "%" + ChatColor.YELLOW + "   " + ChatColor.GREEN + df.format(100 * (report.salesTaxValueChange / report.salesTaxStartValue)) + "%");			
 		}		
 
+		if(report.incomeTaxValueChange > 0)
+		{
+			sender.sendMessage(ChatColor.YELLOW + "  Income Tax: " + ChatColor.AQUA + df.format(report.incomeTaxEndValue) + "%" + ChatColor.RED + "   +" + df.format(100 * (report.incomeTaxValueChange / report.incomeTaxStartValue)) + "%");
+		}
+		else if(report.incomeTaxValueChange == 0)
+		{
+			sender.sendMessage(ChatColor.YELLOW + "  Income Tax: " + ChatColor.AQUA + df.format(report.incomeTaxEndValue) + "%" + ChatColor.WHITE + "   " + df.format(100 * (report.incomeTaxValueChange / report.incomeTaxStartValue)) + "%");			
+		}		
+		else
+		{
+			sender.sendMessage(ChatColor.YELLOW + "  Income Tax: " + ChatColor.AQUA + df.format(report.incomeTaxEndValue) + "%" + ChatColor.YELLOW + "   " + ChatColor.GREEN + df.format(100 * (report.incomeTaxValueChange / report.incomeTaxStartValue)) + "%");			
+		}		
+
 		List<UUID> companies = LandManager.instance().getCompanies(player.getLocation());
 		
 		if(companies!=null && companies.size() > 0)
@@ -1159,7 +1172,7 @@ public class Commands
 	{
 		Player player = (Player) sender;
 				
-		if (sender != null && !sender.isOp() && !this.plugin.getPermissionsManager().hasPermission(player, "company.help"))
+		if (!sender.isOp() && !this.plugin.getPermissionsManager().hasPermission(player, "company.help"))
 		{
 			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
 			return false;
@@ -1285,7 +1298,7 @@ public class Commands
 			return false;
 		}
 		
-		if (!plugin.getEconomyManager().has(player.getName(), plugin.newCompanyCost))
+		if (!plugin.getEconomyManager().has(player, plugin.newCompanyCost))
 		{
 			player.sendMessage(ChatColor.RED + "You need " + ChatColor.GOLD + plugin.newCompanyCost + ChatColor.RED + " to start a new company.");
 			return false;
@@ -1295,7 +1308,7 @@ public class Commands
 		
 
 		UUID companyId = plugin.getCompanyManager().createCompany(newCompanyName, player.getLocation());
-		plugin.getEconomyManager().withdrawPlayer(player.getName(), plugin.newCompanyCost);
+		plugin.getEconomyManager().withdrawPlayer(player, plugin.newCompanyCost);
 		plugin.getCompanyManager().depositCompanyBalance(companyId, plugin.newCompanyCost);		
 		plugin.getEmployeeManager().setCompanyForEmployee(player.getUniqueId(), companyId);
 		
@@ -1810,7 +1823,6 @@ public class Commands
 		}
 		
 		UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
-		String companyName = this.plugin.getCompanyManager().getCompanyName(companyId);
 
 		String description = "";
 		for (String arg : args)
@@ -1902,6 +1914,14 @@ public class Commands
 			return false;
 		}		
 
+		int amount = 1000;
+		
+		if (plugin.getCompanyManager().getBalance(companyId) < amount)
+		{
+			sender.sendMessage(ChatColor.RED + "The company must have " + ChatColor.GOLD + amount + ChatColor.RED + " to set the headquarters location");
+			return false;
+		}		
+
 		this.plugin.getCompanyManager().setHeadquartersHomeForCompany(companyId, player.getLocation(), this.plugin.getCompanyManager().getHeadquartersForCompany(companyId));		
 		
 		this.plugin.getCompanyManager().companySayToEmployees(companyId, "The headquarters for your company was just set by " + player.getName(), 2);
@@ -1958,15 +1978,23 @@ public class Commands
 			return false;
 		}
 				
-		if (plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=EmployeePosition.Manager)
+		if (plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=EmployeePosition.Sales)
 		{
-			sender.sendMessage(ChatColor.RED + "Only managers can set the headquarters for your company");
+			sender.sendMessage(ChatColor.RED + "Only sales people can set the sales store for your company");
 			return false;
 		}		
 
-		this.plugin.getCompanyManager().setSalesHomeForCompany(companyId, player.getLocation(), this.plugin.getCompanyManager().getHeadquartersForCompany(companyId));		
+		int amount = 1000;
 		
-		this.plugin.getCompanyManager().companySayToEmployees(companyId, "The Store for your company was just set by " + player.getName(), 2);
+		if (plugin.getCompanyManager().getBalance(companyId) < amount)
+		{
+			sender.sendMessage(ChatColor.RED + "The company must have " + ChatColor.GOLD + amount + ChatColor.RED + " to set the sales store location");
+			return false;
+		}		
+
+		this.plugin.getCompanyManager().setSalesHomeForCompany(companyId, player.getLocation(), this.plugin.getCompanyManager().getSalesHomeForCompany(companyId));		
+		
+		this.plugin.getCompanyManager().companySayToEmployees(companyId, "The sales store for your company was just set by " + player.getName(), 2);
 
 		return true;
 	}

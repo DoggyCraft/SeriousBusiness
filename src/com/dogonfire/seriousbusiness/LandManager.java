@@ -1,8 +1,6 @@
 package com.dogonfire.seriousbusiness;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -30,8 +28,6 @@ public class LandManager implements Listener
 	private File					landConfigFile	= null;
 	private HashMap<Location, Long>	landLocations	= new HashMap<Location, Long>();
 
-	private String					pattern			= "HH:mm dd-MM-yyyy";
-	private DateFormat				formatter		= new SimpleDateFormat(this.pattern);
 	private Random 					random 			= new Random();
 
 	public class LandReport
@@ -47,6 +43,10 @@ public class LandManager implements Listener
 		public double salesTaxStartValue;
 		public double salesTaxEndValue;
 		public double salesTaxValueChange;		
+
+		public double incomeTaxStartValue;
+		public double incomeTaxEndValue;
+		public double incomeTaxValueChange;		
 	}
 	
 	public LandManager()
@@ -79,6 +79,9 @@ public class LandManager implements Listener
 		report.salesTaxStartValue = this.landConfig.getDouble("Land." + hash + ".SalesTax.Previous");		
 		report.salesTaxEndValue = this.landConfig.getDouble("Land." + hash + ".SalesTax.Current");		
 		report.salesTaxValueChange = report.salesTaxEndValue - report.salesTaxStartValue;	
+		report.incomeTaxStartValue = this.landConfig.getDouble("Land." + hash + ".IncomeTax.Previous");		
+		report.incomeTaxEndValue = this.landConfig.getDouble("Land." + hash + ".IncomeTax.Current");		
+		report.incomeTaxValueChange = report.incomeTaxEndValue - report.incomeTaxStartValue;	
 		
 		return report;
 	}
@@ -107,6 +110,8 @@ public class LandManager implements Listener
 		this.landConfig.set("Land." + hash + ".CompanyTax.Current", 5.0f + random.nextInt(30));
 		this.landConfig.set("Land." + hash + ".SalesTax.Previous", 5.0f + random.nextInt(30));		
 		this.landConfig.set("Land." + hash + ".SalesTax.Current", 5.0f + random.nextInt(30));		
+		this.landConfig.set("Land." + hash + ".IncomeTax.Previous", 5.0f + random.nextInt(30));		
+		this.landConfig.set("Land." + hash + ".IncomeTax.Current", 5.0f + random.nextInt(30));		
 
 		save();
 	}
@@ -243,7 +248,7 @@ public class LandManager implements Listener
 		//TODO: Vary taxes accordingly to number (and performance?) of companies in the region. Land with more companies can afford lower taxes
 		
 		double currentCompanyTax = this.landConfig.getDouble("Land." + hashString + ".CompanyTax.Current");
-		double newCompanyTax = currentCompanyTax + random.nextInt(11) - 20 / 100.0f;
+		double newCompanyTax = currentCompanyTax + (random.nextInt(11) - 20) / 100.0f;
 
 		if(newCompanyTax > 90)
 		{
@@ -258,7 +263,7 @@ public class LandManager implements Listener
 		this.landConfig.set("Land." + hashString + ".CompanyTax.Current", newCompanyTax);
 		
 		double currentSalesTax = this.landConfig.getDouble("Land." + hashString + ".SalesTax.Current");
-		double newSalesTax = currentSalesTax + random.nextInt(11) - 20 / 100.0f;
+		double newSalesTax = currentSalesTax + (random.nextInt(11) - 20) / 100.0f;
 		
 		if(newSalesTax > 90)
 		{
@@ -271,6 +276,21 @@ public class LandManager implements Listener
 
 		this.landConfig.set("Land." + hashString + ".SalesTax.Previous", currentSalesTax);
 		this.landConfig.set("Land." + hashString + ".SalesTax.Current", newSalesTax);
+
+		double currentIncomeTax = this.landConfig.getDouble("Land." + hashString + ".IncomeTax.Current");
+		double newIncomeTax = currentSalesTax + (random.nextInt(11) - 20) / 100.0f;
+		
+		if(newIncomeTax > 90)
+		{
+			newIncomeTax = 90;
+		}
+		else if(newIncomeTax < 0)
+		{
+			newIncomeTax = 0;
+		}
+
+		this.landConfig.set("Land." + hashString + ".IncomeTax.Previous", currentIncomeTax);
+		this.landConfig.set("Land." + hashString + ".IncomeTax.Current", newIncomeTax);
 
 		save();
 	}

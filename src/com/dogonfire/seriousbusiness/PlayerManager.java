@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,7 +26,6 @@ public class PlayerManager
 	}
 	
 	private Company plugin = null;
-	private Random random = new Random();
 	private FileConfiguration employeesConfig = null;
 	private File employeesConfigFile = null;
 	private long lastSaveTime;
