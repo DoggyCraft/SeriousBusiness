@@ -77,6 +77,8 @@ Installation
 *	Drop the SeriousBusiness.jar into the plugins folder.
 *	Start your Spigot/CraftBukkit server. (Using /reload can have unwanted side effects with players still online, and with complex plugins dependencies, so it's not recommended.)
 
+dependencies: you will need a economy plugin and vault. 
+
 Links
 ---------
 

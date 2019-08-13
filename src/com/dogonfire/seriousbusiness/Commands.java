@@ -1297,7 +1297,7 @@ public class Commands
 		sender.sendMessage(ChatColor.WHITE + "  /company invite <playername>");
 		sender.sendMessage(ChatColor.WHITE + "  /company fire <playername>");
 		sender.sendMessage(ChatColor.WHITE + "  /company trade <itemname>");
-		sender.sendMessage(ChatColor.WHITE + "  /company setsaleprice <itemname> <price>");
+		sender.sendMessage(ChatColor.WHITE + "  /company setsellprice <itemname> <price>");
 		sender.sendMessage(ChatColor.WHITE + "  /company setsaleswage <itemname> <price>");
 		sender.sendMessage(ChatColor.WHITE + "  /company setproductionwage <wage>");
 		sender.sendMessage(ChatColor.WHITE + "  /company setrequiredproduction <amount>");
@@ -1335,7 +1335,7 @@ public class Commands
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.items")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company items" + ChatColor.WHITE + " - Show items in your company storage");
+			sender.sendMessage(ChatColor.AQUA + "/company products" + ChatColor.WHITE + " - Show items in your company storage");
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.report")))
 		{
@@ -1375,7 +1375,7 @@ public class Commands
 		}
 		if ((sender.isOp()) || (this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.trade")))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company trade" + ChatColor.WHITE + " - Toggles trading an item type for the company");
+			sender.sendMessage(ChatColor.AQUA + "/company trade <itemID>" + ChatColor.WHITE + " - Toggles trading an item type for the company");
 		}
 
 		
@@ -1507,7 +1507,7 @@ public class Commands
 		
 		this.plugin.getEmployeeManager().setInvitation(invitedPlayer.getUniqueId(), companyId);
 
-		this.plugin.log(companyName + " invited to " + invitedPlayer.getName() + " to join the religion");
+		this.plugin.log(companyName + " invited to " + invitedPlayer.getName() + " to join the company");
 
 		this.plugin.sendInfo(invitedPlayer.getUniqueId(), ChatColor.GOLD + companyName + ChatColor.AQUA + " invited you to join their company!", 10);
 
@@ -1545,7 +1545,7 @@ public class Commands
 		
 		try
 		{
-			itemType = Material.valueOf(args[1]);
+			itemType = Material.valueOf(args[1].toUpperCase());
 		}
 		catch(Exception exception)
 		{
@@ -1599,7 +1599,7 @@ public class Commands
 		
 		try
 		{
-			itemType = Material.valueOf(args[1]);
+			itemType = Material.valueOf(args[1].toUpperCase());
 		}
 		catch(Exception exception)
 		{
@@ -1831,7 +1831,7 @@ public class Commands
 		
 		try
 		{
-			itemType = Material.valueOf(args[1]);
+			itemType = Material.valueOf(args[1].toUpperCase());
 		}
 		catch(Exception exception)
 		{
@@ -1885,7 +1885,7 @@ public class Commands
 		
 		try
 		{
-			itemType = Material.valueOf(args[1]);
+			itemType = Material.valueOf(args[1].toUpperCase());
 		}
 		catch(Exception exception)
 		{
