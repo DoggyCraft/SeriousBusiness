@@ -5,13 +5,12 @@ Serious Business
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=alert_status)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=ncloc)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=bugs)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/8296799b90684dbe8745823d38e26bf0)](https://www.codacy.com/app/Fido2603/Werewolf?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DoggyCraftDK/Werewolf&amp;utm_campaign=Badge_Grade)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
 
 ![Business](img/business.jpg)
 
-The plugin for doing Serious Business on DoggyCraft.dk!
+The plugin for doing Serious Business on [DoggyCraft.dk](https://www.doggycraft.dk)!
 
 Background
 ---------
@@ -68,12 +67,14 @@ The goal is to provide as many business and financial mechanics as possible for 
 * Accuse competing companies for any of the above and win!  
  
 # Trade company stock on the stock market
-# Manipulate the state of other companies and harvest the result on the stock market
+
+* Buy and sell any company stock on the stock market
+* Manipulate the state of other companies and harvest the result on the stock market
 
 Installation
 ---------
-*	[Install a Spigot server](https://github.com/DogOnFire/Werewolf/#obtain-a-build-of-spigot)
-*	[Download Serious Business](https://github.com/DogOnFire/Werewolf/#download)
+*	[Install a Spigot server](https://github.com/DogOnFire/SeriousBusiness/#obtain-a-build-of-spigot)
+*	[Download Serious Business](https://github.com/DogOnFire/SeriousBusiness/#download)
 *	Drop the SeriousBusiness.jar into the plugins folder.
 *	Start your Spigot/CraftBukkit server. (Using /reload can have unwanted side effects with players still online, and with complex plugins dependencies, so it's not recommended.)
 
