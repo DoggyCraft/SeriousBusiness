@@ -119,6 +119,13 @@ public class Commands
 		catch(Exception ex)
 		{
 			this.plugin.log(ChatColor.RED + "That is not a valid item type");			
+			this.plugin.sendInfo(player.getUniqueId(), "", 3*20);
+						this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name: '" + ChatColor.WHITE + Material.DIAMOND_SWORD + ChatColor.AQUA + "'", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.CAKE + ChatColor.AQUA + "'", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.PUMPKIN + ChatColor.AQUA + "'", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.OAK_LOG + ChatColor.AQUA + "'", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), "", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "See full list of item/material names at " + ChatColor.WHITE + "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html" + ChatColor.AQUA + "", 3*20);
 		}
 	
 		return true;
@@ -436,6 +443,8 @@ public class Commands
 				{
 					return true;
 				}
+
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("ad"))
@@ -444,6 +453,8 @@ public class Commands
 				{
 					return true;
 				}
+
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("sethome"))
@@ -452,6 +463,8 @@ public class Commands
 				{
 					return true;
 				}
+
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("home"))
@@ -460,6 +473,8 @@ public class Commands
 				{
 					return true;
 				}
+
+				return false;
 			}
 			
 			if (args[0].equalsIgnoreCase("setsellprice"))
@@ -468,6 +483,8 @@ public class Commands
 				{
 					return true;
 				}
+
+				return false;
 			}
 			
 			if (args[0].equalsIgnoreCase("trade"))
@@ -476,6 +493,8 @@ public class Commands
 				{
 					return true;
 				}
+				
+				return false;
 			}
 
 			if (args[0].equalsIgnoreCase("quit"))
@@ -1268,7 +1287,7 @@ public class Commands
 		sender.sendMessage(ChatColor.WHITE + "  /company setproductname <itemname> <name>");
 		sender.sendMessage(ChatColor.WHITE + "  /company setproductinfo <itemname> <name>");
 		sender.sendMessage("");
-		sender.sendMessage(ChatColor.AQUA + "Any player can then use /business shop <companyname> 1 to go to that shop");
+		sender.sendMessage(ChatColor.AQUA + "Any player can then use /company shop <companyname> 1 to go to that shop");
 		sender.sendMessage(ChatColor.AQUA + "It is up to the sales person to attract customers to buy from their shops");
 		sender.sendMessage(ChatColor.AQUA + "As a sales worker, you will earn wanks pr turn if you sell a certain amount of items within that turn");
 
@@ -1396,7 +1415,7 @@ public class Commands
 		this.plugin.getEmployeeManager().load();
 
 		sender.sendMessage(ChatColor.YELLOW + this.plugin.getDescription().getFullName() + ": " + ChatColor.WHITE + "Reloaded configuration.");
-		this.plugin.log(sender.getName() + " /business reload");
+		this.plugin.log(sender.getName() + " /company reload");
 
 		return true;
 	}
@@ -1511,7 +1530,7 @@ public class Commands
 
 		this.plugin.sendInfo(invitedPlayer.getUniqueId(), ChatColor.GOLD + companyName + ChatColor.AQUA + " invited you to join their company!", 10);
 
-		this.plugin.sendInfo(invitedPlayer.getUniqueId(), ChatColor.AQUA + "Answer the question by using " + ChatColor.WHITE + "/company yes or /business no", 40);
+		this.plugin.sendInfo(invitedPlayer.getUniqueId(), ChatColor.AQUA + "Answer the question by using " + ChatColor.WHITE + "/company yes or /company no", 40);
 
 		player.sendMessage(ChatColor.AQUA + "You invited " + ChatColor.WHITE + playerName + ChatColor.AQUA + " to join " + ChatColor.GOLD + companyName + ChatColor.AQUA + "!");
 
@@ -1590,7 +1609,7 @@ public class Commands
 
 		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Manager)
 		{
-			player.sendMessage(ChatColor.RED + "Only managers can set trade");
+			player.sendMessage(ChatColor.RED + "Only managers can set trade policies");
 			return false;
 		}
 
@@ -1604,6 +1623,13 @@ public class Commands
 		catch(Exception exception)
 		{
 			player.sendMessage(ChatColor.RED + "That is not a valid item name");
+			this.plugin.sendInfo(player.getUniqueId(), "", 3*20);
+					this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name: '" + ChatColor.WHITE + Material.DIAMOND_SWORD + ChatColor.AQUA + "'", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.CAKE + ChatColor.AQUA + "'", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.PUMPKIN + ChatColor.AQUA + "'", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.OAK_LOG + ChatColor.AQUA + "'", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), "", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "See full list of item/material names at " + ChatColor.WHITE + "https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html" + ChatColor.AQUA + "", 3*20);
 			return false;
 		}
 
@@ -1612,7 +1638,7 @@ public class Commands
 		if(plugin.getCompanyManager().isCompanyTradingItem(companyId, itemType))
 		{
 			plugin.getCompanyManager().setCompanyTradingItem(companyId, itemType, false);
-			plugin.getCompanyManager().companySayToEmployees(companyId, ChatColor.GOLD + companyName + ChatColor.RED + " is no longer producing and selling " + ChatColor.GOLD + itemType.name() + "!", 1);
+			plugin.getCompanyManager().companySayToEmployees(companyId, ChatColor.GOLD + companyName + ChatColor.RED + " is no longer producing and selling " + ChatColor.GOLD + itemType.name() + "!", 20);
 		}
 		else
 		{
@@ -1633,7 +1659,7 @@ public class Commands
 			}
 			
 			plugin.getCompanyManager().setCompanyTradingItem(companyId, itemType, true);
-			plugin.getCompanyManager().companySayToEmployees(companyId, ChatColor.GOLD + companyName + ChatColor.GREEN + " is now producing and selling " + ChatColor.GOLD + itemType.name() + "!", 1);			
+			plugin.getCompanyManager().companySayToEmployees(companyId, ChatColor.GOLD + companyName + ChatColor.GREEN + " is now producing and selling " + ChatColor.GOLD + itemType.name() + "!", 20);			
 		}
 		
 		return true;
@@ -2029,7 +2055,6 @@ public class Commands
 		{
 			believer.sendMessage(ChatColor.RED + "You were FIRED from company " + ChatColor.GOLD + companyName + ChatColor.AQUA + "!");
 		}
-		this.plugin.log(sender.getName() + " /business fire " + emplyoee);
 
 		return true;
 	}

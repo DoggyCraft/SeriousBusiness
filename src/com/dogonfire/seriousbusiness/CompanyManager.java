@@ -868,26 +868,23 @@ public class CompanyManager
 		return null;		
 	}
 	
-	public void employeeAccept(UUID employeeId)
+	public void employeeAccept(UUID playerId)
 	{
-		UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(employeeId);
-		String companyName = this.plugin.getCompanyManager().getCompanyName(companyId);
-
-		Player player = this.plugin.getServer().getPlayer(employeeId);
+		Player player = this.plugin.getServer().getPlayer(playerId);
 		if (player == null)
 		{
-			this.plugin.logDebug("employeeAccept(): player is null for " + employeeId);
+			this.plugin.logDebug("employeeAccept(): player " + playerId.toString() + " is no longer online");
 			return;
 		}
 
-		UUID pendingCompanyInvitation = this.plugin.getEmployeeManager().getInvitation(employeeId);
+		UUID pendingCompanyInvitation = this.plugin.getEmployeeManager().getInvitation(playerId);
 
 		if (pendingCompanyInvitation != null)
 		{
 			String pendingCompanyName = this.plugin.getCompanyManager().getCompanyName(pendingCompanyInvitation);
 			this.plugin.logDebug("pendingGodInvitation is " + pendingCompanyInvitation);
 			
-			plugin.getEmployeeManager().setCompanyForEmployee(employeeId, pendingCompanyInvitation);
+			plugin.getEmployeeManager().setCompanyForEmployee(playerId, pendingCompanyInvitation);
 
 			//this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "You joined " + ChatColor.GOLD + pendingCompanyInvitation + "!", 2);
 			this.plugin.log(player.getName() + " accepted the invitation to join " + pendingCompanyName);
@@ -899,9 +896,11 @@ public class CompanyManager
 			
 			return;
 		}
-
-		this.plugin.logDebug(player.getDisplayName() + " did not have anything to accept from " + companyName);
-		this.plugin.sendInfo(player.getUniqueId(), "No question was asked!", 2 + this.random.nextInt(20));
+		else
+		{
+			this.plugin.logDebug(player.getDisplayName() + " did not have anything to accept from a company");
+			this.plugin.sendInfo(player.getUniqueId(), "No question was asked!", 2 + this.random.nextInt(20));
+		}
 	}
 
 	public void employeeReject(UUID employeeId)

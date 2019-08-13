@@ -400,22 +400,22 @@ public class PlayerManager
 
 	public Set<UUID> getPlayersInCompany(UUID companyId)
 	{
-		Set<String> allBelievers = this.employeesConfig.getKeys(false);
-		Set<UUID> believers = new HashSet<UUID>();
+		Set<String> allEmployees = this.employeesConfig.getKeys(false);
+		Set<UUID> employees = new HashSet<UUID>();
 		
-		for (String employee : allBelievers)
+		for (String employee : allEmployees)
 		{
 			UUID employeeId = UUID.fromString(employee);
 			
 			UUID thisCompanyId = getCompanyForEmployee(employeeId);
 			
-			if ((thisCompanyId != null) && (thisCompanyId.equals(companyId)))
+			if (thisCompanyId != null && thisCompanyId.equals(companyId))
 			{
-				believers.add(thisCompanyId);
+				employees.add(thisCompanyId);
 			}
 		}
 		
-		return believers;
+		return employees;
 	}
 	
 	public Set<UUID> getEmployeesInCompanyByPosition(UUID companyId, EmployeePosition employeePosition)
