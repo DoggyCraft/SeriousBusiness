@@ -7,8 +7,6 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -31,7 +29,6 @@ public class Company extends JavaPlugin
 	private LandManager landManager = null;
 	private PermissionsManager permissionsManager = null;
 	private FileConfiguration config = null;
-	private Commands commands = null;
 	static private Company instance;
 	
 	public boolean debug = false;

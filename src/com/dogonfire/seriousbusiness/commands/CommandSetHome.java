@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
+import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 
 public class CommandSetHome extends SeriousBusinessCommand
@@ -50,10 +51,27 @@ public class CommandSetHome extends SeriousBusinessCommand
 			return;
 		}		
 
-		Company.instance().getCompanyManager().setHeadquartersHomeForCompany(companyId, player.getLocation(), Company.instance().getCompanyManager().getHeadquartersForCompany(companyId));		
+		Company.instance().getCompanyManager().depositCompanyBalance(companyId, -amount);
 		
-		Company.instance().getCompanyManager().companySayToEmployees(companyId, "The headquarters for your company was just set by " + player.getName(), 2);
-
-		return;
+		switch(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()))
+		{
+			case Manager : 
+			{
+				Company.instance().getCompanyManager().setHeadquartersHomeForCompany(companyId, player.getLocation(), Company.instance().getCompanyManager().getHeadquartersForCompany(companyId));				
+				Company.instance().getCompanyManager().companySayToEmployees(companyId, "The headquarters location for your company was just set by " + player.getName(), 2);
+			} break;
+			
+			case Sales : 
+			{
+				Company.instance().getCompanyManager().setSalesHomeForCompany(companyId, player.getLocation(), Company.instance().getCompanyManager().getHeadquartersForCompany(companyId));				
+				Company.instance().getCompanyManager().companySayToEmployees(companyId, "The shop location for your company was just set by " + player.getName(), 2);
+			} break;
+			
+			case Production :
+			default : 	
+			{
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You cannot set the headquarter or shop home", 2*20);				
+			} break;
+		}
 	}
 }

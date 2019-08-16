@@ -27,7 +27,7 @@ public class CommandTransferFunds extends SeriousBusinessCommand
 	{
 		Player player = (Player)sender;
 		
-		if (!player.isOp() && !PermissionsManager.instance().hasPermission(player, "company.transferfunds"))
+		if (!player.isOp())
 		{
 			player.sendMessage(ChatColor.RED + "You do not have permission for that");
 			return;
@@ -47,23 +47,5 @@ public class CommandTransferFunds extends SeriousBusinessCommand
 			return;
 		}
 
-		Material itemType = null;
-		double sellprice = 0;
-		
-		UUID targetCompany = CompanyManager.instance().getCompanyIdByName(args[1]);
-
-		try
-		{
-			sellprice = Double.parseDouble(args[2]);
-		}
-		catch(Exception exception)
-		{
-			player.sendMessage(ChatColor.RED + "That is not a valid selling price");
-			return;
-		}
-				
-		CompanyManager.instance().setItemSalesPrice(companyId, itemType, sellprice);		
-		
-		Company.instance().sendInfo(player.getUniqueId(), ChatColor.GREEN + "You set the selling price for " + ChatColor.WHITE + itemType.name() + ChatColor.GREEN + " to " + ChatColor.WHITE + sellprice + ChatColor.AQUA + " wanks", 1);
 	}
 }

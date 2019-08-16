@@ -205,6 +205,17 @@ public class CompanyManager
 		return this.companyConfig.getDouble(companyId.toString() + ".Balance");		
 	}
 
+	public void depositCompanyBalance(UUID companyId, double amount)
+	{
+		double balance = this.companyConfig.getDouble(companyId.toString() + ".Balance");
+		
+		balance += amount;
+				
+		this.companyConfig.set(companyId.toString() + ".Balance", balance);
+
+		saveTimed();				
+	}
+
 	public FinancialReport getFinancialReport(UUID companyId, int round)
 	{
 		HashMap<Material, Integer> itemsSoldAmount = new HashMap<Material, Integer>();
@@ -1194,16 +1205,6 @@ public class CompanyManager
 		return true;
 	}
 	
-	public void depositCompanyBalance(UUID companyId, double amount)
-	{
-		double balance = this.companyConfig.getDouble(companyId.toString() + ".Balance");
-		
-		balance += amount;
-				
-		this.companyConfig.set(companyId.toString() + ".Balance", balance);
-
-		saveTimed();				
-	}
 
 	
 
