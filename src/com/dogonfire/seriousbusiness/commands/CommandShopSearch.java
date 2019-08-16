@@ -25,12 +25,6 @@ public class CommandShopSearch extends SeriousBusinessCommand
 	{
 		Player player = (Player)sender;
 
-		if (!sender.isOp() && !Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.shop.search"))
-		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}
-				
 		List<UUID> topCompanies = CompanyManager.instance().getTopCompanies();
 		
 		if (topCompanies.size() == 0)

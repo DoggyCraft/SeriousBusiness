@@ -14,8 +14,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
+import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.Employee;
 import com.dogonfire.seriousbusiness.EmployeesComparator;
+import com.dogonfire.seriousbusiness.PlayerManager;
 
 
 public class CommandPeople extends SeriousBusinessCommand
@@ -30,12 +32,6 @@ public class CommandPeople extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player) sender;
-
-		if (sender != null && !sender.isOp())
-		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}
 		
 		List<Employee> employees = new ArrayList<Employee>();
 
@@ -44,11 +40,11 @@ public class CommandPeople extends SeriousBusinessCommand
 		if (args.length >= 2)
 		{
 			companyName = args[1];
-			companyId = Company.instance().getCompanyManager().getCompanyIdByName(companyName);
+			companyId = CompanyManager.instance().getCompanyIdByName(companyName);
 		}
 		else
 		{
-			companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+			companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 		}
 		
 		if (companyId == null)

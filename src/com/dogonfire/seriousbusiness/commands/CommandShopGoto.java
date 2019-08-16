@@ -25,12 +25,6 @@ public class CommandShopGoto extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player)sender;
-
-		if (!sender.isOp() && !PermissionsManager.instance().hasPermission((Player) sender, "company.shop.goto"))
-		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}
 				
 		List<UUID> topCompanies = CompanyManager.instance().getTopCompanies();
 		

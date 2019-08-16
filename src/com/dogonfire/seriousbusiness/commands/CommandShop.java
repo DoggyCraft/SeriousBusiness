@@ -25,22 +25,16 @@ public class CommandShop extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player)sender;
-
-		if (!sender.isOp() && !PermissionsManager.instance().hasPermission((Player) sender, "shop"))
-		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}
 				
 		List<UUID> topCompanies = CompanyManager.instance().getTopCompanies();
 		
 		if (topCompanies.size() == 0)
 		{
-			sender.sendMessage(ChatColor.RED + "There are no companies in " + Company.instance().serverName + "!");
+			player.sendMessage(ChatColor.RED + "There are no companies in " + Company.instance().serverName + "!");
 			return;
 		}
 		
-		sender.sendMessage("");
+		player.sendMessage("");
 		
 		int n = 1;
 		List<String> shops = new ArrayList<String>();
@@ -63,7 +57,8 @@ public class CommandShop extends SeriousBusinessCommand
 		}
 		
 		player.sendMessage(ChatColor.AQUA + "There are " + shops.size() + " shops in " + Company.instance().serverName +":");
-
+		player.sendMessage("");
+		
 		for(String shop : shops)
 		{
 			player.sendMessage(shop);

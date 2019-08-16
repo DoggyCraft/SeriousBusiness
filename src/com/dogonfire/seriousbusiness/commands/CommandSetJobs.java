@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
+import com.dogonfire.seriousbusiness.PlayerManager;
 
 
 public class CommandSetJobs extends SeriousBusinessCommand
@@ -23,14 +24,8 @@ public class CommandSetJobs extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player)sender;
-		
-		if (!player.isOp() && !Company.instance().getPermissionsManager().hasPermission(player, "company.setjobs"))
-		{
-			player.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}		
-		
-		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+				
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 		
 		if (companyId==null)
 		{
@@ -40,7 +35,7 @@ public class CommandSetJobs extends SeriousBusinessCommand
 		
 		String companyName = Company.instance().getCompanyManager().getCompanyName(companyId);
 
-		if (Company.instance().getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
+		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			player.sendMessage(ChatColor.RED + "Only managers can set jobs");
 			return;

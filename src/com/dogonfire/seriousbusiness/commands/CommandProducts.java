@@ -24,17 +24,6 @@ public class CommandProducts extends SeriousBusinessCommand
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
-		if(sender == null)
-		{
-			return;
-		}
-
-		if (!sender.isOp())
-		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}
-		
 		Player player = (Player)sender;
 		String companyName = null;
 		UUID companyId = null;

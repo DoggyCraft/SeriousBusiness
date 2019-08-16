@@ -18,11 +18,6 @@ public class CommandAccept extends SeriousBusinessCommand
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
-		if (!hasPermission(sender))
-		{
-			sender.sendMessage(stringNoPermission);
-			return;
-		}
 		if (sender instanceof Player == false)
 		{
 			sender.sendMessage(stringPlayerOnly);

@@ -32,12 +32,6 @@ public class CommandList extends SeriousBusinessCommand
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
-		if (!sender.isOp() && !PermissionsManager.instance().hasPermission((Player) sender, "company.list"))
-		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}
-		
 		Player player = (Player)sender;
 		List<CompanyStockValue> companies = new ArrayList<CompanyStockValue>();
 		UUID playerCompanyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());

@@ -7,6 +7,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
+import com.dogonfire.seriousbusiness.CompanyManager;
+import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 
 
@@ -21,21 +23,15 @@ public class CommandSetDescription extends SeriousBusinessCommand
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
-		if (!sender.isOp() && (!Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.setdescription")))
-		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission for that.");
-			return;
-		}
-		
 		Player player = (Player)sender;
 		
-		if (Company.instance().getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=JobPosition.Manager)
+		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId())!=JobPosition.Manager)
 		{
 			sender.sendMessage(ChatColor.RED + "Only managers can set company description.");
 			return;
 		}
 		
-		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 
 		String description = "";
 		for (String arg : args)
@@ -46,8 +42,8 @@ public class CommandSetDescription extends SeriousBusinessCommand
 			}
 		}
 		
-		Company.instance().getCompanyManager().setCompanyDescription(companyId, description);
+		CompanyManager.instance().setCompanyDescription(companyId, description);
 
-		Company.instance().getCompanyManager().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " just set your company description to '" + ChatColor.LIGHT_PURPLE + Company.instance().getCompanyManager().getCompanyDescription(companyId) + ChatColor.AQUA + "'", 20);
+		CompanyManager.instance().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " just set your company description to '" + ChatColor.LIGHT_PURPLE + CompanyManager.instance().getCompanyDescription(companyId) + ChatColor.AQUA + "'", 20);
 	}
 }

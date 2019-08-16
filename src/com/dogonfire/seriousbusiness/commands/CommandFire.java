@@ -9,6 +9,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
+import com.dogonfire.seriousbusiness.CompanyManager;
+import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 
 public class CommandFire extends SeriousBusinessCommand
@@ -23,26 +25,20 @@ public class CommandFire extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player) sender;
-
-		if (!player.isOp() && !Company.instance().getPermissionsManager().hasPermission((Player) sender, "command.fire"))
-		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission for that.");
-			return;
-		}
 		
-		if (Company.instance().getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
+		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			sender.sendMessage(ChatColor.RED + "Only managers can fire players in a company");
 			return;
 		}
 		
-		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
-		String companyName = Company.instance().getCompanyManager().getCompanyName(companyId);
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
+		String companyName = CompanyManager.instance().getCompanyName(companyId);
 
 		String emplyoee = args[1];
 		OfflinePlayer offlineEmployee = Company.instance().getServer().getOfflinePlayer(emplyoee);
 
-		UUID employeeCompanyId = Company.instance().getEmployeeManager().getCompanyForEmployee(offlineEmployee.getUniqueId());
+		UUID employeeCompanyId = PlayerManager.instance().getCompanyForEmployee(offlineEmployee.getUniqueId());
 		
 		if (employeeCompanyId == null || !employeeCompanyId.equals(companyId))
 		{
@@ -56,7 +52,7 @@ public class CommandFire extends SeriousBusinessCommand
 			return;
 		}
 		
-		Company.instance().getEmployeeManager().removeEmployee(companyId, offlineEmployee.getUniqueId());
+		PlayerManager.instance().removeEmployee(companyId, offlineEmployee.getUniqueId());
 
 		sender.sendMessage(ChatColor.AQUA + "You FIRED " + ChatColor.GOLD + emplyoee + ChatColor.AQUA + " from your company!");
 

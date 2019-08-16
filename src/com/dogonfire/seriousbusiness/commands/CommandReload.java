@@ -18,13 +18,7 @@ public class CommandReload extends SeriousBusinessCommand
 
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
-	{
-		if (!sender.isOp())
-		{
-			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}
-		
+	{		
 		Company.instance().loadSettings();
 
 		CompanyManager.instance().load();

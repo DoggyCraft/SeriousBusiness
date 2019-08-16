@@ -23,12 +23,6 @@ public class CommandAd extends SeriousBusinessCommand
 	{
 		Player player = (Player) sender;
 
-		if (!player.isOp() && !Company.instance().getPermissionsManager().hasPermission(player, "company.ad"))
-		{
-			player.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}
-
 		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
 
 		if (companyId == null)

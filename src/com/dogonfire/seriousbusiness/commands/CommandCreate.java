@@ -24,19 +24,8 @@ public class CommandCreate extends SeriousBusinessCommand
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
-		if(sender == null)
-		{
-			return;
-		}
-
 		Player player = (Player)sender;
-				
-		if (!player.isOp() && !PermissionsManager.instance().hasPermission(player, "company.create"))
-		{
-			player.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}		
-		
+						
 		UUID existingCompanyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 		
 		if (existingCompanyId!=null)

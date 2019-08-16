@@ -27,12 +27,6 @@ public class CommandTransferFunds extends SeriousBusinessCommand
 	{
 		Player player = (Player)sender;
 		
-		if (!player.isOp())
-		{
-			player.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}		
-		
 		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 		
 		if (companyId==null)

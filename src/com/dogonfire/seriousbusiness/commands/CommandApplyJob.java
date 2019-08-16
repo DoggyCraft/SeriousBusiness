@@ -22,13 +22,7 @@ public class CommandApplyJob extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player)sender;
-		
-		if (!hasPermission(sender))
-		{
-			sender.sendMessage(stringNoPermission);
-			return;
-		}
-		
+				
 		if (sender instanceof Player == false)
 		{
 			sender.sendMessage(stringPlayerOnly);

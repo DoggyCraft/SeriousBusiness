@@ -26,12 +26,6 @@ public class CommandCheck extends SeriousBusinessCommand
 	{
 		Player otherPlayer = Company.instance().getServer().getPlayer(args[1]);
 		Player player = (Player)sender;
-
-		if (!player.isOp() && (!PermissionsManager.instance().hasPermission(player, "company.check")))
-		{
-			player.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}
 		
 		if(otherPlayer==null)
 		{

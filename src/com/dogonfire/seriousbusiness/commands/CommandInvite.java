@@ -25,13 +25,7 @@ public class CommandInvite extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player)sender;
-		
-		if (!player.isOp() && !PermissionsManager.instance().hasPermission(player, "company.invite"))
-		{
-			player.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}		
-		
+				
 		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			player.sendMessage(ChatColor.RED + "Only managers can invite players");

@@ -26,13 +26,7 @@ public class CommandJobSearch extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player)sender;
-		
-		if (!player.isOp())
-		{
-			player.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}		
-		
+				
 		JobPosition jobPosition = JobPosition.Sales;
 		
 		try
