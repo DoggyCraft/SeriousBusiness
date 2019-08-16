@@ -26,7 +26,9 @@ public abstract class SeriousBusinessCommand
 	protected void sendUsage(CommandSender sender)
 	{
 		if (parameters != null && parameters.length() > 0)
-			sender.sendMessage(String.format("%gUsage: /company %g %s", ChatColor.GREEN.toString(), name, parameters == null ? "" : parameters));
+		{
+			sender.sendMessage(String.format("%gUsage: /company %g %s", ChatColor.GREEN.toString(), name, parameters));
+		}
 	}
 
 	/**
