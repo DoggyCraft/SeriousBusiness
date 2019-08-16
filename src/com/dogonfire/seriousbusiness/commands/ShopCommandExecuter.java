@@ -51,8 +51,10 @@ public class ShopCommandExecuter implements CommandExecutor
 
 	private void CommandShop(CommandSender sender)
 	{
+		sender.sendMessage(ChatColor.YELLOW + "Shops are where companies sells their items");
+		sender.sendMessage(ChatColor.YELLOW + "Each company can have 1 shop");
 		sender.sendMessage(ChatColor.YELLOW + "");				
-		sender.sendMessage(ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/shop search <itemtype>" + ChatColor.YELLOW + " to search for a shop selling <itemtype>");				
+		sender.sendMessage(ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/shop search <itemtype>" + ChatColor.YELLOW + " to search for any shop selling <itemtype>");				
 		sender.sendMessage(ChatColor.YELLOW + "");				
 		sender.sendMessage(ChatColor.AQUA + "Example item type: '" + ChatColor.WHITE + Material.DIAMOND_SWORD + ChatColor.AQUA + "'");
 		sender.sendMessage(ChatColor.AQUA + "Example item type '" + ChatColor.WHITE + Material.CAKE + ChatColor.AQUA + "'");

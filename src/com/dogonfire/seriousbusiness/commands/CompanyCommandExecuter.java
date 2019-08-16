@@ -37,8 +37,10 @@ public class CompanyCommandExecuter implements CommandExecutor
 	{
 		commandList = new TreeMap<String, SeriousBusinessCommand>();
 		registerCommand(new CommandAccept());
+		registerCommand(new CommandAd());
 		registerCommand(new CommandCheck());
 		registerCommand(new CommandCreate());
+		registerCommand(new CommandCompanyHelp());
 		registerCommand(new CommandInvite());
 		registerCommand(new CommandInfo());
 		registerCommand(new CommandFire());
@@ -55,9 +57,7 @@ public class CompanyCommandExecuter implements CommandExecutor
 		registerCommand(new CommandProducts());
 		registerCommand(new CommandReport());
 		registerCommand(new CommandTrade());
-		registerCommand(new CommandHelp());
-		registerCommand(new CommandInfo());
-		registerCommand(new CommandInvite());
+		registerCommand(new CommandTransferFunds());
 		registerCommand(new CommandSetDescription());
 		registerCommand(new CommandSetHome());
 	}

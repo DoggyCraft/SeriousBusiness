@@ -17,20 +17,14 @@ public class CommandSetProductName extends SeriousBusinessCommand
 {
 	protected CommandSetProductName()
 	{
-		super("list");
-		this.permission = "company.list";
+		super("setproductname");
+		this.permission = "company.setproductname";
 	}
 
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player)sender;
-		
-		if (!player.isOp() && !PermissionsManager.instance().hasPermission(player, "company.setproductName"))
-		{
-			player.sendMessage(ChatColor.RED + "You do not have permission for that");
-			return;
-		}		
 		
 		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 		
@@ -39,12 +33,6 @@ public class CommandSetProductName extends SeriousBusinessCommand
 			player.sendMessage(ChatColor.RED + "You don't have a job.");
 			return;
 		}
-
-		//if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Production)
-		//{
-		//	player.sendMessage(ChatColor.RED + "Only production workers can set product name.");
-		//	return false;
-		//}
 
 		Material itemType;
 		String name = "";
@@ -69,9 +57,7 @@ public class CommandSetProductName extends SeriousBusinessCommand
 			return;
 		}
 				
-		CompanyManager.instance().setItemProductName(companyId, itemType, name);
-		
-		CompanyManager.instance().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " changed the product name for " + ChatColor.WHITE + itemType.name() + ChatColor.AQUA + " to " + ChatColor.WHITE + name, 1);
-		
+		CompanyManager.instance().setItemProductName(companyId, itemType, name);		
+		CompanyManager.instance().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " changed the product name for " + ChatColor.WHITE + itemType.name() + ChatColor.AQUA + " to " + ChatColor.WHITE + name, 1);		
 	}
 }

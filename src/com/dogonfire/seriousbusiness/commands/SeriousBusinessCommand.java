@@ -13,7 +13,7 @@ public abstract class SeriousBusinessCommand
 	// commands
 	protected static final String	stringNoPermission	= ChatColor.RED + "You do not have permission to perform this command.";
 	protected static final String	stringPlayerOnly	= ChatColor.RED + "This is a Player-Only command.";
-	protected static final String	stringPreistOnly	= ChatColor.RED + "This is a Priest-Only command.";
+	protected static final String	stringCompanyOnly	= ChatColor.RED + "This is a Company-Only command.";
 
 	protected final String			name;
 	protected String				permission, parameters, description;
@@ -60,6 +60,7 @@ public abstract class SeriousBusinessCommand
 			return false;
 		if (sender instanceof Player)
 			return PermissionsManager.instance().hasPermission((Player) sender, permission);
+		
 		return sender.hasPermission(permission);
 	}
 
