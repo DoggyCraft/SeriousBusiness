@@ -11,23 +11,29 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.material.Attachable;
 import org.bukkit.material.MaterialData;
 
-import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
+import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 
 public class ChestManager
 {
-	private Company plugin;
-
-	ChestManager(Company p)
+	static private ChestManager instance;
+	
+	ChestManager()
 	{
-		this.plugin = p;
+		instance = this;
 	}
 
+	static public ChestManager instance()
+	{
+		return instance;
+	}
+	
 	public Block getSupplyChestFromSign(Block block)
 	{
 		if ((block == null) || (block.getType() != Material.OAK_WALL_SIGN))
 		{
 			return null;
 		}
+		
 		MaterialData m = block.getState().getData();
 
 		BlockFace face = BlockFace.DOWN;
@@ -64,26 +70,26 @@ public class ChestManager
 	{
 		Player player = event.getPlayer();
 		
-		if (!player.isOp() && !this.plugin.getPermissionsManager().hasPermission(player, "company.supplychest.build"))
+		if (!player.isOp() && !PermissionsManager.instance().hasPermission(player, "company.supplychest.build"))
 		{
-			this.plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You are not allowed to place supply chests.", 1);
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You are not allowed to place supply chests.", 1);
 			return false;
 		}
 		
-		if(plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Production)
+		if(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Production)
 		{
-			this.plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in production to set supply chests.", 1);
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in production to set supply chests.", 1);
 			return false;			
 		}
 						
-		UUID companyId = plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
-		String companyName = plugin.getCompanyManager().getCompanyName(companyId);
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
+		String companyName = CompanyManager.instance().getCompanyName(companyId);
 		
 		event.setLine(0, "[Supply]");
 		event.setLine(1, "for");
 		event.setLine(2, companyName);
 
-		this.plugin.sendInfo(player.getUniqueId(), "Place items in the chest to supply your company with items.", 20);	
+		Company.instance().sendInfo(player.getUniqueId(), "Place items in the chest to supply your company with items.", 20);	
 			
 		return true;
 	}	

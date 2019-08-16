@@ -15,20 +15,25 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class BlockListener implements Listener
 {
-	private Company plugin;
-
-	BlockListener(Company p)
+	static private BlockListener instance;
+	
+	BlockListener()
 	{
-		this.plugin = p;
+		instance = this;
 	}
 
+	static public BlockListener instance()
+	{
+		return instance;
+	}
+	
 	@EventHandler
 	public void OnPlayerInteract(PlayerInteractEvent event)
 	{
 		Player player = event.getPlayer();
 		String companyName = null;
 		
-		if (!this.plugin.isEnabledInWorld(player.getWorld()))
+		if (!Company.instance().isEnabledInWorld(player.getWorld()))
 		{
 			return;
 		}
@@ -43,12 +48,12 @@ public class BlockListener implements Listener
 			BlockState state = event.getClickedBlock().getState();
 			Sign sign = (Sign) state;
 
-			if (this.plugin.getSignManager().isSellSign(event.getClickedBlock(), sign.getLine(0)))
+			if (SignManager.instance().isSellSign(event.getClickedBlock(), sign.getLine(0)))
 			{
 
-				if (!event.getPlayer().isOp() && !this.plugin.getPermissionsManager().hasPermission(event.getPlayer(), "company.customer.buy"))
+				if (!event.getPlayer().isOp() && !PermissionsManager.instance().hasPermission(event.getPlayer(), "company.customer.buy"))
 				{
-					this.plugin.sendInfo(player.getUniqueId(), ChatColor.DARK_RED + "You are not allowed to buy.", 1);
+					Company.instance().sendInfo(player.getUniqueId(), ChatColor.DARK_RED + "You are not allowed to buy.", 1);
 					return;
 				}
 
@@ -58,7 +63,7 @@ public class BlockListener implements Listener
 
 				if (companyName.trim().length() == 0)
 				{
-					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 2.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 2.", 1);
 					return;
 				}
 
@@ -66,23 +71,23 @@ public class BlockListener implements Listener
 
 				if (companyName.length() <= 1)
 				{
-					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid company name must be on line 2.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid company name must be on line 2.", 1);
 					return;
 				}
 
-				companyName = this.plugin.getCompanyManager().formatCompanyName(ChatColor.stripColor(companyName));
+				companyName = CompanyManager.instance().formatCompanyName(ChatColor.stripColor(companyName));
 
 				String itemName = sign.getLine(2);
 
 				if (itemName.trim().length() == 0)
 				{
-					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A item name must be on line 3.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A item name must be on line 3.", 1);
 					return;
 				}
 
 				if (itemName.length() <= 1)
 				{
-					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid item name must be on line 3.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid item name must be on line 3.", 1);
 					return;
 				}
 
@@ -94,22 +99,22 @@ public class BlockListener implements Listener
 				}
 				catch (Exception ex)
 				{
-					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid item name must be on line 3.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid item name must be on line 3.", 1);
 					return;
 				}
 
-				if (this.plugin.getCompanyManager().handleSignSell(block.getLocation(), event.getPlayer(), companyName, itemType))
+				if (CompanyManager.instance().handleSignSell(block.getLocation(), event.getPlayer(), companyName, itemType))
 				{
-					this.plugin.log(event.getPlayer().getDisplayName() + " sold to " + companyName + " using a sell sign");
+					Company.instance().log(event.getPlayer().getDisplayName() + " sold to " + companyName + " using a sell sign");
 				}
 			}
 			
-			if (this.plugin.getSignManager().isSupplySign(event.getClickedBlock(), sign.getLine(0)))
+			if (SignManager.instance().isSupplySign(event.getClickedBlock(), sign.getLine(0)))
 			{
 
-				if (!event.getPlayer().isOp() && !this.plugin.getPermissionsManager().hasPermission(event.getPlayer(), "company.customer.buy"))
+				if (!event.getPlayer().isOp() && !PermissionsManager.instance().hasPermission(event.getPlayer(), "company.customer.buy"))
 				{
-					this.plugin.sendInfo(player.getUniqueId(), ChatColor.DARK_RED + "You are not allowed to supply.", 1);
+					Company.instance().sendInfo(player.getUniqueId(), ChatColor.DARK_RED + "You are not allowed to supply.", 1);
 					return;
 				}
 
@@ -117,7 +122,7 @@ public class BlockListener implements Listener
 
 				if (companyName.trim().length() == 0)
 				{
-					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 3.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 3.", 1);
 					return;
 				}
 
@@ -125,26 +130,25 @@ public class BlockListener implements Listener
 
 				if (companyName.length() <= 1)
 				{
-					this.plugin.sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid company name must be on line 3.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid company name must be on line 3.", 1);
 					return;
 				}
 
-				companyName = this.plugin.getCompanyManager().formatCompanyName(companyName);
+				companyName = CompanyManager.instance().formatCompanyName(companyName);
 
-				if (this.plugin.getCompanyManager().handleSupplySign(event.getPlayer(), companyName))
+				if (CompanyManager.instance().handleSupplySign(event.getPlayer(), companyName))
 				{
-					this.plugin.log(event.getPlayer().getDisplayName() + " supplied to " + companyName + " using a supply sign");
+					Company.instance().log(event.getPlayer().getDisplayName() + " supplied to " + companyName + " using a supply sign");
 				}
 			}
 		}
 	}
 
-	
-	
+		
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		this.plugin.getCompanyManager().updateOnlineCompanies();
+		CompanyManager.instance().updateOnlineCompanies();
 		
 		//if ((this.plugin.useUpdateNotifications) && ((event.getPlayer().isOp()) || (this.plugin.getPermissionsManager().hasPermission(event.getPlayer(), "gods.updates"))))
 		//{
@@ -155,11 +159,6 @@ public class BlockListener implements Listener
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
-		this.plugin.getCompanyManager().updateOnlineCompanies();
-	}
-	
-
-	
-
-	
+		CompanyManager.instance().updateOnlineCompanies();
+	}	
 }

@@ -15,6 +15,10 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.dogonfire.seriousbusiness.commands.CompanyCommandExecuter;
+import com.dogonfire.seriousbusiness.commands.JobCommandExecuter;
+import com.dogonfire.seriousbusiness.commands.LandCommandExecuter;
+import com.dogonfire.seriousbusiness.commands.ShopCommandExecuter;
 import com.dogonfire.tasks.InfoTask;
 
 public class Company extends JavaPlugin
@@ -147,13 +151,17 @@ public class Company extends JavaPlugin
 	{
 		Company.instance = this;
 
+		getCommand("company").setExecutor(CompanyCommandExecuter.instance());
+		getCommand("shop").setExecutor(ShopCommandExecuter.instance());
+		getCommand("job").setExecutor(JobCommandExecuter.instance());
+		getCommand("land").setExecutor(LandCommandExecuter.instance());
+		
 		this.permissionsManager = new PermissionsManager();
-		this.companyManager = new CompanyManager(this);
-		this.playerManager = new PlayerManager(this);
-		this.signManager = new SignManager(this);
-		this.chestManager = new ChestManager(this);
+		this.companyManager = new CompanyManager();
+		this.playerManager = new PlayerManager();
+		this.chestManager = new ChestManager();
 		this.landManager = new LandManager();
-		this.commands = new Commands(this);
+		//this.commands = new Commands();
 		
 		PluginManager pm = getServer().getPluginManager();
 
@@ -182,8 +190,8 @@ public class Company extends JavaPlugin
 		this.playerManager.load();
 		this.landManager.load();
 		
-		getServer().getPluginManager().registerEvents(new BlockListener(this), this);
-		getServer().getPluginManager().registerEvents(new SignManager(this), this);
+		getServer().getPluginManager().registerEvents(new BlockListener(), this);
+		getServer().getPluginManager().registerEvents(new SignManager(), this);
 
 		Runnable updateTask = new Runnable()
 		{
@@ -205,8 +213,8 @@ public class Company extends JavaPlugin
 		this.playerManager.save();
 	}
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	{
-		return this.commands.onCommand(sender, cmd, label, args);
-	}
+	//public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+	//{
+	//	return this.commands.onCommand(sender, cmd, label, args);
+	//}
 }

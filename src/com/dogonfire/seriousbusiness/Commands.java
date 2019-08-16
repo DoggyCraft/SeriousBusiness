@@ -19,17 +19,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
+import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 import com.dogonfire.seriousbusiness.LandManager.LandReport;
-import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
+
 
 
 //
-// /sethq - Set hq to be right here in this area (enables /company home and tax payments)
-// /buy nudes <amount> - Buy <amount> nude coins at values from selected company 
-// /select company <id> - Select a company to deal with 
-// /shop search <itemtype> 
-// /shop list
-// /shop goto <id>
+// sethq - Set hq to be right here in this area (enables /company home and tax payments)
+// buy nudes <amount> - Buy <amount> nude coins at values from selected company 
+// select company <id> - Select a company to deal with 
+// shop search <itemtype> 
+// shop list
+// shop goto <id>
 //
 public class Commands
 {
@@ -50,7 +51,7 @@ public class Commands
 			return false;
 		}
 				
-		Set<UUID> topCompanies = plugin.getCompanyManager().getTopCompanies();
+		List<UUID> topCompanies = CompanyManager.instance().getTopCompanies();
 		
 		if (topCompanies.size() == 0)
 		{
@@ -71,6 +72,12 @@ public class Commands
 			}
 		}
 
+		if(n==1)
+		{
+			player.sendMessage(ChatColor.RED + "There are no shops in " + Company.instance().serverName);
+			return false;
+		}
+		
 		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/shop search <itemtype>" + ChatColor.AQUA + " to search for a shop selling something", 3*20);
 		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/shop goto <id>" + ChatColor.AQUA + " to go to a shop now", 6*20);
 		
@@ -87,7 +94,7 @@ public class Commands
 			return false;
 		}
 				
-		Set<UUID> topCompanies = plugin.getCompanyManager().getTopCompanies();
+		List<UUID> topCompanies = CompanyManager.instance().getTopCompanies();
 		
 		if (topCompanies.size() == 0)
 		{
@@ -103,24 +110,24 @@ public class Commands
 		
 			for (UUID companyId : topCompanies)
 			{		
-				int stock = this.plugin.getCompanyManager().getCompanyItemStockAmount(companyId, selectedMaterial);
-				//if (stock > 0)
-				//{
+				int stock = CompanyManager.instance().getCompanyItemStockAmount(companyId, selectedMaterial);
+				if (stock > 0)
+				{
 					player.sendMessage(ChatColor.YELLOW + "" + n + ") " + this.plugin.getCompanyManager().getCompanyName(companyId) + " For sale: " + stock);
 					n++;				
-				//}
+				}
 			}
 
 			if(n==1)
 			{
-				this.plugin.log(ChatColor.RED + "No shop is selling" + selectedMaterial.name());
+				this.plugin.log(ChatColor.RED + "No shop is selling " + selectedMaterial.name());
 			}
 		}
 		catch(Exception ex)
 		{
 			this.plugin.log(ChatColor.RED + "That is not a valid item type");			
 			this.plugin.sendInfo(player.getUniqueId(), "", 3*20);
-						this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name: '" + ChatColor.WHITE + Material.DIAMOND_SWORD + ChatColor.AQUA + "'", 3*20);
+			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name: '" + ChatColor.WHITE + Material.DIAMOND_SWORD + ChatColor.AQUA + "'", 3*20);
 			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.CAKE + ChatColor.AQUA + "'", 3*20);
 			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.PUMPKIN + ChatColor.AQUA + "'", 3*20);
 			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Example item name '" + ChatColor.WHITE + Material.OAK_LOG + ChatColor.AQUA + "'", 3*20);
@@ -141,7 +148,7 @@ public class Commands
 			return false;
 		}
 				
-		Set<UUID> topCompanies = plugin.getCompanyManager().getTopCompanies();
+		List<UUID> topCompanies = CompanyManager.instance().getTopCompanies();
 		
 		if (topCompanies.size() == 0)
 		{
@@ -193,7 +200,7 @@ public class Commands
 		List<CompanyStockValue> companies = new ArrayList<CompanyStockValue>();
 		UUID playerCompanyId = plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
 		
-		Set<UUID> list = plugin.getCompanyManager().getTopCompanies();
+		List<UUID> list = CompanyManager.instance().getTopCompanies();
 		for (UUID companyId : list)
 		{
 			int currentRound = this.plugin.getCompanyManager().getCurrentRound(companyId);
@@ -222,7 +229,7 @@ public class Commands
 		List<CompanyStockValue> topCompanies = companies;
 		if (l > 15)
 		{
-			topCompanies = ((List) topCompanies).subList(0, 15);
+			topCompanies = ((List<CompanyStockValue>) topCompanies).subList(0, 15);
 		}
 		
 		int n = 1;
@@ -794,9 +801,9 @@ public class Commands
 		
 		sender.sendMessage(ChatColor.YELLOW + "People:");
 		
-		sender.sendMessage(ChatColor.AQUA + " Manager employees: " + ChatColor.WHITE + this.plugin.getEmployeeManager().getEmployeesInCompanyByPosition(companyId, EmployeePosition.Manager).size());
-		sender.sendMessage(ChatColor.AQUA + " Sales employees: " + ChatColor.WHITE + this.plugin.getEmployeeManager().getEmployeesInCompanyByPosition(companyId, EmployeePosition.Sales).size());
-		sender.sendMessage(ChatColor.AQUA + " Production employees: " + ChatColor.WHITE + this.plugin.getEmployeeManager().getEmployeesInCompanyByPosition(companyId, EmployeePosition.Production).size());
+		sender.sendMessage(ChatColor.AQUA + " Manager employees: " + ChatColor.WHITE + this.plugin.getEmployeeManager().getEmployeesInCompanyByPosition(companyId, JobPosition.Manager).size());
+		sender.sendMessage(ChatColor.AQUA + " Sales employees: " + ChatColor.WHITE + this.plugin.getEmployeeManager().getEmployeesInCompanyByPosition(companyId, JobPosition.Sales).size());
+		sender.sendMessage(ChatColor.AQUA + " Production employees: " + ChatColor.WHITE + this.plugin.getEmployeeManager().getEmployeesInCompanyByPosition(companyId, JobPosition.Production).size());
 		
 		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company people" + ChatColor.AQUA +  " to view the people employed by a company", 40);
 		this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company report" + ChatColor.AQUA +  " to view the latest financial report for the company", 80);
@@ -1077,7 +1084,7 @@ public class Commands
 				{
 					sender.sendMessage(ChatColor.RED + "You will not earn anything for this turn.");		
 					
-					switch(plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()))
+					switch(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()))
 					{
 						case Manager : 
 						{
@@ -1206,7 +1213,7 @@ public class Commands
 		}
 
 		// Wages paid
-		for(EmployeePosition employeePosition : report.wagesPaid.keySet())
+		for(JobPosition employeePosition : report.wagesPaid.keySet())
 		{
 			double wages = report.wagesPaid.get(employeePosition);
 			
@@ -1492,7 +1499,7 @@ public class Commands
 			return false;
 		}		
 		
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Manager)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			player.sendMessage(ChatColor.RED + "Only managers can invite players");
 			return false;
@@ -1553,7 +1560,7 @@ public class Commands
 			return false;
 		}
 
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Manager)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			player.sendMessage(ChatColor.RED + "Only managers can set sell prices");
 			return false;
@@ -1607,7 +1614,7 @@ public class Commands
 		
 		String companyName = plugin.getCompanyManager().getCompanyName(companyId);
 
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Manager)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			player.sendMessage(ChatColor.RED + "Only managers can set trade policies");
 			return false;
@@ -1682,7 +1689,7 @@ public class Commands
 			return false;
 		}
 
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Manager)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			player.sendMessage(ChatColor.RED + "Only managers can set wages");
 			return false;
@@ -1723,7 +1730,7 @@ public class Commands
 			return false;
 		}
 
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Manager)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			player.sendMessage(ChatColor.RED + "Only managers can set wages");
 			return false;
@@ -1764,7 +1771,7 @@ public class Commands
 			return false;
 		}
 
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Manager)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			player.sendMessage(ChatColor.RED + "Only managers can set required production");
 			return false;
@@ -1805,7 +1812,7 @@ public class Commands
 			return false;
 		}
 
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Manager)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			player.sendMessage(ChatColor.RED + "Only managers can set required sales.");
 			return false;
@@ -1950,7 +1957,7 @@ public class Commands
 			return false;
 		}
 
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Sales)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Sales)
 		{
 			player.sendMessage(ChatColor.RED + "Only sales workers can broadcast adverts.");
 			return false;
@@ -1978,7 +1985,7 @@ public class Commands
 	
 	private boolean CommandSetDescription(CommandSender sender, String[] args)
 	{
-		if ((!sender.isOp()) && (!this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.setdescription")))
+		if (!sender.isOp() && (!this.plugin.getPermissionsManager().hasPermission((Player) sender, "company.setdescription")))
 		{
 			sender.sendMessage(ChatColor.RED + "You do not have permission for that.");
 			return false;
@@ -1986,7 +1993,7 @@ public class Commands
 		
 		Player player = (Player)sender;
 		
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=EmployeePosition.Manager)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=JobPosition.Manager)
 		{
 			sender.sendMessage(ChatColor.RED + "Only managers can set company description.");
 			return false;
@@ -2020,7 +2027,7 @@ public class Commands
 			return false;
 		}
 		
-		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Manager)
+		if (this.plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
 			sender.sendMessage(ChatColor.RED + "Only managers can fire players in a company");
 			return false;
@@ -2063,7 +2070,7 @@ public class Commands
 	{
 		Player player = (Player) sender;
 
-		if ((!player.isOp()) && (!this.plugin.getPermissionsManager().hasPermission(player, "company.sethome.headquarters")))
+		if (!player.isOp() && (!this.plugin.getPermissionsManager().hasPermission(player, "company.sethome.headquarters")))
 		{
 			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
 			return false;
@@ -2077,7 +2084,7 @@ public class Commands
 			return false;
 		}
 				
-		if (plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=EmployeePosition.Manager)
+		if (plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=JobPosition.Manager)
 		{
 			sender.sendMessage(ChatColor.RED + "Only managers can set the headquarters for your company");
 			return false;
@@ -2147,7 +2154,7 @@ public class Commands
 			return false;
 		}
 				
-		if (plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=EmployeePosition.Sales)
+		if (plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId())!=JobPosition.Sales)
 		{
 			sender.sendMessage(ChatColor.RED + "Only sales people can set the sales store for your company");
 			return false;
@@ -2253,7 +2260,7 @@ public class Commands
 
 		if (args.length == 0)
 		{
-			EmployeePosition employeePosition = plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId());
+			JobPosition employeePosition = plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId());
 			sender.sendMessage(ChatColor.GREEN + "You are working in " + employeePosition.name() + " in " + companyName);
 
 			plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company workas <positionname>" + ChatColor.AQUA + " to change your working position within your company" , 60);
@@ -2262,7 +2269,7 @@ public class Commands
 		{
 			try
 			{
-				EmployeePosition employeePosition = EmployeePosition.valueOf(args[1]);
+				JobPosition employeePosition = JobPosition.valueOf(args[1]);
 
 				this.plugin.getEmployeeManager().setCompanyPosition(player.getUniqueId(), employeePosition);
 
@@ -2294,7 +2301,7 @@ public class Commands
 			return false;
 		}
 		
-		List<Believer> believers = new ArrayList<Believer>();
+		List<Employee> employees = new ArrayList<Employee>();
 
 		UUID companyId = null;
 		String companyName = "";
@@ -2323,10 +2330,10 @@ public class Commands
 			//int power = (int) this.plugin.getCompanyManager().getCompanyStockValue(godName);
 			Date lastWorked = this.plugin.getEmployeeManager().getLastWorkTime(believerId);
 
-			believers.add(new Believer(believerId, new Date()));
+			employees.add(new Employee(believerId, lastWorked));
 		}
 		
-		if (believers.size() == 0)
+		if (employees.size() == 0)
 		{
 			if (sender != null)
 			{
@@ -2348,15 +2355,15 @@ public class Commands
 			this.plugin.log("--------- The Employees of " + companyName + " ---------");
 		}
 
-		Collections.sort(believers, new BelieversComparator());
+		Collections.sort(employees, new EmployeesComparator());
 
-		int l = believers.size();
+		int l = employees.size();
 
-		List<Believer> believersList = believers;
+		List<Employee> believersList = employees;
 		
 		if (l > 15)
 		{
-			believersList = ((List) believersList).subList(0, 15);
+			believersList = ((List<Employee>) believersList).subList(0, 15);
 		}
 		
 		int n = 1;
@@ -2364,11 +2371,11 @@ public class Commands
 
 		Date thisDate = new Date();
 
-		for (Believer believer : believersList)
+		for (Employee believer : believersList)
 		{
-			long minutes = (thisDate.getTime() - believer.lastPrayer.getTime()) / 60000L;
-			long hours = (thisDate.getTime() - believer.lastPrayer.getTime()) / 3600000L;
-			long days = (thisDate.getTime() - believer.lastPrayer.getTime()) / 86400000L;
+			long minutes = (thisDate.getTime() - believer.lastWorked.getTime()) / 60000L;
+			long hours = (thisDate.getTime() - believer.lastWorked.getTime()) / 3600000L;
+			long days = (thisDate.getTime() - believer.lastWorked.getTime()) / 86400000L;
 
 			String date = "";
 			if (days > 0L)
@@ -2384,102 +2391,42 @@ public class Commands
 				date = minutes + " min ago";
 			}
 			
-			String believerName = plugin.getServer().getOfflinePlayer(believer.believerId).getName();
+			String employeeName = plugin.getServer().getOfflinePlayer(believer.employeeId).getName();
 
 			if (sender != null)
 			{				
-				if (companyId != null && (believer.believerId.equals(player.getUniqueId())))
+				if (companyId != null && (believer.employeeId.equals(player.getUniqueId())))
 				{
 					playerShown = true;
-					sender.sendMessage(ChatColor.GOLD + StringUtils.rightPad(believerName, 20) + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(ChatColor.GOLD).append(date).toString(), 18));
+					sender.sendMessage(ChatColor.GOLD + StringUtils.rightPad(employeeName, 20) + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(ChatColor.GOLD).append(date).toString(), 18));
 				}
 				else
 				{
-					sender.sendMessage(ChatColor.YELLOW + StringUtils.rightPad(believerName, 20) + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(ChatColor.GOLD).append(date).toString(), 18));
+					sender.sendMessage(ChatColor.YELLOW + StringUtils.rightPad(employeeName, 20) + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(ChatColor.GOLD).append(date).toString(), 18));
 				}
 			}
 			else
 			{
-				this.plugin.log(StringUtils.rightPad(believerName, 20) + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(ChatColor.GOLD).append(date).toString(), 18));
+				this.plugin.log(StringUtils.rightPad(employeeName, 20) + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(ChatColor.GOLD).append(date).toString(), 18));
 			}
 			n++;
 		}
 		
 		n = 1;
 		
-		if ((companyId != null) && (!playerShown))
+		if (companyId != null && !playerShown)
 		{
-			for (Believer believer : believers)
+			for (Employee believer : employees)
 			{
-				String believerName = plugin.getServer().getOfflinePlayer(believer.believerId).getName();
+				String believerName = plugin.getServer().getOfflinePlayer(believer.employeeId).getName();
 
-				if ((companyId != null) && (believer.believerId.equals(player.getUniqueId())))
+				if (companyId != null && believer.employeeId.equals(player.getUniqueId()))
 				{
-					sender.sendMessage(ChatColor.GOLD + StringUtils.rightPad(believerName, 20) + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(believer.lastPrayer).toString(), 18));
+					sender.sendMessage(ChatColor.GOLD + StringUtils.rightPad(believerName, 20) + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(believer.lastWorked).toString(), 18));
 				}
 				n++;
 			}
 		}
 		return true;
-	}
-
-	
-
-	public class Believer
-	{
-		public UUID believerId;
-		public Date lastPrayer;
-
-		Believer(UUID believerId, Date lastPrayer)
-		{
-			this.believerId = believerId;
-			this.lastPrayer = lastPrayer;
-		}
-	}
-
-	public class BelieversComparator implements Comparator
-	{
-		public BelieversComparator()
-		{
-		}
-
-		public int compare(Object object1, Object object2)
-		{
-			Commands.Believer b1 = (Commands.Believer) object1;
-			Commands.Believer b2 = (Commands.Believer) object2;
-
-			return (int) (b2.lastPrayer.getTime() - b1.lastPrayer.getTime());
-		}
-	}
-
-	public class CompanyStockValue
-	{
-		public double stockValue;
-		public double stockChange;
-		public UUID companyId;
-		public int numberOfEmployees;
-
-		CompanyStockValue(UUID companyId, double stockValue, double stockChange, int numberOfEmployees)
-		{
-			this.stockValue = stockValue;
-			this.stockChange = stockChange;
-			this.companyId = companyId;
-			this.numberOfEmployees = numberOfEmployees;
-		}
-	}
-
-	public class TopCompanyComparator implements Comparator
-	{
-		public TopCompanyComparator()
-		{
-		}
-
-		public int compare(Object object1, Object object2)
-		{
-			Commands.CompanyStockValue g1 = (Commands.CompanyStockValue) object1;
-			Commands.CompanyStockValue g2 = (Commands.CompanyStockValue) object2;
-
-			return (int) (g2.stockValue - g1.stockValue);
-		}
-	}
+	}	
 }

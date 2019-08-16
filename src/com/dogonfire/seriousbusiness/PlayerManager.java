@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -16,34 +17,35 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
+
 public class PlayerManager
 {
-	public enum EmployeePosition
-	{
-		Production,
-		Sales,
-		Manager
-	}
-	
-	private Company plugin = null;
 	private FileConfiguration employeesConfig = null;
 	private File employeesConfigFile = null;
 	private long lastSaveTime;
-
-	PlayerManager(Company p)
+	private HashMap<UUID, JobPosition> selectedJobPositions = new HashMap<UUID, JobPosition>();
+	static private PlayerManager instance;
+	
+	PlayerManager()
 	{
-		this.plugin = p;
+		instance = this;
 	}
 
+	static public PlayerManager instance()
+	{
+		return instance;
+	}
+	
 	public void load()
 	{
 		if (this.employeesConfigFile == null)
 		{
-			this.employeesConfigFile = new File(this.plugin.getDataFolder(), "players.yml");
+			this.employeesConfigFile = new File(Company.instance().getDataFolder(), "players.yml");
 		}
 		this.employeesConfig = YamlConfiguration.loadConfiguration(this.employeesConfigFile);
 
-		this.plugin.log("Loaded " + this.employeesConfig.getKeys(false).size() + " believers.");
+		Company.instance().log("Loaded " + this.employeesConfig.getKeys(false).size() + " players.");
 	}
 
 	public void save()
@@ -59,7 +61,7 @@ public class PlayerManager
 		}
 		catch (Exception ex)
 		{
-			this.plugin.log("Could not save config to " + this.employeesConfigFile.getName() + ": " + ex.getMessage());
+			Company.instance().log("Could not save config to " + this.employeesConfigFile.getName() + ": " + ex.getMessage());
 		}
 	}
 
@@ -72,7 +74,7 @@ public class PlayerManager
 		save();
 	}
 	
-	public String getRankForLevel(int level, EmployeePosition employeePosition)
+	public String getRankForLevel(int level, JobPosition employeePosition)
 	{
 		switch(employeePosition)
 		{
@@ -212,7 +214,7 @@ public class PlayerManager
 
 	public void addXP(UUID playerId, int xp)
 	{
-		if (this.plugin.getServer().getPlayer(playerId).getGameMode() == GameMode.CREATIVE)
+		if (Company.instance().getServer().getPlayer(playerId).getGameMode() == GameMode.CREATIVE)
 		{
 			return;
 		}
@@ -220,14 +222,14 @@ public class PlayerManager
 		int oldXP = this.employeesConfig.getInt(playerId + ".XP");
 		int newXP = oldXP + xp;
 		int oldLevel = getLevelForXP(oldXP);
-		EmployeePosition employeePosition = this.getEmployeeCompanyPosition(playerId);
+		JobPosition employeePosition = this.getEmployeeCompanyPosition(playerId);
 
 		int newLevel = getLevelForXP(newXP);
 		if (newLevel > oldLevel)
 		{
 			if (oldLevel == 0)
 			{
-				Player player = this.plugin.getServer().getPlayer(playerId);
+				Player player = Company.instance().getServer().getPlayer(playerId);
 				player.getWorld().setThundering(true);
 				player.getWorld().setThunderDuration(3600);
 
@@ -236,17 +238,16 @@ public class PlayerManager
                 
                 player.getLocation().getWorld().playSound(player.getLocation(), Sound.AMBIENT_CAVE, 10.0F, 1.0F);
 				
-				this.plugin.getServer().getPlayer(playerId)
-						.sendMessage(ChatColor.AQUA + "Check your company skill progression with the " + ChatColor.WHITE + " /company" + ChatColor.AQUA + " command.");
+                Company.instance().getServer().getPlayer(playerId).sendMessage(ChatColor.AQUA + "Check your company skill progression with the " + ChatColor.WHITE + " /company" + ChatColor.AQUA + " command.");
 			}
 						
 			String newRank = this.getRankForLevel(newLevel, employeePosition);
 			
-			this.plugin.getServer().getPlayer(playerId).sendMessage(ChatColor.AQUA + "Congratulations! You are now a level " + newLevel + " " + newRank + "!");
+			Company.instance().getServer().getPlayer(playerId).sendMessage(ChatColor.AQUA + "Congratulations! You are now a level " + newLevel + " " + newRank + "!");
 		}
 		else
 		{
-			this.plugin.getServer().getPlayer(playerId).sendMessage(ChatColor.AQUA + "You now have " + ChatColor.GOLD + newXP + ChatColor.AQUA + employeePosition.name() + " skill");
+			Company.instance().getServer().getPlayer(playerId).sendMessage(ChatColor.AQUA + "You now have " + ChatColor.GOLD + newXP + ChatColor.AQUA + employeePosition.name() + " skill");
 		}
 		
 		this.employeesConfig.set(playerId + ".XP", newXP);
@@ -298,25 +299,25 @@ public class PlayerManager
 	}
 
 
-	public void setCompanyPosition(UUID employeeId, EmployeePosition employeePosition)
+	public void setCompanyPosition(UUID employeeId, JobPosition employeePosition)
 	{
-		employeesConfig.set(employeeId.toString() + ".CompanyPosition", employeePosition.toString());
+		employeesConfig.set(employeeId.toString() + ".JobPosition", employeePosition.toString());
 		
 		saveTimed();
 	}
 		
-	public EmployeePosition getEmployeeCompanyPosition(UUID employeeId)
+	public JobPosition getEmployeeCompanyPosition(UUID employeeId)
 	{
-		String positionText = this.employeesConfig.getString(employeeId + ".CompanyPosition");
-		EmployeePosition employeePosition = null;
+		String positionText = this.employeesConfig.getString(employeeId + ".JobPosition");
+		JobPosition employeePosition = null;
 				
 		try
 		{
-			employeePosition = EmployeePosition.valueOf(positionText);
+			employeePosition = JobPosition.valueOf(positionText);
 		}
 		catch (Exception ex)
 		{
-			employeePosition = EmployeePosition.Production;
+			employeePosition = JobPosition.Production;
 			setCompanyPosition(employeeId, employeePosition);
 		}		
 		
@@ -325,7 +326,7 @@ public class PlayerManager
 	
 	public double getWageForEmployee(UUID employeeId, int round)
 	{
-		EmployeePosition employeePosition = getEmployeeCompanyPosition(employeeId);
+		JobPosition employeePosition = getEmployeeCompanyPosition(employeeId);
 				
 		UUID companyId = this.getCompanyForEmployee(employeeId);
 
@@ -334,7 +335,7 @@ public class PlayerManager
 			case Manager : 
 			{
 				// Return percentage of profit this round?
-				double wage = 0.05 * plugin.getCompanyManager().getFinancialReport(companyId, round).profit;
+				double wage = 0.05 * Company.instance().getCompanyManager().getFinancialReport(companyId, round).profit;
 				
 				if(wage > 0)
 				{
@@ -348,9 +349,9 @@ public class PlayerManager
 				{
 					int productionThisTurn = getProductionThisTurnForEmployee(employeeId);
 					
-					if(productionThisTurn > plugin.getCompanyManager().getRequiredProductionPrTurn(companyId)) 						
+					if(productionThisTurn > Company.instance().getCompanyManager().getRequiredProductionPrTurn(companyId)) 						
 					{
-						return plugin.getCompanyManager().getProductionWage(companyId);						
+						return Company.instance().getCompanyManager().getProductionWage(companyId);						
 					} 
 					
 					return 0;
@@ -360,9 +361,9 @@ public class PlayerManager
 			{
 				int salesThisTurn = getSalesThisTurnForEmployee(employeeId);
 				
-				if(salesThisTurn > plugin.getCompanyManager().getRequiredSalesPrTurn(companyId)) 						
+				if(salesThisTurn > Company.instance().getCompanyManager().getRequiredSalesPrTurn(companyId)) 						
 				{
-					return plugin.getCompanyManager().getSalesWage(companyId);						
+					return Company.instance().getCompanyManager().getSalesWage(companyId);						
 				} 
 				
 				return 0;
@@ -372,32 +373,6 @@ public class PlayerManager
 		return 0;		
 	}
 	
-	public String getNearestBeliever(Location location)
-	{
-		Set<String> allBelievers = this.employeesConfig.getKeys(false);
-
-		double minLength = 5.0D;
-		Player minPlayer = null;
-		for (String believerName : allBelievers)
-		{
-			Player player = this.plugin.getServer().getPlayer(believerName);
-			if ((player != null) && (player.getWorld() == location.getWorld()))
-			{
-				double length = player.getLocation().subtract(location).length();
-				if (length < minLength)
-				{
-					minLength = length;
-					minPlayer = player;
-				}
-			}
-		}
-		if (minPlayer == null)
-		{
-			return null;
-		}
-		return minPlayer.getName();
-	}
-
 	public Set<UUID> getPlayersInCompany(UUID companyId)
 	{
 		Set<String> allEmployees = this.employeesConfig.getKeys(false);
@@ -418,7 +393,7 @@ public class PlayerManager
 		return employees;
 	}
 	
-	public Set<UUID> getEmployeesInCompanyByPosition(UUID companyId, EmployeePosition employeePosition)
+	public Set<UUID> getEmployeesInCompanyByPosition(UUID companyId, JobPosition employeePosition)
 	{
 		Set<String> allEmployees = this.employeesConfig.getKeys(false);
 		Set<UUID> employees = new HashSet<UUID>();
@@ -441,7 +416,7 @@ public class PlayerManager
 		return employees;
 	}
 	
-	public Set<UUID> getOnlineEmployeesInCompanyByPosition(UUID companyId, EmployeePosition employeePosition)
+	public Set<UUID> getOnlineEmployeesInCompanyByPosition(UUID companyId, JobPosition employeePosition)
 	{
 		Set<String> allEmployees = this.employeesConfig.getKeys(false);
 		Set<UUID> employees = new HashSet<UUID>();
@@ -454,7 +429,7 @@ public class PlayerManager
 			
 			if (employeeCompany != null && employeeCompany.equals(companyId))
 			{
-				if(this.getEmployeeCompanyPosition(employeeId) == employeePosition && plugin.getServer().getPlayer(employeeId) != null)
+				if(this.getEmployeeCompanyPosition(employeeId) == employeePosition && Company.instance().getServer().getPlayer(employeeId) != null)
 				{
 					employees.add(employeeId);
 				}
@@ -464,26 +439,26 @@ public class PlayerManager
 		return employees;
 	}
 
-	public Set<UUID> getOnlineEmployeesForGod(UUID companyId)
+	public Set<UUID> getOnlineEmployeesForCompany(UUID companyId)
 	{
-		Set<String> allBelievers = this.employeesConfig.getKeys(false);
-		Set<UUID> believers = new HashSet();
+		Set<String> allEmployees = this.employeesConfig.getKeys(false);
+		Set<UUID> employees = new HashSet<UUID>();
 		
-		for (String believer : allBelievers)
+		for (String employee : allEmployees)
 		{
-			UUID believerId = UUID.fromString(believer);
+			UUID employeeId = UUID.fromString(employee);
 			
-			if (this.plugin.getServer().getPlayer(believerId) != null)
+			if (Company.instance().getServer().getPlayer(employeeId) != null)
 			{
-				UUID employeeCompany = getCompanyForEmployee(believerId);
+				UUID employeeCompany = getCompanyForEmployee(employeeId);
 				if ((employeeCompany != null) && (employeeCompany.equals(companyId)))
 				{
-					believers.add(believerId);
+					employees.add(employeeId);
 				}
 			}
 		}
 		
-		return believers;
+		return employees;
 	}
 
 	public boolean hasRecentCEOOffer(UUID believerId)
@@ -550,24 +525,6 @@ public class PlayerManager
 		return changing;
 	}
 
-	void clearChangingGod(UUID believerId)
-	{
-		this.employeesConfig.set(believerId + ".ChangingGod", null);
-
-		saveTimed();
-	}
-
-	void setChangingGod(UUID believerId)
-	{
-		String pattern = "HH:mm:ss dd-MM-yyyy";
-		DateFormat formatter = new SimpleDateFormat(pattern);
-		Date thisDate = new Date();
-
-		this.employeesConfig.set(believerId + ".ChangingGod", formatter.format(thisDate));
-		saveTimed();
-	}
-
-
 	public void setInvitationTime(UUID believerId)
 	{
 		String pattern = "HH:mm:ss dd-MM-yyyy";
@@ -580,7 +537,7 @@ public class PlayerManager
 	}
 	
 	public void setCompanyForEmployee(UUID employeeId, UUID companyId)
-	{
+	{		
 		this.employeesConfig.set(employeeId + ".CompanyId", companyId.toString());
 
 		clearInvitation(employeeId);				
@@ -627,7 +584,7 @@ public class PlayerManager
 		long diff = thisDate.getTime() - lastPrayerDate.getTime();
 		long diffMinutes = diff / 60000L;
 
-		return diffMinutes <= this.plugin.turnTimeInSeconds;
+		return diffMinutes <= Company.instance().turnTimeInSeconds;
 	}
 
 	public void setItemBlessingTime(UUID believerId)
@@ -736,12 +693,12 @@ public class PlayerManager
 		
 		this.employeesConfig.set(employeeId.toString(), null);
 
-		this.plugin.log(plugin.getCompanyManager().getCompanyName(companyId) + " lost " + employeeId + " as employee");
+		Company.instance().log(Company.instance().getCompanyManager().getCompanyName(companyId) + " lost " + employeeId + " as employee");
 
 		saveTimed();
 	}
 
-	public void believerLeave(UUID companyId, UUID employeeId)
+	public void employeeLeave(UUID companyId, UUID employeeId)
 	{
 		String employeeCompanyIdString = this.employeesConfig.getString(employeeId + ".CompanyId");
 		
@@ -755,7 +712,21 @@ public class PlayerManager
 		saveTimed();
 	}
 
+	public JobPosition getSelectedJobPosition(UUID playerId)
+	{
+		if(!selectedJobPositions.containsKey(playerId))
+		{
+			return null;
+		}
+		
+		return selectedJobPositions.get(playerId);
+	}
 	
+	public void setSelectedJobPosition(UUID playerId, JobPosition jobPosition)
+	{
+		selectedJobPositions.put(playerId, jobPosition);
+	}
+
 	public int getProductionThisTurnForEmployee(UUID employeeId)
 	{
 		return this.employeesConfig.getInt(employeeId.toString() + ".ProductionThisTurn");
@@ -766,7 +737,7 @@ public class PlayerManager
 		return this.employeesConfig.getInt(employeeId.toString() + ".SalesThisTurn");
 	}
 
-	public void resetWork(UUID employeeId, UUID companyId, EmployeePosition employeePosition)
+	public void resetWork(UUID employeeId, UUID companyId, JobPosition employeePosition)
 	{
 		switch(this.getEmployeeCompanyPosition(employeeId))
 		{
@@ -782,7 +753,7 @@ public class PlayerManager
 		}		
 	}
 	
-	public boolean addWork(UUID employeeId, String companyName, EmployeePosition employeePosition)
+	public boolean addWork(UUID employeeId, String companyName, JobPosition employeePosition)
 	{
 		String lastPrayer = this.employeesConfig.getString(employeeId + ".LastWork");
 

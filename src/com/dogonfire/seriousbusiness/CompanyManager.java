@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -25,12 +24,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.dogonfire.seriousbusiness.LandManager.LandReport;
-import com.dogonfire.seriousbusiness.PlayerManager.EmployeePosition;
 
 
 public class CompanyManager
 {
-	private Company						plugin;
+	private static CompanyManager		instance;
 	private FileConfiguration			companyConfig		= null;
 	private File						companyConfigFile	= null;
 	private Random						random			= new Random();
@@ -39,12 +37,34 @@ public class CompanyManager
 	private String						pattern			= "HH:mm:ss dd-MM-yyyy";
 	DateFormat							formatter		= new SimpleDateFormat(this.pattern);
 
+	public enum JobPosition
+	{
+		Production,
+		Sales,
+		Manager,
+		//Research
+	}
+
+	final public class Job
+	{	
+		final public UUID companyId;
+		final public double wage;
+		final public JobPosition position;
+		
+		Job(UUID companyId, double wage, JobPosition position)		
+		{
+			this.companyId = companyId;
+			this.wage = wage;
+			this.position = position;
+		}
+	}
+	
 	final public class FinancialReport
 	{
 		final public HashMap<Material, Integer> itemsSoldAmount;
 		final public HashMap<Material, Double> itemsSoldValues;		
 		final public HashMap<Material, Integer> itemsProducedAmount;
-		final public HashMap<EmployeePosition, Double> wagesPaid;
+		final public HashMap<JobPosition, Double> wagesPaid;
 		
 		final public double companyTaxPercent;
 		final public double salesTaxPercent;
@@ -58,7 +78,7 @@ public class CompanyManager
 				
 		final public double balance;
 		
-		FinancialReport(double companyTaxPercent, double salesTaxPercent, double income, double profit, double stockStartValue, double stockEndValue, double stockValueChange, double balance, HashMap<Material, Integer> itemsSoldAmount, HashMap<Material, Double> itemsSoldValues, HashMap<Material, Integer> itemsProducedAmount, HashMap<EmployeePosition, Double> wagesPaid)		
+		FinancialReport(double companyTaxPercent, double salesTaxPercent, double income, double profit, double stockStartValue, double stockEndValue, double stockValueChange, double balance, HashMap<Material, Integer> itemsSoldAmount, HashMap<Material, Double> itemsSoldValues, HashMap<Material, Integer> itemsProducedAmount, HashMap<JobPosition, Double> wagesPaid)		
 		{
 			this.companyTaxPercent = companyTaxPercent;
 			this.salesTaxPercent = salesTaxPercent;
@@ -75,19 +95,23 @@ public class CompanyManager
 		}
 	}
 
-	CompanyManager(Company p)
+	CompanyManager()
 	{
-		this.plugin = p;
-		
+		instance = this;
 	}
 
+	static public CompanyManager instance()
+	{
+		return instance;
+	}
+	
 	public void load()
 	{
-		this.companyConfigFile = new File(this.plugin.getDataFolder(), "companies.yml");
+		this.companyConfigFile = new File(Company.instance().getDataFolder(), "companies.yml");
 
 		this.companyConfig = YamlConfiguration.loadConfiguration(this.companyConfigFile);
 
-		this.plugin.log("Loaded " + this.companyConfig.getKeys(false).size() + " companies.");
+		Company.instance().log("Loaded " + this.companyConfig.getKeys(false).size() + " companies.");
 	}
 
 	public void save()
@@ -103,7 +127,7 @@ public class CompanyManager
 		}
 		catch (Exception ex)
 		{
-			this.plugin.log("Could not save config to " + this.companyConfigFile + ": " + ex.getMessage());
+			Company.instance().log("Could not save config to " + this.companyConfigFile + ": " + ex.getMessage());
 		}
 	}
 
@@ -139,27 +163,27 @@ public class CompanyManager
 		return offlineCompanies;
 	}
 
-	public Set<UUID> getTopCompanies()
+	public List<UUID> getTopCompanies()
 	{
-		Set<UUID> topGods = new HashSet<UUID>();
+		List<UUID> topCompanies = new ArrayList<UUID>();
 		
 		Set<String> list = this.companyConfig.getKeys(false);
 
 		for(String key : list)
 		{
-			topGods.add(UUID.fromString(key));
+			topCompanies.add(UUID.fromString(key));
 		}
 		
-		return topGods;
+		return topCompanies;
 	}
 
 	public void updateOnlineCompanies()
 	{
 		this.onlineCompanies.clear();
 		
-		for (Player player : this.plugin.getServer().getOnlinePlayers())
+		for (Player player : Company.instance().getServer().getOnlinePlayers())
 		{
-			UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+			UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
 			
 			if (companyId != null)
 			{
@@ -186,7 +210,7 @@ public class CompanyManager
 		HashMap<Material, Integer> itemsSoldAmount = new HashMap<Material, Integer>();
 		HashMap<Material, Double> itemsSoldValues = new HashMap<Material, Double>();		
 		HashMap<Material, Integer> itemsProducedAmount = new HashMap<Material, Integer>();
-		HashMap<EmployeePosition, Double> wagesPaid = new HashMap<EmployeePosition, Double>();
+		HashMap<JobPosition, Double> wagesPaid = new HashMap<JobPosition, Double>();
 		double totalSoldValue = 0;
 		
 		for(Material soldItem : this.getItemsSoldThisRound(companyId, round))
@@ -210,9 +234,9 @@ public class CompanyManager
 		double wagesPaidSales = this.getSalesWagesPaidThisRound(companyId, round);
 		double wagesPaidManagers = this.getManagerWagesPaidThisRound(companyId, round);
 		
-		wagesPaid.put(EmployeePosition.Production, wagesPaidProduction);
-		wagesPaid.put(EmployeePosition.Sales, wagesPaidSales);
-		wagesPaid.put(EmployeePosition.Manager, wagesPaidManagers);
+		wagesPaid.put(JobPosition.Production, wagesPaidProduction);
+		wagesPaid.put(JobPosition.Sales, wagesPaidSales);
+		wagesPaid.put(JobPosition.Manager, wagesPaidManagers);
 
 		long headquartersLandHash = this.companyConfig.getLong(companyId.toString() + ".Home.Headquarters.Land");
 		LandReport landReport = LandManager.instance().getLandReport(headquartersLandHash);
@@ -260,7 +284,7 @@ public class CompanyManager
 	
 	public void setHeadquartersHomeForCompany(UUID companyId, Location location, Location previousLocation)
 	{
-		long hash = this.plugin.getLandManager().registerCompanyLocation(companyId, location, previousLocation);
+		long hash = Company.instance().getLandManager().registerCompanyLocation(companyId, location, previousLocation);
 		
 		this.companyConfig.set(companyId.toString() + ".Home.Headquarters.X", location.getX());
 		this.companyConfig.set(companyId.toString() + ".Home.Headquarters.Y", location.getY());
@@ -273,7 +297,7 @@ public class CompanyManager
 
 	public void setSalesHomeForCompany(UUID companyId, Location location, Location previousLocation)
 	{
-		long hash = this.plugin.getLandManager().registerCompanyLocation(companyId, location, previousLocation);
+		long hash = Company.instance().getLandManager().registerCompanyLocation(companyId, location, previousLocation);
 
 		this.companyConfig.set(companyId.toString() + ".Home.Sales.X", location.getX());
 		this.companyConfig.set(companyId.toString() + ".Home.Sales.Y", location.getY());
@@ -294,7 +318,7 @@ public class CompanyManager
 			return null;
 		}
 		
-		location.setWorld(this.plugin.getServer().getWorld(worldName));
+		location.setWorld(Company.instance().getServer().getWorld(worldName));
 
 		location.setX(this.companyConfig.getDouble(companyId + ".Home.Headquarters.X"));
 		location.setY(this.companyConfig.getDouble(companyId + ".Home.Headquarters.Y"));
@@ -313,7 +337,7 @@ public class CompanyManager
 		{
 			return null;
 		}
-		location.setWorld(this.plugin.getServer().getWorld(worldName));
+		location.setWorld(Company.instance().getServer().getWorld(worldName));
 
 		location.setX(this.companyConfig.getDouble(companyId + ".Home.Sales.X"));
 		location.setY(this.companyConfig.getDouble(companyId + ".Home.Sales.Y"));
@@ -395,7 +419,7 @@ public class CompanyManager
 		{
 			for(String item : itemsList)
 			{
-				plugin.log("Adding " + item);
+				Company.instance().log("Adding " + item);
 				allItemsSold.add(Material.valueOf(item));
 			}
 		}
@@ -448,7 +472,7 @@ public class CompanyManager
 	
 	public List<String> getItemProductDescription(UUID companyId, Material material)
 	{
-		String companyName = plugin.getCompanyManager().getCompanyName(companyId);
+		String companyName = Company.instance().getCompanyManager().getCompanyName(companyId);
 		
 		
 		String info = this.companyConfig.getString(companyId.toString() + ".ItemDetails." + material.name() + ".ProductInfo");
@@ -578,6 +602,26 @@ public class CompanyManager
 		saveTimed();
 		
 		return true;
+	}
+
+	public void setJobPositionBaseWage(UUID companyId, JobPosition jobPosition, double wage)
+	{
+		companyConfig.set(companyId.toString() + ".JobPositions." + jobPosition.name() + ".BaseWage", wage);	
+	}
+
+	public void setJobPositions(UUID companyId, JobPosition jobPosition, int positions)
+	{
+		companyConfig.set(companyId.toString() + ".JobPositions." + jobPosition.name() + ".Positions", positions);	
+	}
+	
+	public int getOpenJobPositions(UUID companyId, JobPosition jobPosition)
+	{
+		return companyConfig.getInt(companyId.toString() + ".JobPositions." + jobPosition.name() + ".Positions") - PlayerManager.instance().getEmployeesInCompanyByPosition(companyId, jobPosition).size();	
+	}
+
+	public int getJobPositionWage(UUID companyId, JobPosition jobPosition, int level)
+	{
+		return (companyConfig.getInt(companyId.toString() + ".JobPositions." + jobPosition.name() + ".BaseWage") + level / 10);	
 	}
 
 	public int getAdIdentifier(UUID companyId, Location location)
@@ -747,7 +791,7 @@ public class CompanyManager
 
 		saveTimed();
 
-		this.plugin.getEmployeeManager().setPendingCEO(playerId);
+		Company.instance().getEmployeeManager().setPendingCEO(playerId);
 
 		return true;
 	}
@@ -793,8 +837,8 @@ public class CompanyManager
 		
 		setHeadquartersHomeForCompany(companyId, location, null);
 
-		this.setTimeUntilTurnEnd(companyId, plugin.turnTimeInSeconds);
-		this.setTimeUntilRoundEnd(companyId, plugin.roundTimeInSeconds);
+		this.setTimeUntilTurnEnd(companyId, Company.instance().turnTimeInSeconds);
+		this.setTimeUntilRoundEnd(companyId, Company.instance().roundTimeInSeconds);
 
 		this.companyConfig.set(companyId.toString() + ".Name", companyName);
 		this.companyConfig.set(companyId.toString() + ".Created", formatter.format(thisDate));
@@ -812,6 +856,12 @@ public class CompanyManager
 			setCompanyTradingItem(companyId, material, false);
 		}
 		
+		for(JobPosition jobPosition : JobPosition.values())
+		{
+			setJobPositionBaseWage(companyId, jobPosition, 100);
+			setJobPositions(companyId, jobPosition, 1);
+		}
+
 		setItemSalesPrice(companyId, Material.IRON_CHESTPLATE, 100);
 		setItemSalesPrice(companyId, Material.IRON_INGOT, 100);
 		setItemSalesPrice(companyId, Material.GOLD_INGOT, 500);
@@ -870,93 +920,162 @@ public class CompanyManager
 	
 	public void employeeAccept(UUID playerId)
 	{
-		Player player = this.plugin.getServer().getPlayer(playerId);
+		Player player = Company.instance().getServer().getPlayer(playerId);
 		if (player == null)
 		{
-			this.plugin.logDebug("employeeAccept(): player " + playerId.toString() + " is no longer online");
+			Company.instance().logDebug("employeeAccept(): player " + playerId.toString() + " is no longer online");
 			return;
 		}
 
-		UUID pendingCompanyInvitation = this.plugin.getEmployeeManager().getInvitation(playerId);
+		UUID pendingCompanyInvitation = Company.instance().getEmployeeManager().getInvitation(playerId);
 
 		if (pendingCompanyInvitation != null)
 		{
-			String pendingCompanyName = this.plugin.getCompanyManager().getCompanyName(pendingCompanyInvitation);
-			this.plugin.logDebug("pendingGodInvitation is " + pendingCompanyInvitation);
+			String pendingCompanyName = getCompanyName(pendingCompanyInvitation);
+			JobPosition jobPosition = PlayerManager.instance().getSelectedJobPosition(playerId);
+			Company.instance().logDebug("pendingCompanyInvitation is " + pendingCompanyInvitation);
 			
-			plugin.getEmployeeManager().setCompanyForEmployee(playerId, pendingCompanyInvitation);
+			Company.instance().getEmployeeManager().setCompanyForEmployee(playerId, pendingCompanyInvitation);
 
 			//this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "You joined " + ChatColor.GOLD + pendingCompanyInvitation + "!", 2);
-			this.plugin.log(player.getName() + " accepted the invitation to join " + pendingCompanyName);
-			plugin.getServer().broadcastMessage(ChatColor.AQUA + player.getName() + " joined " + ChatColor.GOLD + pendingCompanyName);
+			Company.instance().log(player.getName() + " accepted the invitation to join " + pendingCompanyName);
+			Company.instance().getServer().broadcastMessage(ChatColor.AQUA + player.getName() + " joined " + ChatColor.GOLD + pendingCompanyName);
 
 			//this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Welcome to " + ChatColor.GOLD + pendingCompanyInvitation + "!", 40);
-			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company quit" + ChatColor.AQUA +  " to quit your company", 3*20);
-			this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company workas" + ChatColor.AQUA +  " to choose a job position in " + ChatColor.GOLD + pendingCompanyName, 6*20);
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help " + jobPosition + ChatColor.AQUA + " see what you must do", 6*20);
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company workas" + ChatColor.AQUA +  " to change job position in " + ChatColor.GOLD + pendingCompanyName, 6*20);
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company quit" + ChatColor.AQUA +  " to quit your company", 3*20);
 			
 			return;
 		}
 		else
 		{
-			this.plugin.logDebug(player.getDisplayName() + " did not have anything to accept from a company");
-			this.plugin.sendInfo(player.getUniqueId(), "No question was asked!", 2 + this.random.nextInt(20));
+			Company.instance().logDebug(player.getDisplayName() + " did not have anything to accept from a company");
+			Company.instance().sendInfo(player.getUniqueId(), "No question was asked!", 2 + this.random.nextInt(20));
 		}
 	}
 
 	public void employeeReject(UUID employeeId)
 	{
-		UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(employeeId);
-		Player player = this.plugin.getServer().getPlayer(employeeId);
+		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(employeeId);
+		Player player = Company.instance().getServer().getPlayer(employeeId);
 
-		UUID pendingCompanyInvitation = this.plugin.getEmployeeManager().getInvitation(employeeId);
+		UUID pendingCompanyInvitation = Company.instance().getEmployeeManager().getInvitation(employeeId);
 		if (pendingCompanyInvitation != null)
 		{
-			this.plugin.getEmployeeManager().clearInvitation(employeeId);
+			Company.instance().getEmployeeManager().clearInvitation(employeeId);
 			
-			this.plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You rejected the invitation to " + ChatColor.GOLD + pendingCompanyInvitation + ".", 2);
-			this.plugin.log(player.getName() + " rejected the invitation to join " + pendingCompanyInvitation);
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You rejected the invitation to " + ChatColor.GOLD + pendingCompanyInvitation + ".", 2);
+			Company.instance().log(player.getName() + " rejected the invitation to join " + pendingCompanyInvitation);
 
-			this.plugin.getCompanyManager().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + ChatColor.RED + " rejected the offer to join your company.", 20);
+			Company.instance().getCompanyManager().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + ChatColor.RED + " rejected the offer to join your company.", 20);
 
 			return;
 		}		
 	}
+	
+	public boolean applyJobPosition(UUID playerId, JobPosition jobPosition, int jobPositionIndex)
+	{
+		UUID companyId = getOpenJobPositions(jobPosition).get(jobPositionIndex);
+				
+		return applyJobPosition(playerId, jobPosition, companyId);
+		
+	}
+	
+	public boolean applyJobPosition(UUID playerId, JobPosition jobPosition, UUID companyId)
+	{
+		PlayerManager.instance().setCompanyForEmployee(playerId, companyId);
+		PlayerManager.instance().setCompanyPosition(playerId, jobPosition);
+		
+		Player player = Company.instance().getServer().getPlayer(playerId);
+		String companyName = CompanyManager.instance().getCompanyName(companyId);
+		
+		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + player.getName() + " joined " + ChatColor.GOLD + companyName);
 
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help " + jobPosition + ChatColor.AQUA + " see what you must do", 6*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company quit" + ChatColor.AQUA +  " to quit your company", 3*20);
+				
+		return true;
+	}
+
+	public int getOpenJobPositions()
+	{
+		List<UUID> companies = getTopCompanies();
+		int numberOfPositions = 0;
+
+		for(UUID companyId : companies)
+		{			
+			for(JobPosition jobPosition : JobPosition.values())
+			{			
+				int jobPositions = getOpenJobPositions(companyId, jobPosition);
+		
+				if (jobPositions==0)
+				{
+					continue;
+				}
+
+				numberOfPositions++;
+			}
+		}		
+		
+		return numberOfPositions;
+	}
+	
+	public List<UUID> getOpenJobPositions(JobPosition jobPosition)
+	{
+		List<UUID> companies = getTopCompanies();
+		List<UUID> openCompanies = new ArrayList<UUID>();
+		
+		for(UUID companyId : companies)
+		{			
+			int jobPositions = getOpenJobPositions(companyId, jobPosition);
+		
+			if (jobPositions==0)
+			{
+				continue;
+			}
+
+			openCompanies.add(companyId);
+		}			
+		
+		return openCompanies;
+	}
+	
 	public boolean handleSignSell(Location location, Player player, String companyName, Material itemType)
 	{
-		UUID playerCompanyId = plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());	
-		String playerCompanyName = plugin.getCompanyManager().getCompanyName(playerCompanyId);	
+		UUID playerCompanyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());	
+		String playerCompanyName = Company.instance().getCompanyManager().getCompanyName(playerCompanyId);	
 		
 		if(playerCompanyName!=null && playerCompanyName.equals(companyName))
 		{
-			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You can't buy from your own shop, bozo", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You can't buy from your own shop, bozo", 2);	
 			return false;						
 		}		
 		
-		if (!this.plugin.isEnabledInWorld(player.getWorld()))
+		if (!Company.instance().isEnabledInWorld(player.getWorld()))
 		{
 			return false;
 		}
 		
-		UUID companyId = plugin.getCompanyManager().getCompanyIdByName(companyName);
+		UUID companyId = Company.instance().getCompanyManager().getCompanyIdByName(companyName);
 		
-		if(!plugin.getCompanyManager().isCompanyTradingItem(companyId, itemType))
+		if(!Company.instance().getCompanyManager().isCompanyTradingItem(companyId, itemType))
 		{
-			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "Your company is not trading this type of item.", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "Your company is not trading this type of item.", 2);	
 			return false;
 		}		
 
-		double price = plugin.getCompanyManager().getItemSalesPrice(companyId, itemType);
+		double price = Company.instance().getCompanyManager().getItemSalesPrice(companyId, itemType);
 
-		if(!plugin.getEconomyManager().has(player, price))
+		if(!Company.instance().getEconomyManager().has(player, price))
 		{
-			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You do not have enough wanks for that", 2);				
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You do not have enough wanks for that", 2);				
 			return false;
 		}
 		
-		if(!plugin.getCompanyManager().decreaseItemStock(companyId, itemType, 1))
+		if(!Company.instance().getCompanyManager().decreaseItemStock(companyId, itemType, 1))
 		{
-			plugin.sendInfo(player.getUniqueId(), ChatColor.WHITE + companyId.toString() + ChatColor.RED + " does not have any " + itemType.name() + " to sell.", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.WHITE + companyId.toString() + ChatColor.RED + " does not have any " + itemType.name() + " to sell.", 2);	
 			return false;			
 		}
 
@@ -968,7 +1087,7 @@ public class CompanyManager
 			}
 			else
 			{
-				plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "Clear your hands before you buy anything.", 2);	
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "Clear your hands before you buy anything.", 2);	
 				return false;				
 			}
 		}		
@@ -978,29 +1097,29 @@ public class CompanyManager
 			
 			ItemMeta itemMeta = item.getItemMeta();
 			
-			itemMeta.setDisplayName(plugin.getCompanyManager().getItemProductName(companyId, itemType));
-			itemMeta.setLore(plugin.getCompanyManager().getItemProductDescription(companyId, itemType));
+			itemMeta.setDisplayName(Company.instance().getCompanyManager().getItemProductName(companyId, itemType));
+			itemMeta.setLore(Company.instance().getCompanyManager().getItemProductDescription(companyId, itemType));
 			
 			item.setItemMeta(itemMeta);
 			
 			player.getInventory().setItemInMainHand(item);		
 		}
 		
-		int currentRound = plugin.getCompanyManager().getCurrentRound(companyId);	
+		int currentRound = Company.instance().getCompanyManager().getCurrentRound(companyId);	
 		int amount = 1;
 		
-		plugin.getEconomyManager().withdrawPlayer(player, price);
-		plugin.getCompanyManager().depositCompanyBalance(companyId, price);		
-		plugin.getCompanyManager().increaseItemsSoldThisRound(companyId, currentRound, itemType, amount, amount*plugin.getCompanyManager().getItemSalesPrice(companyId, itemType));
+		Company.instance().getEconomyManager().withdrawPlayer(player, price);
+		Company.instance().getCompanyManager().depositCompanyBalance(companyId, price);		
+		Company.instance().getCompanyManager().increaseItemsSoldThisRound(companyId, currentRound, itemType, amount, amount*Company.instance().getCompanyManager().getItemSalesPrice(companyId, itemType));
 				
-		for(UUID employeeId : plugin.getEmployeeManager().getOnlineEmployeesInCompanyByPosition(companyId, EmployeePosition.Sales))
+		for(UUID employeeId : Company.instance().getEmployeeManager().getOnlineEmployeesInCompanyByPosition(companyId, JobPosition.Sales))
 		{
-			plugin.sendInfo(employeeId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " bought 1 " + itemType.name() + " from your store", 2);	
-			plugin.getEmployeeManager().addWork(employeeId, companyName, EmployeePosition.Sales);
-			plugin.getEmployeeManager().addXP(employeeId, 1);
+			Company.instance().sendInfo(employeeId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " bought 1 " + itemType.name() + " from your store", 2);	
+			Company.instance().getEmployeeManager().addWork(employeeId, companyName, JobPosition.Sales);
+			Company.instance().getEmployeeManager().addXP(employeeId, 1);
 		}
 		
-		plugin.sendInfo(player.getUniqueId(), "You bought 1 " + ChatColor.WHITE + itemType.name() + ChatColor.AQUA + " from " + ChatColor.WHITE + companyId.toString() + " for " + price + " wanks" , 2);
+		Company.instance().sendInfo(player.getUniqueId(), "You bought 1 " + ChatColor.WHITE + itemType.name() + ChatColor.AQUA + " from " + ChatColor.WHITE + companyId.toString() + " for " + price + " wanks" , 2);
 				
 		return true;
 	}
@@ -1008,58 +1127,58 @@ public class CompanyManager
 	
 	public boolean handleSupplySign(Player player, String companyName)
 	{
-		if (!this.plugin.isEnabledInWorld(player.getWorld()))
+		if (!Company.instance().isEnabledInWorld(player.getWorld()))
 		{
 			return false;
 		}
 		
 		if(player.getGameMode()!=GameMode.SURVIVAL)
 		{
-			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You must be in survival mode to supply your company.", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must be in survival mode to supply your company.", 2);	
 			return false;
 		}		
 		
-		if (!this.plugin.isEnabledInWorld(player.getWorld()))
+		if (!Company.instance().isEnabledInWorld(player.getWorld()))
 		{
 			return false;
 		}
 
 		if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR || player.getInventory().getItemInMainHand().getAmount() < 1)
 		{
-			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You do not have anything in your hand to supply to the company.", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You do not have anything in your hand to supply to the company.", 2);	
 			return false;
 		}
 		
-		UUID playerCompanyId = plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
-		String playerCompanyName = plugin.getCompanyManager().getCompanyName(playerCompanyId);
+		UUID playerCompanyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+		String playerCompanyName = Company.instance().getCompanyManager().getCompanyName(playerCompanyId);
 		
 		if(playerCompanyName==null || !playerCompanyName.equals(companyName))
 		{
-			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You need to work in " + ChatColor.GOLD + companyName + ChatColor.AQUA + " to use this sign.", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You need to work in " + ChatColor.GOLD + companyName + ChatColor.AQUA + " to use this sign.", 2);	
 			return false;
 		}
 		
-		if(plugin.getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != EmployeePosition.Production)
+		if(Company.instance().getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Production)
 		{
-			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in production to use this sign.", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in production to use this sign.", 2);	
 			return false;
 		}
 
-		UUID companyId = plugin.getCompanyManager().getCompanyIdByName(companyName);
+		UUID companyId = Company.instance().getCompanyManager().getCompanyIdByName(companyName);
 		
 		Material itemType = player.getInventory().getItemInMainHand().getType();
 		int itemAmount = 1;
 
-		if(!plugin.getCompanyManager().isCompanyTradingItem(companyId, itemType))
+		if(!Company.instance().getCompanyManager().isCompanyTradingItem(companyId, itemType))
 		{
-			plugin.sendInfo(player.getUniqueId(), ChatColor.RED + "Your company is not trading this type of item.", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "Your company is not trading this type of item.", 2);	
 			return false;
 		}		
 		
-		plugin.getCompanyManager().increaseItemStock(companyId, player.getInventory().getItemInMainHand().getType(), itemAmount);
+		Company.instance().getCompanyManager().increaseItemStock(companyId, player.getInventory().getItemInMainHand().getType(), itemAmount);
 		
-		plugin.getEmployeeManager().addWork(player.getUniqueId(), companyName, EmployeePosition.Production);
-		plugin.getEmployeeManager().addXP(player.getUniqueId(), 1);
+		Company.instance().getEmployeeManager().addWork(player.getUniqueId(), companyName, JobPosition.Production);
+		Company.instance().getEmployeeManager().addXP(player.getUniqueId(), 1);
 		
 		if(player.getInventory().getItemInMainHand().getAmount() > itemAmount)
 		{
@@ -1070,7 +1189,7 @@ public class CompanyManager
 			player.getInventory().removeItem(player.getInventory().getItemInMainHand());
 		}
 		
-		plugin.sendInfo(player.getUniqueId(), "You supplied " + ChatColor.WHITE + itemAmount + " " + itemType.name() + ChatColor.AQUA + " to " + ChatColor.WHITE + companyName, 2);
+		Company.instance().sendInfo(player.getUniqueId(), "You supplied " + ChatColor.WHITE + itemAmount + " " + itemType.name() + ChatColor.AQUA + " to " + ChatColor.WHITE + companyName, 2);
 			
 		return true;
 	}
@@ -1090,33 +1209,33 @@ public class CompanyManager
 
 	public boolean removeEmployee(UUID believerId)
 	{
-		UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(believerId);
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(believerId);
 
 		if (companyId == null)
 		{
 			return false;
 		}
 
-		plugin.getEmployeeManager().removeEmployee(companyId, believerId);
+		PlayerManager.instance().removeEmployee(companyId, believerId);
 
 		//this.plugin.getLanguageManager().setPlayerName(plugin.getServer().getOfflinePlayer(believerId).getName());
-		companySayToEmployees(companyId, plugin.getServer().getOfflinePlayer(believerId).getName() + " left the company!", 2 + this.random.nextInt(100));
+		companySayToEmployees(companyId, Company.instance().getServer().getOfflinePlayer(believerId).getName() + " left the company!", 2 + this.random.nextInt(100));
 
 		return true;
 	}
 
 	public boolean playerQuitCompany(UUID believerId)
 	{
-		UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(believerId);
+		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(believerId);
 		if (companyId == null)
 		{
 			return false;
 		}
 		
-		this.plugin.getEmployeeManager().believerLeave(companyId, believerId);
+		Company.instance().getEmployeeManager().employeeLeave(companyId, believerId);
 		//this.plugin.getEmployeeManager().clearPrayerPower(believerId);
 
-		String playerName = plugin.getServer().getPlayer(believerId).getName();
+		String playerName = Company.instance().getServer().getPlayer(believerId).getName();
 		
 		companySayToEmployees(companyId, playerName + " just quit your company!", 2 + this.random.nextInt(20));
 
@@ -1132,37 +1251,37 @@ public class CompanyManager
 
 	public void companySayToEmployees(UUID companyId, String message, int delay)
 	{
-		for (UUID playerId : this.plugin.getEmployeeManager().getPlayersInCompany(companyId))
+		for (UUID playerId : Company.instance().getEmployeeManager().getPlayersInCompany(companyId))
 		{
-			Player player = this.plugin.getServer().getPlayer(playerId);
+			Player player = Company.instance().getServer().getPlayer(playerId);
 			if (player != null)
 			{
-				this.plugin.sendInfo(player.getUniqueId(), message, delay);
+				Company.instance().sendInfo(player.getUniqueId(), message, delay);
 			}
 		}
 	}
 
 	public void sendInfoToEmployees(UUID companyId, String message, ChatColor color, int delay)
 	{
-		for (UUID playerId : this.plugin.getEmployeeManager().getPlayersInCompany(companyId))
+		for (UUID playerId : Company.instance().getEmployeeManager().getPlayersInCompany(companyId))
 		{
-			Player player = this.plugin.getServer().getPlayer(playerId);
+			Player player = Company.instance().getServer().getPlayer(playerId);
 
 			if (player != null)
 			{
-				this.plugin.sendInfo(playerId, message, 10);
+				Company.instance().sendInfo(playerId, message, 10);
 			}
 		}
 	}
 
 	public void sendInfoToEmployees(UUID companyId, String message, ChatColor color, String name, int amount1, int amount2, int delay)
 	{
-		for (UUID playerId : this.plugin.getEmployeeManager().getPlayersInCompany(companyId))
+		for (UUID playerId : Company.instance().getEmployeeManager().getPlayersInCompany(companyId))
 		{
-			Player player = this.plugin.getServer().getPlayer(playerId);
+			Player player = Company.instance().getServer().getPlayer(playerId);
 			if (player != null)
 			{
-				this.plugin.sendInfo(playerId, message, 10);
+				Company.instance().sendInfo(playerId, message, 10);
 			}
 		}
 	}
@@ -1170,13 +1289,13 @@ public class CompanyManager
 
 	public void CompanySayToEmployeesExcept(UUID companyId, String message, UUID exceptPlayer)
 	{
-		for (UUID playerId : this.plugin.getEmployeeManager().getPlayersInCompany(companyId))
+		for (UUID playerId : Company.instance().getEmployeeManager().getPlayersInCompany(companyId))
 		{
-			Player player = this.plugin.getServer().getPlayer(playerId);
+			Player player = Company.instance().getServer().getPlayer(playerId);
 
 			if (player != null && player.getUniqueId() != exceptPlayer)
 			{
-				this.plugin.sendInfo(player.getUniqueId(), message, 2 + this.random.nextInt(20));
+				Company.instance().sendInfo(player.getUniqueId(), message, 2 + this.random.nextInt(20));
 			}
 		}
 	}
@@ -1209,7 +1328,7 @@ public class CompanyManager
 	{
 		int currentRound = this.getCurrentRound(companyId);
 
-		if (this.plugin.getEmployeeManager().getPlayersInCompany(companyId).size() == 0 && this.plugin.getCompanyManager().getCompanyStockStartValueForRound(companyId, currentRound) < 1.0F)
+		if (Company.instance().getEmployeeManager().getPlayersInCompany(companyId).size() == 0 && Company.instance().getCompanyManager().getCompanyStockStartValueForRound(companyId, currentRound) < 1.0F)
 		{
 			removeCompany(companyId);
 
@@ -1231,9 +1350,9 @@ public class CompanyManager
 
 		int currentRound = this.getCurrentRound(companyId);
 
-		String companyName = plugin.getCompanyManager().getCompanyName(companyId);
+		String companyName = Company.instance().getCompanyManager().getCompanyName(companyId);
 	
-		FinancialReport report = plugin.getCompanyManager().getFinancialReport(companyId, currentRound);
+		FinancialReport report = Company.instance().getCompanyManager().getFinancialReport(companyId, currentRound);
 		
 		this.companySayToEmployees(companyId, ChatColor.AQUA + "Round " + ChatColor.WHITE + currentRound + ChatColor.AQUA + " for " + ChatColor.GOLD + companyName + ChatColor.AQUA + " has ended!", 2);//sendInfo(player.getUniqueId(), message, ChatColor.AQUA, "", "", delay);
 
@@ -1255,7 +1374,7 @@ public class CompanyManager
 		this.setCompanyStockStartValueForRound(companyId, currentRound + 1, currentStockValue);
 
 		increaseCurrentRound(companyId);
-		setTimeUntilRoundEnd(companyId, plugin.roundTimeInSeconds);
+		setTimeUntilRoundEnd(companyId, Company.instance().roundTimeInSeconds);
 						
 		return true;
 	}
@@ -1269,38 +1388,38 @@ public class CompanyManager
 		
 		int currentRound = this.getCurrentRound(companyId);
 		
-		for(UUID employeeId : plugin.getEmployeeManager().getOnlineEmployeesForGod(companyId))
+		for(UUID employeeId : PlayerManager.instance().getOnlineEmployeesForCompany(companyId))
 		{
-			EmployeePosition employeePosition = plugin.getEmployeeManager().getEmployeeCompanyPosition(employeeId);
+			JobPosition employeePosition = Company.instance().getEmployeeManager().getEmployeeCompanyPosition(employeeId);
 			
-			double wage = plugin.getEmployeeManager().getWageForEmployee(employeeId, currentRound);
+			double wage = Company.instance().getEmployeeManager().getWageForEmployee(employeeId, currentRound);
 						
 			if(wage > 0)
 			{				
-				OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(employeeId);
+				OfflinePlayer offlinePlayer = Company.instance().getServer().getOfflinePlayer(employeeId);
 				
-				plugin.getEconomyManager().depositPlayer(offlinePlayer, wage);
+				Company.instance().getEconomyManager().depositPlayer(offlinePlayer, wage);
 				
-				Player player = plugin.getServer().getPlayer(employeeId);
+				Player player = Company.instance().getServer().getPlayer(employeeId);
 				if(player!=null)
 				{
 					switch(employeePosition)
 					{
-						case Manager : this.increaseManagerWagesPaidThisRound(companyId, currentRound, wage); plugin.getEmployeeManager().addXP(employeeId, 1); break;						
+						case Manager : this.increaseManagerWagesPaidThisRound(companyId, currentRound, wage); Company.instance().getEmployeeManager().addXP(employeeId, 1); break;						
 						case Sales : this.increaseSalesWagesPaidThisRound(companyId, currentRound, wage); break;						
 						case Production : this.increaseProductionWagesPaidThisRound(companyId, currentRound, wage); break;						
 					}					
 					
 					this.depositCompanyBalance(companyId, -wage);
 					
-					this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "You earned " + ChatColor.GOLD + wage + " wanks " + ChatColor.AQUA + " for your " + employeePosition.name() + " work in " + ChatColor.WHITE + companyId.toString() + ChatColor.AQUA + "!", 2);				
+					Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You earned " + ChatColor.GOLD + wage + " wanks " + ChatColor.AQUA + " for your " + employeePosition.name() + " work in " + ChatColor.WHITE + companyId.toString() + ChatColor.AQUA + "!", 2);				
 				}
 			}
 			
-			plugin.getEmployeeManager().resetWork(employeeId, companyId, employeePosition);
+			Company.instance().getEmployeeManager().resetWork(employeeId, companyId, employeePosition);
 		}		
 		
-		setTimeUntilTurnEnd(companyId, plugin.turnTimeInSeconds);
+		setTimeUntilTurnEnd(companyId, Company.instance().turnTimeInSeconds);
 
 		return true;
 	}
@@ -1352,7 +1471,7 @@ public class CompanyManager
 	{
 		if (this.random.nextInt(50) == 0)
 		{
-			this.plugin.logDebug("Processing dead Companies...");
+			Company.instance().logDebug("Processing dead Companies...");
 
 			long timeBefore = System.currentTimeMillis();
 
@@ -1361,14 +1480,14 @@ public class CompanyManager
 			{
 				if (isDeadCompany(offlineCompanyId))
 				{
-					String offlineCompanyName = plugin.getCompanyManager().getCompanyName(offlineCompanyId);
-					this.plugin.log("Removed dead offline Company '" + offlineCompanyName + "'");
+					String offlineCompanyName = Company.instance().getCompanyManager().getCompanyName(offlineCompanyId);
+					Company.instance().log("Removed dead offline Company '" + offlineCompanyName + "'");
 				}
 			}
 			
 			long timeAfter = System.currentTimeMillis();
 
-			this.plugin.logDebug("Processed " + godNames.size() + " offline Companies in " + (timeAfter - timeBefore) + " ms");
+			Company.instance().logDebug("Processed " + godNames.size() + " offline Companies in " + (timeAfter - timeBefore) + " ms");
 		}
 
 		List<UUID> companyNames = getOnlineCompanies();
@@ -1382,7 +1501,7 @@ public class CompanyManager
 		
 		UUID companyId = (UUID) companyNames.toArray()[this.random.nextInt(companyNames.size())];
 
-		this.plugin.logDebug("Processing Company '" + companyId.toString() + "'");
+		Company.instance().logDebug("Processing Company '" + companyId.toString() + "'");
 
 
 		if(!manageTurn(companyId))
@@ -1393,8 +1512,7 @@ public class CompanyManager
 		
 		long timeAfter = System.currentTimeMillis();
 
-		this.plugin.logDebug("Processed 1 Online Company in " + (timeAfter - timeBefore) + " ms");
-
+		Company.instance().logDebug("Processed 1 Online Company in " + (timeAfter - timeBefore) + " ms");
 	}
 
 	public int getRequiredProductionPrTurn(UUID companyId)
