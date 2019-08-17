@@ -32,6 +32,8 @@ permissions:
       company.shop.help: true
       company.job.help: true
       company.land.help: true
+      company.sethome: true
+      company.fire: true
       company.home.hq: true
       company.home.shop: true
       company.info: true
@@ -41,13 +43,15 @@ permissions:
       company.ceo.invite: true
       company.ceo.description: true
       company.ceo.fire: true
-      company.reload: true
-      company.sethome: true
+      company.reload: false
       company.sellsign.build: true
       company.shop: true
       company.shop.goto: true
       company.shop.search: true
+      company.trade: true
       company.invite: true
+      company.workas: false
+      company.quit: true
       job: true
       job.search: true
       job.apply.goto: true

@@ -1,6 +1,5 @@
 package com.dogonfire.seriousbusiness;
 
-
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 

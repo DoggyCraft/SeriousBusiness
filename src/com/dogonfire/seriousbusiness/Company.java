@@ -31,7 +31,7 @@ public class Company extends JavaPlugin
 	private FileConfiguration config = null;
 	static private Company instance;
 	
-	public boolean debug = false;
+	private boolean debug = false;
 	public String serverName = "Your Server";
 	public int turnTimeInSeconds = 60;
 	public int roundTimeInSeconds = 10*60;

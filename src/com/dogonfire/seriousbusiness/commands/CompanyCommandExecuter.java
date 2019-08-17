@@ -180,25 +180,30 @@ public class CompanyCommandExecuter implements CommandExecutor
 				}
 				else
 				{
-					sender.sendMessage(ChatColor.AQUA + "You will earn " + ChatColor.WHITE + wage + " wanks " + ChatColor.AQUA + "for this turn.");								
+					player.sendMessage(ChatColor.AQUA + "You will earn " + ChatColor.WHITE + wage + " wanks " + ChatColor.AQUA + "for this turn.");								
 				}
 			}
 			else
 			{
-				sender.sendMessage(ChatColor.YELLOW + "This plugin is all about working together in a company in order to make money.");
-				sender.sendMessage(ChatColor.YELLOW + "Players in a company work in 3 different areas:");
-				sender.sendMessage(ChatColor.AQUA + "");
-				sender.sendMessage(ChatColor.AQUA + "  Manager" + ChatColor.WHITE + " - Make sure that the company earns money");
-				sender.sendMessage(ChatColor.AQUA + "  Sales" + ChatColor.WHITE + " - Manage shops and sell items for the company");
-				sender.sendMessage(ChatColor.AQUA + "  Production" + ChatColor.WHITE + " - Produce items for the company");
-				sender.sendMessage(ChatColor.AQUA + "");
-				sender.sendMessage(ChatColor.YELLOW + "Time is divided into turns of 1 min and rounds of 1 hour");
-				sender.sendMessage(ChatColor.YELLOW + "Players who do their job within a turn will get paid a wage for that turn.");
-				sender.sendMessage(ChatColor.YELLOW + "The company finances and stock value will be adjusted every round.");
-				sender.sendMessage(ChatColor.YELLOW + "Each company has a stock value that reflects how well the company is doing their business");
-				//sender.sendMessage(ChatColor.YELLOW + "Players can trade in stock value of any company");
-				sender.sendMessage(ChatColor.AQUA + "");
-				sender.sendMessage(ChatColor.RED + "You are not working in a company.");
+				player.sendMessage(ChatColor.YELLOW + "Companies are all about working together in order to make money and provide jobs and items to players.");
+				player.sendMessage(ChatColor.YELLOW + "Players in a company works in 3 different job types:");
+				player.sendMessage(ChatColor.AQUA + "");
+				player.sendMessage(ChatColor.AQUA + "  Manager" + ChatColor.WHITE + " - Make sure that the company earns money");
+				player.sendMessage(ChatColor.AQUA + "  Sales" + ChatColor.WHITE + " - Manage shops and sell items for the company");
+				player.sendMessage(ChatColor.AQUA + "  Production" + ChatColor.WHITE + " - Produce items for the company");
+				//player.sendMessage(ChatColor.AQUA + "  Research" + ChatColor.WHITE + " - Improve items for the company");
+				player.sendMessage(ChatColor.AQUA + "");
+				player.sendMessage(ChatColor.YELLOW + "Time is divided into turns of 1 min and rounds of 1 hour");
+				player.sendMessage(ChatColor.YELLOW + "Players who do their job within a turn will get paid a wage for that turn.");
+				player.sendMessage(ChatColor.YELLOW + "The company finances and stock value will be adjusted every round.");
+				player.sendMessage(ChatColor.YELLOW + "Each company has a stock value that reflects how well the company is doing their business");
+				//player.sendMessage(ChatColor.YELLOW + "Players can trade in stock value of any company");
+				player.sendMessage(ChatColor.AQUA + "");
+				player.sendMessage(ChatColor.RED + "You are not working in a company.");
+
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/company list" + ChatColor.YELLOW + " to view the list of companies", 3*20);				
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/job" + ChatColor.YELLOW + " to search for a job", 6*20);				
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/shop" + ChatColor.YELLOW + " to search for a shop", 9*20);				
 			}
 
 						
