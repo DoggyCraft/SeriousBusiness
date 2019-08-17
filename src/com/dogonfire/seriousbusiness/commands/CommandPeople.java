@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -81,11 +80,11 @@ public class CommandPeople extends SeriousBusinessCommand
 		
 		if (sender != null)
 		{
-			sender.sendMessage(ChatColor.YELLOW + "--------- The Employees of " + companyName + " ---------");
+			sender.sendMessage(ChatColor.YELLOW + "------ The Employees of " + companyName + " ------");
 		}
 		else
 		{
-			Company.instance().log("--------- The Employees of " + companyName + " ---------");
+			Company.instance().log("------ The Employees of " + companyName + " ------");
 		}
 
 		Collections.sort(employees, new EmployeesComparator());

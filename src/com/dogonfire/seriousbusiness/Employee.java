@@ -9,9 +9,9 @@ public class Employee
 	public UUID employeeId;
 	public Date lastWorked;
 
-	public Employee(UUID believerId, Date lastWorked)
+	public Employee(UUID employeeId, Date lastWorked)
 	{
-		this.employeeId = believerId;
+		this.employeeId = employeeId;
 		this.lastWorked = lastWorked;
 	}
 }

@@ -140,7 +140,9 @@ public class Company extends JavaPlugin
 
 		getCommand("company").setExecutor(CompanyCommandExecuter.instance());
 		getCommand("shop").setExecutor(ShopCommandExecuter.instance());
+		getCommand("shops").setExecutor(ShopCommandExecuter.instance());
 		getCommand("job").setExecutor(JobCommandExecuter.instance());
+		getCommand("jobs").setExecutor(JobCommandExecuter.instance());
 		getCommand("land").setExecutor(LandCommandExecuter.instance());
 		
 		this.permissionsManager = new PermissionsManager();
