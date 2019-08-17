@@ -48,7 +48,7 @@ public class CommandPeople extends SeriousBusinessCommand
 		
 		if (companyId == null)
 		{
-			sender.sendMessage(ChatColor.RED + "You do work for a company");
+			sender.sendMessage(ChatColor.RED + "You do not work for a company");
 			return;
 		}
 		

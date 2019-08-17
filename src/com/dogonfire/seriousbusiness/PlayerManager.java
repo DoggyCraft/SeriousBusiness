@@ -387,7 +387,7 @@ public class PlayerManager
 			
 			if (thisCompanyId != null && thisCompanyId.equals(companyId))
 			{
-				employees.add(thisCompanyId);
+				employees.add(employeeId);
 			}
 		}
 		
