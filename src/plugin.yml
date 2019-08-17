@@ -28,8 +28,12 @@ permissions:
     children: 
       company.listen: true
       company.help: true
+      company.company.help: true
+      company.shop.help: true
+      company.job.help: true
+      company.land.help: true
       company.home.hq: true
-      company.home.sales: true
+      company.home.shop: true
       company.info: true
       company.list: true
       company.land: true
@@ -48,6 +52,9 @@ permissions:
       job.search: true
       job.apply.goto: true
       land: true
+      shop: true
+      shop.search: true
+      shop.goto: true
     default: false
     description: "Gives access to all Serious Business commands"
   company.listen: 

@@ -37,7 +37,7 @@ public class CommandShopSearch extends SeriousBusinessCommand
 				
 		try
 		{
-			Material selectedMaterial = Material.getMaterial(args[1]);
+			Material selectedMaterial = Material.getMaterial(args[1].toUpperCase());
 			PlayerManager.instance().setSelectedMaterial(player.getUniqueId(), selectedMaterial);
 
 			int n = 1;

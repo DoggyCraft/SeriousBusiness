@@ -1,11 +1,15 @@
 package com.dogonfire.seriousbusiness.commands;
 
+import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
+import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PermissionsManager;
+import com.dogonfire.seriousbusiness.PlayerManager;
 
 
 public class CommandCompanyHelp extends SeriousBusinessCommand
@@ -20,11 +24,33 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player) sender;
+				
+		if(args.length<2) 
+		{
+			UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
+			
+			if(companyId==null)
+			{
+				CommandHelp(player);
+			}
+			else
+			{
+				switch(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()))
+				{
+					case Sales 		: CommandHelpSales(player); break; 
+					case Manager 	: CommandHelpManager(player); break; 
+					case Production : CommandHelpProduction(player); break; 
+				}								
+			}
+			
+			return;
+		}		
 		
 		try
 		{
-			switch(args[2].toLowerCase())
+			switch(args[1].toLowerCase())
 			{
+				case "commands" 	: CommandHelpCommands(player); break; 
 				case "sales" 		: CommandHelpSales(player); break; 
 				case "manager" 		: CommandHelpManager(player); break; 
 				case "production" 	: CommandHelpProduction(player); break; 
@@ -35,6 +61,17 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		{
 			player.sendMessage(ChatColor.RED + "Invalid help command");
 		}
+	}
+
+	private void CommandHelp(Player player)
+	{
+		player.sendMessage(ChatColor.YELLOW + "------------------ " + Company.instance().getDescription().getFullName() + " ------------------");
+		player.sendMessage(ChatColor.AQUA + "");
+		player.sendMessage(ChatColor.YELLOW + "Getting started:");
+		player.sendMessage(ChatColor.WHITE + "/company help sales" + ChatColor.AQUA + " - How to work in sales");
+		player.sendMessage(ChatColor.WHITE + "/company help production" + ChatColor.AQUA + " - How to work in production");
+		player.sendMessage(ChatColor.WHITE + "/company help manager" + ChatColor.AQUA + " - How to work as a manager");
+		player.sendMessage(ChatColor.WHITE + "/company help career" + ChatColor.AQUA + " - How to handle your career");		
 	}
 	
 	private void CommandHelpCommands(Player player)
@@ -99,6 +136,14 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		{
 			player.sendMessage(ChatColor.WHITE + "/company trade <itemID>" + ChatColor.AQUA + " - Toggles trading an item type for the company");
 		}
+		if (PermissionsManager.instance().hasPermission(player, "company.home.hq"))
+		{
+			player.sendMessage(ChatColor.WHITE + "/company hq" + ChatColor.AQUA + " - Go to your company headquarters");
+		}
+		if (PermissionsManager.instance().hasPermission(player, "company.home.shop"))
+		{
+			player.sendMessage(ChatColor.WHITE + "/company shop" + ChatColor.AQUA + " - Go to your company shop");
+		}
 	}
 	
 	private void CommandHelpSales(Player player)
@@ -125,6 +170,13 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		player.sendMessage(ChatColor.AQUA + "Any player can then use /shop goto to go to a shop");
 		player.sendMessage(ChatColor.AQUA + "It is up to the sales person to attract customers to buy from their shops");
 		player.sendMessage(ChatColor.AQUA + "As a sales worker, you will earn wanks pr turn if you sell a certain amount of items within that turn");
+		
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company hq " + ChatColor.AQUA + " to go to your company headquarters", 6*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company shop " + ChatColor.AQUA + " to go to your company shop", 9*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company products " + ChatColor.AQUA + " to see the product you can sell", 12*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help" + ChatColor.AQUA + " to see the commands you can use", 15*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company quit" + ChatColor.AQUA +  " to quit your company", 18*20);
+
 	}
 
 	private void CommandHelpProduction(Player player)
@@ -137,6 +189,12 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		player.sendMessage("");
 		player.sendMessage(ChatColor.AQUA + "You can now supply items to your company by right-clicking the sign!");
 		player.sendMessage(ChatColor.AQUA + "As a production worker, you will earn wanks pr turn if you supply a certain amount of items within that turn");
+		
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company hq " + ChatColor.AQUA + " to go to your company headquarters", 6*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company shop " + ChatColor.AQUA + " to go to your company shop", 9*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company products " + ChatColor.AQUA + " to see the product you can make", 12*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help" + ChatColor.AQUA + " to see the commands you can use", 15*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company quit" + ChatColor.AQUA +  " to quit your company", 18*20);
 	}
 
 	private void CommandHelpManager(Player player)
@@ -154,5 +212,11 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		player.sendMessage(ChatColor.WHITE + "  /company setrequiredsales <amount>");		
 		player.sendMessage("");
 		player.sendMessage(ChatColor.AQUA + "As a manager, you will earn 5 % of your company profit pr turn, so a manager must make sure that the company is making profit if he wants to get paid.");
+
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company hq " + ChatColor.AQUA + " to go to your company headquarters", 6*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company shop " + ChatColor.AQUA + " to go to your company shop", 9*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company products " + ChatColor.AQUA + " to see the products being produced", 12*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help" + ChatColor.AQUA + " to see the commands you scan use", 15*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company quit" + ChatColor.AQUA +  " to quit your company", 18*20);
 	}
 }

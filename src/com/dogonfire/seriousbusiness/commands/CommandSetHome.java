@@ -65,7 +65,7 @@ public class CommandSetHome extends SeriousBusinessCommand
 			case Production :
 			default : 	
 			{
-				Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You cannot set the headquarter or shop home", 2*20);				
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You cannot set the headquarter location or shop location", 2*20);				
 			} break;
 		}
 	}
