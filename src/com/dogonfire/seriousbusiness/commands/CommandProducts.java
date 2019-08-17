@@ -82,7 +82,7 @@ public class CommandProducts extends SeriousBusinessCommand
 		{
 			if(CompanyManager.instance().isCompanyTradingItem(companyId, material))
 			{
-				sender.sendMessage(ChatColor.GOLD + "  " + CompanyManager.instance().getItemProductName(companyId, material) + ChatColor.WHITE + " (" + material.name() + ")" + ChatColor.WHITE + " - " + Company.instance().getCompanyManager().getItemSalesPrice(companyId, material) + " wanks");
+				sender.sendMessage(ChatColor.GOLD + "  " + CompanyManager.instance().getItemProductName(companyId, material) + ChatColor.WHITE + " (" + material.name() + ")" + ChatColor.WHITE + " - " + CompanyManager.instance().getItemSalesPrice(companyId, material) + " wanks");
 			}				
 		}		
 	}

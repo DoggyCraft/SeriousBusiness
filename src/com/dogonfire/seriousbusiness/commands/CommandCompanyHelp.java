@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
+import com.dogonfire.seriousbusiness.PermissionsManager;
 
 
 public class CommandCompanyHelp extends SeriousBusinessCommand
@@ -19,66 +20,139 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player) sender;
-				
-		sender.sendMessage(ChatColor.YELLOW + "------------------ " + Company.instance().getDescription().getFullName() + " ------------------");
-		sender.sendMessage(ChatColor.AQUA + "");
-		sender.sendMessage(ChatColor.YELLOW + "Getting started:");
-		sender.sendMessage(ChatColor.AQUA + "/company help sales" + ChatColor.WHITE + " - How to work in sales");
-		sender.sendMessage(ChatColor.AQUA + "/company help production" + ChatColor.WHITE + " - How to work in production");
-		sender.sendMessage(ChatColor.AQUA + "/company help manager" + ChatColor.WHITE + " - How to work as a manager");
-		sender.sendMessage(ChatColor.AQUA + "/company help career" + ChatColor.WHITE + " - How to handle your career");
 		
-		sender.sendMessage(ChatColor.AQUA + "");
+		try
+		{
+			switch(args[2].toLowerCase())
+			{
+				case "sales" 		: CommandHelpSales(player); break; 
+				case "manager" 		: CommandHelpManager(player); break; 
+				case "production" 	: CommandHelpProduction(player); break; 
+				default 			: CommandHelpCommands(player); break;
+			}
+		}
+		catch(Exception ex)
+		{
+			player.sendMessage(ChatColor.RED + "Invalid help command");
+		}
+	}
+	
+	private void CommandHelpCommands(Player player)
+	{
+		player.sendMessage(ChatColor.YELLOW + "------------------ " + Company.instance().getDescription().getFullName() + " ------------------");
+		player.sendMessage(ChatColor.AQUA + "");
+		player.sendMessage(ChatColor.YELLOW + "Getting started:");
+		player.sendMessage(ChatColor.WHITE + "/company help sales" + ChatColor.AQUA + " - How to work in sales");
+		player.sendMessage(ChatColor.WHITE + "/company help production" + ChatColor.AQUA + " - How to work in production");
+		player.sendMessage(ChatColor.WHITE + "/company help manager" + ChatColor.AQUA + " - How to work as a manager");
+		player.sendMessage(ChatColor.WHITE + "/company help career" + ChatColor.AQUA + " - How to handle your career");
+		
+		player.sendMessage(ChatColor.AQUA + "");
 
-		sender.sendMessage(ChatColor.YELLOW + "Commands:");
+		player.sendMessage(ChatColor.YELLOW + "Commands:");
 		
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.create"))
+		if (PermissionsManager.instance().hasPermission(player, "company.create"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company create" + ChatColor.WHITE + " - Create a company");
+			player.sendMessage(ChatColor.WHITE + "/company create" + ChatColor.AQUA + " - Create a company");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.items"))
+		if (PermissionsManager.instance().hasPermission(player, "company.items"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company products" + ChatColor.WHITE + " - Show items in your company storage");
+			player.sendMessage(ChatColor.WHITE + "/company products" + ChatColor.AQUA + " - Show items in your company storage");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.report"))
+		if (PermissionsManager.instance().hasPermission(player, "company.report"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company report" + ChatColor.WHITE + " - Show the latest report for your company");
+			player.sendMessage(ChatColor.WHITE + "/company report" + ChatColor.AQUA + " - Show the latest report for your company");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.report"))
+		if (PermissionsManager.instance().hasPermission(player, "company.report"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company report <companyname>" + ChatColor.WHITE + " - Show the latest report any company");
+			player.sendMessage(ChatColor.WHITE + "/company report <companyname>" + ChatColor.AQUA + " - Show the latest report any company");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.setproductname"))
+		if (PermissionsManager.instance().hasPermission(player, "company.setproductname"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company setproductname <itemname> <customname>" + ChatColor.WHITE + " - Customize a item name for the company");
+			player.sendMessage(ChatColor.WHITE + "/company setproductname <itemname> <customname>" + ChatColor.AQUA + " - Customize a item name for the company");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.setproductname"))
+		if (PermissionsManager.instance().hasPermission(player, "company.setproductname"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company setproductinfo <itemname> <custominfo>" + ChatColor.WHITE + " - Customize item info for the company");
+			player.sendMessage(ChatColor.WHITE + "/company setproductinfo <itemname> <custominfo>" + ChatColor.AQUA + " - Customize item info for the company");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.list"))
+		if (PermissionsManager.instance().hasPermission(player, "company.list"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company list" + ChatColor.WHITE + " - List of all companies");
+			player.sendMessage(ChatColor.WHITE + "/company list" + ChatColor.AQUA + " - List of all companies");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.info"))
+		if (PermissionsManager.instance().hasPermission(player, "company.info"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company info" + ChatColor.WHITE + " - Show info about your company");
+			player.sendMessage(ChatColor.WHITE + "/company info" + ChatColor.AQUA + " - Show info about your company");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.info"))
+		if (PermissionsManager.instance().hasPermission(player, "company.info"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company info <companyname>" + ChatColor.WHITE + " - Show info about a specific company");
+			player.sendMessage(ChatColor.WHITE + "/company info <companyname>" + ChatColor.AQUA + " - Show info about a specific company");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.people"))
+		if (PermissionsManager.instance().hasPermission(player, "company.people"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company people" + ChatColor.WHITE + " - Show the employees in your Company");
+			player.sendMessage(ChatColor.WHITE + "/company people" + ChatColor.AQUA + " - Show the employees in your Company");
 		}		
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.people"))
+		if (PermissionsManager.instance().hasPermission(player, "company.people"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company people <companyname>" + ChatColor.WHITE + " - Show employees in a Company");
+			player.sendMessage(ChatColor.WHITE + "/company people <companyname>" + ChatColor.AQUA + " - Show employees in a Company");
 		}
-		if (Company.instance().getPermissionsManager().hasPermission((Player) sender, "company.trade"))
+		if (PermissionsManager.instance().hasPermission(player, "company.trade"))
 		{
-			sender.sendMessage(ChatColor.AQUA + "/company trade <itemID>" + ChatColor.WHITE + " - Toggles trading an item type for the company");
+			player.sendMessage(ChatColor.WHITE + "/company trade <itemID>" + ChatColor.AQUA + " - Toggles trading an item type for the company");
 		}
+	}
+	
+	private void CommandHelpSales(Player player)
+	{
+		player.sendMessage(ChatColor.YELLOW + "--------------- How to work in Sales ---------------");
+		player.sendMessage(ChatColor.AQUA + "Place a shop sale sign by following these simple steps:");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.WHITE + "  1  - Place a sign");
+		player.sendMessage(ChatColor.WHITE + "  2  - Write [Sale] on line 1");
+		player.sendMessage(ChatColor.WHITE + "  3  - Write the item name on line 3");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.AQUA + "Players can now buy that item type from your company by right-clicking the sign!");
+		player.sendMessage(ChatColor.AQUA + "The selling price is set by managers of the company");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.AQUA + "A sales worker can also set the company shop by using");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.WHITE + "  /company setshop 1");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.AQUA + "A sales worker can customize the name and info for a product by using");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.WHITE + "  /company setproductname <itemname> <name>");
+		player.sendMessage(ChatColor.WHITE + "  /company setproductinfo <itemname> <name>");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.AQUA + "Any player can then use /shop goto to go to a shop");
+		player.sendMessage(ChatColor.AQUA + "It is up to the sales person to attract customers to buy from their shops");
+		player.sendMessage(ChatColor.AQUA + "As a sales worker, you will earn wanks pr turn if you sell a certain amount of items within that turn");
+	}
+
+	private void CommandHelpProduction(Player player)
+	{
+		player.sendMessage(ChatColor.YELLOW + "--------------- How to work in Production ---------------");
+		player.sendMessage(ChatColor.AQUA + "Place a supply sign by following these simple steps:");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.WHITE + "  1  - Place a sign");
+		player.sendMessage(ChatColor.WHITE + "  2  - Write [Supply] on line 1");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.AQUA + "You can now supply items to your company by right-clicking the sign!");
+		player.sendMessage(ChatColor.AQUA + "As a production worker, you will earn wanks pr turn if you supply a certain amount of items within that turn");
+	}
+
+	private void CommandHelpManager(Player player)
+	{
+		player.sendMessage(ChatColor.YELLOW + "--------------- How to work as a Manager ---------------");
+		player.sendMessage(ChatColor.AQUA + "Use the following commands to control your company:");
+		player.sendMessage("");
+		player.sendMessage(ChatColor.WHITE + "  /company invite <playername>");
+		player.sendMessage(ChatColor.WHITE + "  /company fire <playername>");
+		player.sendMessage(ChatColor.WHITE + "  /company trade <itemname>");
+		player.sendMessage(ChatColor.WHITE + "  /company setsellprice <itemname> <price>");
+		player.sendMessage(ChatColor.WHITE + "  /company setsaleswage <itemname> <price>");
+		player.sendMessage(ChatColor.WHITE + "  /company setproductionwage <wage>");
+		player.sendMessage(ChatColor.WHITE + "  /company setrequiredproduction <amount>");
+		player.sendMessage(ChatColor.WHITE + "  /company setrequiredsales <amount>");		
+		player.sendMessage("");
+		player.sendMessage(ChatColor.AQUA + "As a manager, you will earn 5 % of your company profit pr turn, so a manager must make sure that the company is making profit if he wants to get paid.");
 	}
 }

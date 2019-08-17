@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
+import com.dogonfire.seriousbusiness.PlayerManager;
 
 
 public class CommandShopSearch extends SeriousBusinessCommand
@@ -36,17 +38,23 @@ public class CommandShopSearch extends SeriousBusinessCommand
 		try
 		{
 			Material selectedMaterial = Material.getMaterial(args[1]);
-		
+			PlayerManager.instance().setSelectedMaterial(player.getUniqueId(), selectedMaterial);
+
 			int n = 1;
 		
 			for (UUID companyId : topCompanies)
 			{		
-				int stock = Company.instance().getCompanyManager().getCompanyItemStockAmount(companyId, selectedMaterial);
-				//if (stock > 0)
-				//{
-					player.sendMessage(ChatColor.YELLOW + "" + n + ") " + Company.instance().getCompanyManager().getCompanyName(companyId) + " For sale: " + stock);
-					n++;				
-				//}
+				Location shopLocation = CompanyManager.instance().getSalesHomeForCompany(companyId);
+				
+				if (shopLocation != null)
+				{			
+					int stock = CompanyManager.instance().getCompanyItemStockAmount(companyId, selectedMaterial);
+					if (stock > 0)
+					{
+						player.sendMessage(ChatColor.WHITE + "" + n + ")" + ChatColor.AQUA + CompanyManager.instance().getCompanyName(companyId) + " For sale: " + stock);
+						n++;				
+					}
+				}
 			}
 
 			if(n==1)

@@ -45,7 +45,7 @@ public class CommandShop extends SeriousBusinessCommand
 		
 			if (shopLocation != null)
 			{
-				shops.add(ChatColor.YELLOW + "" + n + ") " + CompanyManager.instance().getCompanyName(companyId));
+				shops.add(ChatColor.AQUA + "" + n + ") " + CompanyManager.instance().getCompanyName(companyId));
 				n++;
 			}
 		}

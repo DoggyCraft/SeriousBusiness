@@ -121,7 +121,7 @@ public class LandCommandExecuter implements CommandExecutor
 
 			for(UUID landCompanyId : companies)
 			{
-				sender.sendMessage(ChatColor.YELLOW + "  " + Company.instance().getCompanyManager().getCompanyName(landCompanyId));
+				sender.sendMessage(ChatColor.YELLOW + "  " + CompanyManager.instance().getCompanyName(landCompanyId));
 			}	
 		}	
 	}

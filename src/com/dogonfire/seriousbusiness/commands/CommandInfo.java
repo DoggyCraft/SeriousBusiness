@@ -65,7 +65,7 @@ public class CommandInfo extends SeriousBusinessCommand
 		sender.sendMessage(ChatColor.YELLOW + "Base information:");
 		sender.sendMessage(ChatColor.AQUA + " " + companyName);
 
-		sender.sendMessage("" + ChatColor.DARK_PURPLE + ChatColor.ITALIC + Company.instance().getCompanyManager().getCompanyDescription(companyId));
+		sender.sendMessage("" + ChatColor.DARK_PURPLE + ChatColor.ITALIC + CompanyManager.instance().getCompanyDescription(companyId));
 
 		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
 		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);

@@ -183,7 +183,7 @@ public class CompanyManager
 		
 		for (Player player : Company.instance().getServer().getOnlinePlayers())
 		{
-			UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+			UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 			
 			if (companyId != null)
 			{
@@ -483,7 +483,7 @@ public class CompanyManager
 	
 	public List<String> getItemProductDescription(UUID companyId, Material material)
 	{
-		String companyName = Company.instance().getCompanyManager().getCompanyName(companyId);
+		String companyName = CompanyManager.instance().getCompanyName(companyId);
 		
 		
 		String info = this.companyConfig.getString(companyId.toString() + ".ItemDetails." + material.name() + ".ProductInfo");
@@ -802,7 +802,7 @@ public class CompanyManager
 
 		saveTimed();
 
-		Company.instance().getEmployeeManager().setPendingCEO(playerId);
+		PlayerManager.instance().setPendingCEO(playerId);
 
 		return true;
 	}
@@ -938,7 +938,7 @@ public class CompanyManager
 			return;
 		}
 
-		UUID pendingCompanyInvitation = Company.instance().getEmployeeManager().getInvitation(playerId);
+		UUID pendingCompanyInvitation = PlayerManager.instance().getInvitation(playerId);
 
 		if (pendingCompanyInvitation != null)
 		{
@@ -946,7 +946,7 @@ public class CompanyManager
 			JobPosition jobPosition = PlayerManager.instance().getSelectedJobPosition(playerId);
 			Company.instance().logDebug("pendingCompanyInvitation is " + pendingCompanyInvitation);
 			
-			Company.instance().getEmployeeManager().setCompanyForEmployee(playerId, pendingCompanyInvitation);
+			PlayerManager.instance().setCompanyForEmployee(playerId, pendingCompanyInvitation);
 
 			//this.plugin.sendInfo(player.getUniqueId(), ChatColor.AQUA + "You joined " + ChatColor.GOLD + pendingCompanyInvitation + "!", 2);
 			Company.instance().log(player.getName() + " accepted the invitation to join " + pendingCompanyName);
@@ -968,18 +968,18 @@ public class CompanyManager
 
 	public void employeeReject(UUID employeeId)
 	{
-		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(employeeId);
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(employeeId);
 		Player player = Company.instance().getServer().getPlayer(employeeId);
 
-		UUID pendingCompanyInvitation = Company.instance().getEmployeeManager().getInvitation(employeeId);
+		UUID pendingCompanyInvitation = PlayerManager.instance().getInvitation(employeeId);
 		if (pendingCompanyInvitation != null)
 		{
-			Company.instance().getEmployeeManager().clearInvitation(employeeId);
+			PlayerManager.instance().clearInvitation(employeeId);
 			
 			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You rejected the invitation to " + ChatColor.GOLD + pendingCompanyInvitation + ".", 2);
 			Company.instance().log(player.getName() + " rejected the invitation to join " + pendingCompanyInvitation);
 
-			Company.instance().getCompanyManager().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + ChatColor.RED + " rejected the offer to join your company.", 20);
+			CompanyManager.instance().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + ChatColor.RED + " rejected the offer to join your company.", 20);
 
 			return;
 		}		
@@ -1054,8 +1054,8 @@ public class CompanyManager
 	
 	public boolean handleSignSell(Location location, Player player, String companyName, Material itemType)
 	{
-		UUID playerCompanyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());	
-		String playerCompanyName = Company.instance().getCompanyManager().getCompanyName(playerCompanyId);	
+		UUID playerCompanyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());	
+		String playerCompanyName = CompanyManager.instance().getCompanyName(playerCompanyId);	
 		
 		if(playerCompanyName!=null && playerCompanyName.equals(companyName))
 		{
@@ -1068,15 +1068,15 @@ public class CompanyManager
 			return false;
 		}
 		
-		UUID companyId = Company.instance().getCompanyManager().getCompanyIdByName(companyName);
+		UUID companyId = CompanyManager.instance().getCompanyIdByName(companyName);
 		
-		if(!Company.instance().getCompanyManager().isCompanyTradingItem(companyId, itemType))
+		if(!CompanyManager.instance().isCompanyTradingItem(companyId, itemType))
 		{
 			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "Your company is not trading this type of item.", 2);	
 			return false;
 		}		
 
-		double price = Company.instance().getCompanyManager().getItemSalesPrice(companyId, itemType);
+		double price = CompanyManager.instance().getItemSalesPrice(companyId, itemType);
 
 		if(!Company.instance().getEconomyManager().has(player, price))
 		{
@@ -1084,7 +1084,7 @@ public class CompanyManager
 			return false;
 		}
 		
-		if(!Company.instance().getCompanyManager().decreaseItemStock(companyId, itemType, 1))
+		if(!CompanyManager.instance().decreaseItemStock(companyId, itemType, 1))
 		{
 			Company.instance().sendInfo(player.getUniqueId(), ChatColor.WHITE + companyId.toString() + ChatColor.RED + " does not have any " + itemType.name() + " to sell.", 2);	
 			return false;			
@@ -1108,26 +1108,26 @@ public class CompanyManager
 			
 			ItemMeta itemMeta = item.getItemMeta();
 			
-			itemMeta.setDisplayName(Company.instance().getCompanyManager().getItemProductName(companyId, itemType));
-			itemMeta.setLore(Company.instance().getCompanyManager().getItemProductDescription(companyId, itemType));
+			itemMeta.setDisplayName(CompanyManager.instance().getItemProductName(companyId, itemType));
+			itemMeta.setLore(CompanyManager.instance().getItemProductDescription(companyId, itemType));
 			
 			item.setItemMeta(itemMeta);
 			
 			player.getInventory().setItemInMainHand(item);		
 		}
 		
-		int currentRound = Company.instance().getCompanyManager().getCurrentRound(companyId);	
+		int currentRound = CompanyManager.instance().getCurrentRound(companyId);	
 		int amount = 1;
 		
 		Company.instance().getEconomyManager().withdrawPlayer(player, price);
-		Company.instance().getCompanyManager().depositCompanyBalance(companyId, price);		
-		Company.instance().getCompanyManager().increaseItemsSoldThisRound(companyId, currentRound, itemType, amount, amount*Company.instance().getCompanyManager().getItemSalesPrice(companyId, itemType));
+		CompanyManager.instance().depositCompanyBalance(companyId, price);		
+		CompanyManager.instance().increaseItemsSoldThisRound(companyId, currentRound, itemType, amount, amount*CompanyManager.instance().getItemSalesPrice(companyId, itemType));
 				
-		for(UUID employeeId : Company.instance().getEmployeeManager().getOnlineEmployeesInCompanyByPosition(companyId, JobPosition.Sales))
+		for(UUID employeeId : PlayerManager.instance().getOnlineEmployeesInCompanyByPosition(companyId, JobPosition.Sales))
 		{
 			Company.instance().sendInfo(employeeId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " bought 1 " + itemType.name() + " from your store", 2);	
-			Company.instance().getEmployeeManager().addWork(employeeId, companyName, JobPosition.Sales);
-			Company.instance().getEmployeeManager().addXP(employeeId, 1);
+			PlayerManager.instance().addWork(employeeId, companyName, JobPosition.Sales);
+			PlayerManager.instance().addXP(employeeId, 1);
 		}
 		
 		Company.instance().sendInfo(player.getUniqueId(), "You bought 1 " + ChatColor.WHITE + itemType.name() + ChatColor.AQUA + " from " + ChatColor.WHITE + companyId.toString() + " for " + price + " wanks" , 2);
@@ -1160,8 +1160,8 @@ public class CompanyManager
 			return false;
 		}
 		
-		UUID playerCompanyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
-		String playerCompanyName = Company.instance().getCompanyManager().getCompanyName(playerCompanyId);
+		UUID playerCompanyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
+		String playerCompanyName = CompanyManager.instance().getCompanyName(playerCompanyId);
 		
 		if(playerCompanyName==null || !playerCompanyName.equals(companyName))
 		{
@@ -1169,27 +1169,27 @@ public class CompanyManager
 			return false;
 		}
 		
-		if(Company.instance().getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Production)
+		if(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Production)
 		{
 			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in production to use this sign.", 2);	
 			return false;
 		}
 
-		UUID companyId = Company.instance().getCompanyManager().getCompanyIdByName(companyName);
+		UUID companyId = CompanyManager.instance().getCompanyIdByName(companyName);
 		
 		Material itemType = player.getInventory().getItemInMainHand().getType();
 		int itemAmount = 1;
 
-		if(!Company.instance().getCompanyManager().isCompanyTradingItem(companyId, itemType))
+		if(!CompanyManager.instance().isCompanyTradingItem(companyId, itemType))
 		{
 			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "Your company is not trading this type of item.", 2);	
 			return false;
 		}		
 		
-		Company.instance().getCompanyManager().increaseItemStock(companyId, player.getInventory().getItemInMainHand().getType(), itemAmount);
+		CompanyManager.instance().increaseItemStock(companyId, player.getInventory().getItemInMainHand().getType(), itemAmount);
 		
-		Company.instance().getEmployeeManager().addWork(player.getUniqueId(), companyName, JobPosition.Production);
-		Company.instance().getEmployeeManager().addXP(player.getUniqueId(), 1);
+		PlayerManager.instance().addWork(player.getUniqueId(), companyName, JobPosition.Production);
+		PlayerManager.instance().addXP(player.getUniqueId(), 1);
 		
 		if(player.getInventory().getItemInMainHand().getAmount() > itemAmount)
 		{
@@ -1227,13 +1227,13 @@ public class CompanyManager
 
 	public boolean playerQuitCompany(UUID believerId)
 	{
-		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(believerId);
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(believerId);
 		if (companyId == null)
 		{
 			return false;
 		}
 		
-		Company.instance().getEmployeeManager().employeeLeave(companyId, believerId);
+		PlayerManager.instance().employeeLeave(companyId, believerId);
 		//this.plugin.getEmployeeManager().clearPrayerPower(believerId);
 
 		String playerName = Company.instance().getServer().getPlayer(believerId).getName();
@@ -1252,7 +1252,7 @@ public class CompanyManager
 
 	public void companySayToEmployees(UUID companyId, String message, int delay)
 	{
-		for (UUID playerId : Company.instance().getEmployeeManager().getPlayersInCompany(companyId))
+		for (UUID playerId : PlayerManager.instance().getPlayersInCompany(companyId))
 		{
 			Player player = Company.instance().getServer().getPlayer(playerId);
 			if (player != null)
@@ -1264,7 +1264,7 @@ public class CompanyManager
 
 	public void sendInfoToEmployees(UUID companyId, String message, ChatColor color, int delay)
 	{
-		for (UUID playerId : Company.instance().getEmployeeManager().getPlayersInCompany(companyId))
+		for (UUID playerId : PlayerManager.instance().getPlayersInCompany(companyId))
 		{
 			Player player = Company.instance().getServer().getPlayer(playerId);
 
@@ -1277,7 +1277,7 @@ public class CompanyManager
 
 	public void sendInfoToEmployees(UUID companyId, String message, ChatColor color, String name, int amount1, int amount2, int delay)
 	{
-		for (UUID playerId : Company.instance().getEmployeeManager().getPlayersInCompany(companyId))
+		for (UUID playerId : PlayerManager.instance().getPlayersInCompany(companyId))
 		{
 			Player player = Company.instance().getServer().getPlayer(playerId);
 			if (player != null)
@@ -1290,7 +1290,7 @@ public class CompanyManager
 
 	public void CompanySayToEmployeesExcept(UUID companyId, String message, UUID exceptPlayer)
 	{
-		for (UUID playerId : Company.instance().getEmployeeManager().getPlayersInCompany(companyId))
+		for (UUID playerId : PlayerManager.instance().getPlayersInCompany(companyId))
 		{
 			Player player = Company.instance().getServer().getPlayer(playerId);
 
@@ -1329,7 +1329,7 @@ public class CompanyManager
 	{
 		int currentRound = this.getCurrentRound(companyId);
 
-		if (Company.instance().getEmployeeManager().getPlayersInCompany(companyId).size() == 0 && Company.instance().getCompanyManager().getCompanyStockStartValueForRound(companyId, currentRound) < 1.0F)
+		if (PlayerManager.instance().getPlayersInCompany(companyId).size() == 0 && CompanyManager.instance().getCompanyStockStartValueForRound(companyId, currentRound) < 1.0F)
 		{
 			removeCompany(companyId);
 
@@ -1351,9 +1351,9 @@ public class CompanyManager
 
 		int currentRound = this.getCurrentRound(companyId);
 
-		String companyName = Company.instance().getCompanyManager().getCompanyName(companyId);
+		String companyName = CompanyManager.instance().getCompanyName(companyId);
 	
-		FinancialReport report = Company.instance().getCompanyManager().getFinancialReport(companyId, currentRound);
+		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);
 		
 		this.companySayToEmployees(companyId, ChatColor.AQUA + "Round " + ChatColor.WHITE + currentRound + ChatColor.AQUA + " for " + ChatColor.GOLD + companyName + ChatColor.AQUA + " has ended!", 2);//sendInfo(player.getUniqueId(), message, ChatColor.AQUA, "", "", delay);
 
@@ -1391,9 +1391,9 @@ public class CompanyManager
 		
 		for(UUID employeeId : PlayerManager.instance().getOnlineEmployeesForCompany(companyId))
 		{
-			JobPosition employeePosition = Company.instance().getEmployeeManager().getEmployeeCompanyPosition(employeeId);
+			JobPosition employeePosition = PlayerManager.instance().getEmployeeCompanyPosition(employeeId);
 			
-			double wage = Company.instance().getEmployeeManager().getWageForEmployee(employeeId, currentRound);
+			double wage = PlayerManager.instance().getWageForEmployee(employeeId, currentRound);
 						
 			if(wage > 0)
 			{				
@@ -1406,7 +1406,7 @@ public class CompanyManager
 				{
 					switch(employeePosition)
 					{
-						case Manager : this.increaseManagerWagesPaidThisRound(companyId, currentRound, wage); Company.instance().getEmployeeManager().addXP(employeeId, 1); break;						
+						case Manager : this.increaseManagerWagesPaidThisRound(companyId, currentRound, wage); PlayerManager.instance().addXP(employeeId, 1); break;						
 						case Sales : this.increaseSalesWagesPaidThisRound(companyId, currentRound, wage); break;						
 						case Production : this.increaseProductionWagesPaidThisRound(companyId, currentRound, wage); break;						
 					}					
@@ -1417,7 +1417,7 @@ public class CompanyManager
 				}
 			}
 			
-			Company.instance().getEmployeeManager().resetWork(employeeId, companyId, employeePosition);
+			PlayerManager.instance().resetWork(employeeId, companyId, employeePosition);
 		}		
 		
 		setTimeUntilTurnEnd(companyId, Company.instance().turnTimeInSeconds);
@@ -1481,7 +1481,7 @@ public class CompanyManager
 			{
 				if (isDeadCompany(offlineCompanyId))
 				{
-					String offlineCompanyName = Company.instance().getCompanyManager().getCompanyName(offlineCompanyId);
+					String offlineCompanyName = CompanyManager.instance().getCompanyName(offlineCompanyId);
 					Company.instance().log("Removed dead offline Company '" + offlineCompanyName + "'");
 				}
 			}

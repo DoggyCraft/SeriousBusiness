@@ -33,7 +33,7 @@ public class CommandSetJobs extends SeriousBusinessCommand
 			return;
 		}
 		
-		String companyName = Company.instance().getCompanyManager().getCompanyName(companyId);
+		String companyName = CompanyManager.instance().getCompanyName(companyId);
 
 		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
 		{
@@ -78,15 +78,15 @@ public class CommandSetJobs extends SeriousBusinessCommand
 		CompanyManager.instance().setJobPositions(companyId, jobPosition, jobs);
 		int openPositions = CompanyManager.instance().getOpenJobPositions(companyId, jobPosition);
 
-		Company.instance().getCompanyManager().companySayToEmployees(companyId, ChatColor.GOLD + player.getName() + ChatColor.GREEN + " set the number of " + ChatColor.GOLD + jobPosition + ChatColor.GREEN + " jobs to "+ ChatColor.GOLD + openPositions, 20);			
+		CompanyManager.instance().companySayToEmployees(companyId, ChatColor.GOLD + player.getName() + ChatColor.GREEN + " set the number of " + ChatColor.GOLD + jobPosition + ChatColor.GREEN + " jobs to "+ ChatColor.GOLD + openPositions, 20);			
 		
 		if(openPositions>0)
 		{
-			Company.instance().getCompanyManager().companySayToEmployees(companyId, ChatColor.GOLD + companyName + ChatColor.GREEN + " now has " + ChatColor.GOLD + openPositions + ChatColor.GREEN + " open " + ChatColor.GOLD + jobPosition + " job positions!", 20);			
+			CompanyManager.instance().companySayToEmployees(companyId, ChatColor.GOLD + companyName + ChatColor.GREEN + " now has " + ChatColor.GOLD + openPositions + ChatColor.GREEN + " open " + ChatColor.GOLD + jobPosition + " job positions!", 20);			
 		}
 		else
 		{
-			Company.instance().getCompanyManager().companySayToEmployees(companyId, ChatColor.GOLD + companyName + ChatColor.GREEN + " now has no open " + ChatColor.GOLD + jobPosition + ChatColor.GREEN + " job positions!", 20);			
+			CompanyManager.instance().companySayToEmployees(companyId, ChatColor.GOLD + companyName + ChatColor.GREEN + " now has no open " + ChatColor.GOLD + jobPosition + ChatColor.GREEN + " job positions!", 20);			
 		}		
 	}
 }

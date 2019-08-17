@@ -138,13 +138,13 @@ public class SignManager implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		if (!player.isOp() && !Company.instance().getPermissionsManager().hasPermission(player, "company.sellsign.build"))
+		if (!player.isOp() && !PermissionsManager.instance().hasPermission(player, "company.sellsign.build"))
 		{
 			Company.instance().sendInfo(player.getUniqueId(), "You are not allowed to place sell signs.", 1);
 			return false;
 		}
 		
-		if(Company.instance().getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Sales)
+		if(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Sales)
 		{
 			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in sales to set sell signs.", 1);
 			return false;			
@@ -174,13 +174,13 @@ public class SignManager implements Listener
 			return false;
 		}
 		
-		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
-		String companyName = Company.instance().getCompanyManager().getCompanyName(companyId);
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
+		String companyName = CompanyManager.instance().getCompanyName(companyId);
 		
 		event.setLine(0, "[Sale]");
 		event.setLine(1, ChatColor.DARK_AQUA + companyName);
 		event.setLine(2, ChatColor.DARK_GREEN + itemType.name());
-		event.setLine(3, ChatColor.BLACK + "" + Company.instance().getCompanyManager().getItemSalesPrice(companyId, itemType) + " wanks");
+		event.setLine(3, ChatColor.BLACK + "" + CompanyManager.instance().getItemSalesPrice(companyId, itemType) + " wanks");
 
 		Company.instance().sendInfo(player.getUniqueId(), "Right-click on sign to buy from the shop.", 20);
 

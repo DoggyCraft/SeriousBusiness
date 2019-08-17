@@ -54,16 +54,6 @@ public class Company extends JavaPlugin
 		return this.permissionsManager;
 	}
 
-	public CompanyManager getCompanyManager()
-	{
-		return this.companyManager;
-	}
-
-	public PlayerManager getEmployeeManager()
-	{
-		return this.playerManager;
-	}
-
 	public SignManager getSignManager()
 	{
 		return this.signManager;
@@ -95,14 +85,14 @@ public class Company extends JavaPlugin
 
 	public void log(String message)
 	{
-		Logger.getLogger("minecraft").info("[" + getDescription().getFullName() + "] " + message);
+		Logger.getLogger("minecraft").info(message);
 	}
 
 	public void logDebug(String message)
 	{
 		if (this.debug)
 		{
-			Logger.getLogger("minecraft").info("[" + getDescription().getFullName() + "] " + message);
+			Logger.getLogger("minecraft").info("[Debug] " + message);
 		}
 	}
 
@@ -158,7 +148,6 @@ public class Company extends JavaPlugin
 		this.playerManager = new PlayerManager();
 		this.chestManager = new ChestManager();
 		this.landManager = new LandManager();
-		//this.commands = new Commands();
 		
 		PluginManager pm = getServer().getPluginManager();
 
@@ -208,10 +197,5 @@ public class Company extends JavaPlugin
 
 		this.companyManager.save();
 		this.playerManager.save();
-	}
-	
-	//public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-	//{
-	//	return this.commands.onCommand(sender, cmd, label, args);
-	//}
+	}	
 }

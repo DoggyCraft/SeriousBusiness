@@ -53,14 +53,14 @@ public class CommandPeople extends SeriousBusinessCommand
 			return;
 		}
 		
-		companyName = Company.instance().getCompanyManager().getCompanyName(companyId);
+		companyName = CompanyManager.instance().getCompanyName(companyId);
 
-		Set<UUID> list = Company.instance().getEmployeeManager().getPlayersInCompany(companyId);
+		Set<UUID> list = PlayerManager.instance().getPlayersInCompany(companyId);
 		
 		for (UUID employeeId : list)
 		{
 			//int power = (int) this.plugin.getCompanyManager().getCompanyStockValue(godName);
-			Date lastWorked = Company.instance().getEmployeeManager().getLastWorkTime(employeeId);
+			Date lastWorked = PlayerManager.instance().getLastWorkTime(employeeId);
 			
 			employees.add(new Employee(employeeId, lastWorked));
 		}

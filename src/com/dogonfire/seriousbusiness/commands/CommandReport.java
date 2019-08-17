@@ -10,9 +10,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
+import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 import com.dogonfire.seriousbusiness.LandManager.LandReport;
+import com.dogonfire.seriousbusiness.PlayerManager;
 
 
 public class CommandReport extends SeriousBusinessCommand
@@ -28,7 +30,7 @@ public class CommandReport extends SeriousBusinessCommand
 	{
 		Player player = (Player)sender;
 		
-		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 		
 		if(companyId == null)
 		{
@@ -39,7 +41,7 @@ public class CommandReport extends SeriousBusinessCommand
 			}
 
 			String companyName = args[1];	
-			companyId = Company.instance().getCompanyManager().getCompanyIdByName(companyName);
+			companyId = CompanyManager.instance().getCompanyIdByName(companyName); 
 			
 			if(companyId == null)
 			{
@@ -48,7 +50,7 @@ public class CommandReport extends SeriousBusinessCommand
 			}
 		}
 		
-		int currentRound = Company.instance().getCompanyManager().getCurrentRound(companyId);
+		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
 
 		if(args.length == 2)
 		{
@@ -65,7 +67,7 @@ public class CommandReport extends SeriousBusinessCommand
 				
 		DecimalFormat df = new DecimalFormat();
 		df.setMaximumFractionDigits(2);
-		FinancialReport report = Company.instance().getCompanyManager().getFinancialReport(companyId, currentRound);		
+		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);		
 		
 		sender.sendMessage(ChatColor.YELLOW + "------------ Financial Report for round " + currentRound + " ------------");
 
@@ -105,7 +107,7 @@ public class CommandReport extends SeriousBusinessCommand
 		double totalTax = 0;
 		
 		// Company Taxes 
-		Location headquartersLocation = Company.instance().getCompanyManager().getHeadquartersForCompany(companyId);
+		Location headquartersLocation = CompanyManager.instance().getHeadquartersForCompany(companyId);
 		if(headquartersLocation != null)
 		{
 			LandReport landReport = Company.instance().getLandManager().getLandReport(headquartersLocation);
@@ -114,7 +116,7 @@ public class CommandReport extends SeriousBusinessCommand
 		}
 
 		// Sales Taxes 
-		Location salesLocation = Company.instance().getCompanyManager().getSalesHomeForCompany(companyId);
+		Location salesLocation = CompanyManager.instance().getSalesHomeForCompany(companyId);
 		if(salesLocation != null)
 		{
 			LandReport landReport = Company.instance().getLandManager().getLandReport(salesLocation);

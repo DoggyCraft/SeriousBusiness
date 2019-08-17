@@ -7,7 +7,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
+import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
+import com.dogonfire.seriousbusiness.PlayerManager;
 
 
 public class CommandAd extends SeriousBusinessCommand
@@ -23,7 +25,7 @@ public class CommandAd extends SeriousBusinessCommand
 	{
 		Player player = (Player) sender;
 
-		UUID companyId = Company.instance().getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
+		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 
 		if (companyId == null)
 		{
@@ -31,7 +33,7 @@ public class CommandAd extends SeriousBusinessCommand
 			return;
 		}
 
-		if (Company.instance().getEmployeeManager().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Sales)
+		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Sales)
 		{
 			player.sendMessage(ChatColor.RED + "Only sales workers can broadcast adverts.");
 			return;
@@ -52,6 +54,6 @@ public class CommandAd extends SeriousBusinessCommand
 		}
 		while (n < args.length);
 
-		Company.instance().getServer().broadcastMessage(ChatColor.GOLD + "[" + ChatColor.WHITE + "Shop" + Company.instance().getCompanyManager().getAdIdentifier(companyId, player.getLocation()) + ChatColor.GOLD + "] " + ChatColor.AQUA + adText);
+		Company.instance().getServer().broadcastMessage(ChatColor.GOLD + "[" + ChatColor.WHITE + "Shop" + CompanyManager.instance().getAdIdentifier(companyId, player.getLocation()) + ChatColor.GOLD + "] " + ChatColor.AQUA + adText);
 	}
 }

@@ -43,7 +43,7 @@ public class CommandList extends SeriousBusinessCommand
 
 			FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);
 			
-			int employees = Company.instance().getEmployeeManager().getPlayersInCompany(companyId).size();
+			int employees = PlayerManager.instance().getPlayersInCompany(companyId).size();
 			if (employees > 0)
 			{
 				companies.add(new CompanyStockValue(companyId, report.stockEndValue, report.stockValueChange, employees));

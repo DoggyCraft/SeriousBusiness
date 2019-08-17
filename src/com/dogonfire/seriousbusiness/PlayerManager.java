@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -25,6 +25,7 @@ public class PlayerManager
 	private File employeesConfigFile = null;
 	private long lastSaveTime;
 	private HashMap<UUID, JobPosition> selectedJobPositions = new HashMap<UUID, JobPosition>();
+	private HashMap<UUID, Material> selectedMaterials = new HashMap<UUID, Material>();
 	static private PlayerManager instance;
 	
 	PlayerManager()
@@ -335,7 +336,7 @@ public class PlayerManager
 			case Manager : 
 			{
 				// Return percentage of profit this round?
-				double wage = 0.05 * Company.instance().getCompanyManager().getFinancialReport(companyId, round).profit;
+				double wage = 0.05 * CompanyManager.instance().getFinancialReport(companyId, round).profit;
 				
 				if(wage > 0)
 				{
@@ -349,9 +350,9 @@ public class PlayerManager
 				{
 					int productionThisTurn = getProductionThisTurnForEmployee(employeeId);
 					
-					if(productionThisTurn > Company.instance().getCompanyManager().getRequiredProductionPrTurn(companyId)) 						
+					if(productionThisTurn > CompanyManager.instance().getRequiredProductionPrTurn(companyId)) 						
 					{
-						return Company.instance().getCompanyManager().getProductionWage(companyId);						
+						return CompanyManager.instance().getProductionWage(companyId);						
 					} 
 					
 					return 0;
@@ -361,9 +362,9 @@ public class PlayerManager
 			{
 				int salesThisTurn = getSalesThisTurnForEmployee(employeeId);
 				
-				if(salesThisTurn > Company.instance().getCompanyManager().getRequiredSalesPrTurn(companyId)) 						
+				if(salesThisTurn > CompanyManager.instance().getRequiredSalesPrTurn(companyId)) 						
 				{
-					return Company.instance().getCompanyManager().getSalesWage(companyId);						
+					return CompanyManager.instance().getSalesWage(companyId);						
 				} 
 				
 				return 0;
@@ -693,7 +694,7 @@ public class PlayerManager
 		
 		this.employeesConfig.set(employeeId.toString(), null);
 
-		Company.instance().log(Company.instance().getCompanyManager().getCompanyName(companyId) + " lost " + employeeId + " as employee");
+		Company.instance().log(CompanyManager.instance().getCompanyName(companyId) + " lost " + employeeId + " as employee");
 
 		saveTimed();
 	}
@@ -727,6 +728,21 @@ public class PlayerManager
 		selectedJobPositions.put(playerId, jobPosition);
 	}
 
+	public Material getSelectedMaterial(UUID playerId)
+	{
+		if(!selectedMaterials.containsKey(playerId))
+		{
+			return null;
+		}
+		
+		return selectedMaterials.get(playerId);
+	}
+	
+	public void setSelectedMaterial(UUID playerId, Material material)
+	{
+		selectedMaterials.put(playerId, material);
+	}
+
 	public int getProductionThisTurnForEmployee(UUID employeeId)
 	{
 		return this.employeesConfig.getInt(employeeId.toString() + ".ProductionThisTurn");
@@ -750,6 +766,12 @@ public class PlayerManager
 			{
 				this.employeesConfig.set(employeeId + ".SalesThisTurn", 0);
 			} break;
+			
+			default:
+			case Manager : 
+			{
+				
+ 			} break;
 		}		
 	}
 	
@@ -787,6 +809,12 @@ public class PlayerManager
 				work++;
 				this.employeesConfig.set(employeeId + ".SalesThisTurn", work);
 			} break;
+			
+			case Manager :
+			default:	
+			{
+			} break;
+
 		}
 
 		/*
@@ -798,9 +826,9 @@ public class PlayerManager
 			lastPrayerDate.setTime(0L);
 		}
 */		
-		long diff = thisDate.getTime() - lastPrayerDate.getTime();
+		//long diff = thisDate.getTime() - lastPrayerDate.getTime();
 
-		long diffMinutes = diff / 60000L;
+		//long diffMinutes = diff / 60000L;
 		
 		//if (diffMinutes < this.plugin.minBelieverPrayerTime)
 		//{
