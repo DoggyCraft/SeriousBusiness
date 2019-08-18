@@ -17,8 +17,6 @@ import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
 
 
-
-
 public class CompanyCommandExecuter implements CommandExecutor
 {
 	private static CompanyCommandExecuter instance;
@@ -36,6 +34,7 @@ public class CompanyCommandExecuter implements CommandExecutor
 	private CompanyCommandExecuter()
 	{
 		commandList = new TreeMap<String, SeriousBusinessCommand>();
+		
 		registerCommand(new CommandAccept());
 		registerCommand(new CommandAd());
 		registerCommand(new CommandCheck());
@@ -53,6 +52,8 @@ public class CompanyCommandExecuter implements CommandExecutor
 		registerCommand(new CommandSetProductName());
 		registerCommand(new CommandSetProductInfo());
 		registerCommand(new CommandSetSalesWage());
+		registerCommand(new CommandSetManagerWage());
+		registerCommand(new CommandSetProductionWage());
 		registerCommand(new CommandSetSellPrice());
 		registerCommand(new CommandWorkAs());
 		registerCommand(new CommandPeople());

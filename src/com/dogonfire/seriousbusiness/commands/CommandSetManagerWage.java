@@ -10,12 +10,12 @@ import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 
-public class CommandSetSalesWage extends SeriousBusinessCommand
+public class CommandSetManagerWage extends SeriousBusinessCommand
 {
-	protected CommandSetSalesWage()
+	protected CommandSetManagerWage()
 	{
-		super("setsaleswage");
-		this.permission = "company.setwage.sales";
+		super("setmanagerwage");
+		this.permission = "company.setwage.manager";
 	}
 
 	@Override
@@ -37,11 +37,11 @@ public class CommandSetSalesWage extends SeriousBusinessCommand
 			return;
 		}
 
-		double wage = 0;
+		double percent = 0;
 		
 		try
 		{
-			wage = Double.parseDouble(args[1]);
+			percent = Double.parseDouble(args[1]);
 		}
 		catch(Exception exception)
 		{
@@ -49,7 +49,7 @@ public class CommandSetSalesWage extends SeriousBusinessCommand
 			return;
 		}
 				
-		CompanyManager.instance().setSalesWage(companyId, wage);		
-		CompanyManager.instance().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + " changed the sales wage to " + ChatColor.WHITE + wage + ChatColor.AQUA + " wanks", 1);		
+		CompanyManager.instance().setManagerWage(companyId, percent);		
+		CompanyManager.instance().companySayToEmployees(companyId, ChatColor.WHITE + player.getName() + " changed the manager salery to " + ChatColor.WHITE + percent + ChatColor.AQUA + " % of profits", 1);		
 	}
 }

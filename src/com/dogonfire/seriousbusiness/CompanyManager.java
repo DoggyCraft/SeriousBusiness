@@ -860,6 +860,7 @@ public class CompanyManager
 		
 		this.setProductionWage(companyId, 10);
 		this.setSalesWage(companyId, 10);
+		this.setManagerWage(companyId, 5);
 
 		for(Material material : Material.values())
 		{
@@ -1407,8 +1408,8 @@ public class CompanyManager
 				{
 					switch(employeePosition)
 					{
-						case Manager : this.increaseManagerWagesPaidThisRound(companyId, currentRound, wage); PlayerManager.instance().addXP(employeeId, 1); break;						
-						case Sales : this.increaseSalesWagesPaidThisRound(companyId, currentRound, wage); break;						
+						case Manager 	: this.increaseManagerWagesPaidThisRound(companyId, currentRound, wage); PlayerManager.instance().addXP(employeeId, 1); break;						
+						case Sales 		: this.increaseSalesWagesPaidThisRound(companyId, currentRound, wage); break;						
 						case Production : this.increaseProductionWagesPaidThisRound(companyId, currentRound, wage); break;						
 					}					
 					
@@ -1585,5 +1586,9 @@ public class CompanyManager
 		this.companyConfig.set(companyId.toString() + ".ProductionWage", wage);
 	}
 
+	public void setManagerWage(UUID companyId, double percent)
+	{
+		this.companyConfig.set(companyId.toString() + ".ManagerWage", percent);
+	}
 
 }

@@ -52,6 +52,9 @@ permissions:
       company.invite: true
       company.workas: false
       company.quit: true
+      company.setwage.production: true      
+      company.setwage.manager: true      
+      company.setwage.sales: true      
       job: true
       job.search: true
       job.apply.goto: true
