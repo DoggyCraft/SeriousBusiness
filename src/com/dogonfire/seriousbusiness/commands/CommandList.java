@@ -76,30 +76,30 @@ public class CommandList extends SeriousBusinessCommand
 
 		for (CompanyStockValue companyStock : topCompanies)
 		{
-			String fullCompanyName = String.format("%-16s", String.format("%-16s", CompanyManager.instance().getCompanyName(companyStock.companyId)) );
+			String fullCompanyName = String.format("%-16s", String.format("%-16s", CompanyManager.instance().getCompanyName(companyStock.getCompanyId())) );
 								
 			if (sender != null)
 			{
 				String changeColor = ChatColor.WHITE + "";
 				
-				if(companyStock.stockChange > 0)
+				if(companyStock.getStockChange() > 0)
 				{
 					changeColor = ChatColor.GREEN + "+";
 				}
-				else if(companyStock.stockChange < 0)
+				else if(companyStock.getStockChange() < 0)
 				{
 					changeColor = ChatColor.RED + "";
 				}
 
-				if (playerCompanyId != null && companyStock.companyId.equals(playerCompanyId))
+				if (playerCompanyId != null && companyStock.getCompanyId().equals(playerCompanyId))
 				{
 					playerCompanyShown = true;
 										
-					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.stockValue)).append(changeColor + " (").append(df.format(companyStock.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.numberOfEmployees).toString(), 2));
+					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.getStockValue())).append(changeColor + " (").append(df.format(companyStock.getStockChange())).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.getNumberOfEmployees()).toString(), 2));
 				}
 				else
 				{
-					sender.sendMessage(ChatColor.YELLOW + String.format("%2d", n) + ChatColor.GOLD + " - " + fullCompanyName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.stockValue)).append(changeColor + " (").append(df.format(companyStock.stockChange)).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.numberOfEmployees).toString(), 2));
+					sender.sendMessage(ChatColor.YELLOW + String.format("%2d", n) + ChatColor.GOLD + " - " + fullCompanyName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.getStockValue())).append(changeColor + " (").append(df.format(companyStock.getStockChange())).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.getNumberOfEmployees()).toString(), 2));
 				}
 			}
 			//else
@@ -116,12 +116,12 @@ public class CommandList extends SeriousBusinessCommand
 		{
 			for (CompanyStockValue company : companies)
 			{
-				String fullCompanyName = String.format("%-16s", new Object[] { company.companyId }) + "   " + String.format("%-16s", CompanyManager.instance().getCompanyName(company.companyId) );
+				String fullCompanyName = String.format("%-16s", new Object[] { company.getCompanyId() }) + "   " + String.format("%-16s", CompanyManager.instance().getCompanyName(company.getCompanyId()) );
 				
-				if (playerCompanyId != null && company.companyId.equals(playerCompanyId))
+				if (playerCompanyId != null && company.getCompanyId().equals(playerCompanyId))
 				{
 					playerCompanyShown = true;
-					sender.sendMessage("" + ChatColor.GOLD + n + " - " + fullCompanyName + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(company.stockValue).toString(), 2) + StringUtils.rightPad(new StringBuilder().append(" Employees ").append(company.numberOfEmployees).toString(), 2));
+					sender.sendMessage("" + ChatColor.GOLD + n + " - " + fullCompanyName + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(company.getStockValue()).toString(), 2) + StringUtils.rightPad(new StringBuilder().append(" Employees ").append(company.getNumberOfEmployees()).toString(), 2));
 				}
 				n++;
 			}

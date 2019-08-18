@@ -10,6 +10,7 @@ import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PermissionsManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
+import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
 
 
 public class CommandCompanyHelp extends SeriousBusinessCommand
@@ -211,7 +212,8 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		player.sendMessage(ChatColor.WHITE + "  /company setrequiredproduction <amount>");
 		player.sendMessage(ChatColor.WHITE + "  /company setrequiredsales <amount>");		
 		player.sendMessage("");
-		player.sendMessage(ChatColor.AQUA + "As a manager, you will earn 5 % of your company profit pr turn, so a manager must make sure that the company is making profit if he wants to get paid.");
+		player.sendMessage(ChatColor.AQUA + "As a manager, you will earn 5 % of your company profit pr turn.");
+		player.sendMessage(ChatColor.AQUA + "So a manager must make sure that the company is making profit if he wants to get paid.");
 
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company hq " + ChatColor.AQUA + " to go to your company headquarters", 6*20);
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company shop " + ChatColor.AQUA + " to go to your company shop", 9*20);

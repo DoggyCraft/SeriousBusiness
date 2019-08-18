@@ -14,6 +14,6 @@ public class TopCompanyComparator implements Comparator<CompanyStockValue>
 		CompanyStockValue g1 = (CompanyStockValue) object1;
 		CompanyStockValue g2 = (CompanyStockValue) object2;
 
-		return (int) (g2.stockValue - g1.stockValue);
+		return (int) (g2.getStockValue() - g1.getStockValue());
 	}
 }

@@ -106,9 +106,9 @@ public class CommandPeople extends SeriousBusinessCommand
 
 		for (Employee employee : employeesList)
 		{
-			long minutes = (thisDate.getTime() - employee.lastWorked.getTime()) / 60000L;
-			long hours = (thisDate.getTime() - employee.lastWorked.getTime()) / 3600000L;
-			long days = (thisDate.getTime() - employee.lastWorked.getTime()) / 86400000L;
+			long minutes = (thisDate.getTime() - employee.getLastWorked().getTime()) / 60000L;
+			long hours = (thisDate.getTime() - employee.getLastWorked().getTime()) / 3600000L;
+			long days = (thisDate.getTime() - employee.getLastWorked().getTime()) / 86400000L;
 
 			String date = "never";
 			if (days > 0L)
@@ -124,11 +124,11 @@ public class CommandPeople extends SeriousBusinessCommand
 				date = minutes + " min ago";
 			}
 			
-			String employeeName = Company.instance().getServer().getOfflinePlayer(employee.employeeId).getName();
+			String employeeName = Company.instance().getServer().getOfflinePlayer(employee.getEmployeeId()).getName();
 
 			if (sender != null)
 			{				
-				if (companyId != null && (employee.employeeId.equals(player.getUniqueId())))
+				if (companyId != null && (employee.getEmployeeId().equals(player.getUniqueId())))
 				{
 					playerShown = true;
 					sender.sendMessage(ChatColor.GOLD + StringUtils.rightPad(employeeName, 20) + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(ChatColor.GOLD).append(date).toString(), 18));
@@ -151,11 +151,11 @@ public class CommandPeople extends SeriousBusinessCommand
 		{
 			for (Employee employee : employees)
 			{
-				String employeeName = Company.instance().getServer().getOfflinePlayer(employee.employeeId).getName();
+				String employeeName = Company.instance().getServer().getOfflinePlayer(employee.getEmployeeId()).getName();
 
-				if (companyId != null && employee.employeeId.equals(player.getUniqueId()))
+				if (companyId != null && employee.getEmployeeId().equals(player.getUniqueId()))
 				{
-					sender.sendMessage(ChatColor.GOLD + StringUtils.rightPad(employeeName, 20) + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(employee.lastWorked).toString(), 18));
+					sender.sendMessage(ChatColor.GOLD + StringUtils.rightPad(employeeName, 20) + StringUtils.rightPad(new StringBuilder().append(" Worked ").append(employee.getLastWorked()).toString(), 18));
 				}
 				n++;
 			}

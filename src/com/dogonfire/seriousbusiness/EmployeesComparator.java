@@ -26,6 +26,6 @@ public class EmployeesComparator implements Comparator<Employee>
 		Employee b1 = (Employee) object1;
 		Employee b2 = (Employee) object2;
 
-		return (int) (b2.lastWorked.getTime() - b1.lastWorked.getTime());
+		return (int) (b2.getLastWorked().getTime() - b1.getLastWorked().getTime());
 	}
 }
