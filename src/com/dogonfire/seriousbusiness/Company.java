@@ -28,17 +28,10 @@ public class Company extends JavaPlugin
 	private ChestManager chestManager = null;
 	private LandManager landManager = null;
 	private PermissionsManager permissionsManager = null;
-	private FileConfiguration config = null;
+	private SeriousBusinessConfiguration configuration = null;
 	static private Company instance;
 	
-	private boolean debug = false;
-	public String serverName = "Your Server";
-	public int turnTimeInSeconds = 60;
-	public int roundTimeInSeconds = 10*60;
-	public int maxCEOOfflineTimeInMinutes = 10;
-	public int maxEmployeeOfflineTimeInDays = 14;
-	public int newCompanyCost = 10000;
-	
+
 	static public Company instance()
 	{
 		return instance;
@@ -90,7 +83,7 @@ public class Company extends JavaPlugin
 
 	public void logDebug(String message)
 	{
-		if (this.debug)
+		if (SeriousBusinessConfiguration.instance().isDebug())
 		{
 			Logger.getLogger("minecraft").info("[Debug] " + message);
 		}
@@ -109,31 +102,9 @@ public class Company extends JavaPlugin
 
 	public void reloadSettings()
 	{
-		reloadConfig();
-
-		loadSettings();
 	}
 
-	public void loadSettings()
-	{
-		this.config = getConfig();
-
-		this.debug = this.config.getBoolean("Settings.Debug", false);
-
-	}
-
-	public void saveSettings()
-	{
-		this.config.set("Settings.Debug", Boolean.valueOf(this.debug));
-		
-		saveConfig();
-	}
 	
-	public boolean isEnabledInWorld(World world)
-	{
-		return world.getName().equalsIgnoreCase("DoggyCraft") || world.getName().equalsIgnoreCase("world");
-	}
-
 	public void onEnable()
 	{
 		Company.instance = this;
@@ -145,6 +116,7 @@ public class Company extends JavaPlugin
 		getCommand("jobs").setExecutor(JobCommandExecuter.instance());
 		getCommand("land").setExecutor(LandCommandExecuter.instance());
 		
+		this.configuration = new SeriousBusinessConfiguration();
 		this.permissionsManager = new PermissionsManager();
 		this.companyManager = new CompanyManager();
 		this.playerManager = new PlayerManager();
@@ -171,9 +143,8 @@ public class Company extends JavaPlugin
 			log("Vault not found. Signs are disabled.");
 		}		
 		
-		loadSettings();
-		saveSettings();
 
+		this.configuration.load();
 		this.companyManager.load();
 		this.playerManager.load();
 		this.landManager.load();

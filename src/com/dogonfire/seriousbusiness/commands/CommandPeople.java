@@ -17,6 +17,7 @@ import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.Employee;
 import com.dogonfire.seriousbusiness.EmployeesComparator;
 import com.dogonfire.seriousbusiness.PlayerManager;
+import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
 
 
 public class CommandPeople extends SeriousBusinessCommand
@@ -72,7 +73,7 @@ public class CommandPeople extends SeriousBusinessCommand
 			}
 			else
 			{
-				Company.instance().log("There are no companies in " + Company.instance().serverName + "!");
+				Company.instance().log("There are no companies in " + SeriousBusinessConfiguration.instance().getServerName() + "!");
 			}
 			
 			return;

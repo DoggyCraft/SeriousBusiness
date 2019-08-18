@@ -9,10 +9,9 @@ import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
-import com.dogonfire.seriousbusiness.PermissionsManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
+import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
 
 
 public class CommandShopGoto extends SeriousBusinessCommand
@@ -32,7 +31,7 @@ public class CommandShopGoto extends SeriousBusinessCommand
 		
 		if (topCompanies.size() == 0)
 		{
-			sender.sendMessage(ChatColor.RED + "There are no companies in " + Company.instance().serverName + "!");
+			sender.sendMessage(ChatColor.RED + "There are no companies in " + SeriousBusinessConfiguration.instance().getServerName() + "!");
 			return;
 		}
 				

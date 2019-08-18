@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
+import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
 
 
 public class CommandReload extends SeriousBusinessCommand
@@ -19,7 +20,7 @@ public class CommandReload extends SeriousBusinessCommand
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
 	{		
-		Company.instance().loadSettings();
+		SeriousBusinessConfiguration.instance().load();
 
 		CompanyManager.instance().load();
 		PlayerManager.instance().load();

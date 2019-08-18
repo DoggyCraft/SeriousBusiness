@@ -585,7 +585,7 @@ public class PlayerManager
 		long diff = thisDate.getTime() - lastPrayerDate.getTime();
 		long diffMinutes = diff / 60000L;
 
-		return diffMinutes <= Company.instance().turnTimeInSeconds;
+		return diffMinutes <= SeriousBusinessConfiguration.instance().getTurnTimeInSeconds();
 	}
 
 	public void setItemBlessingTime(UUID believerId)

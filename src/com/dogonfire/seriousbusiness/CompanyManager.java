@@ -848,8 +848,8 @@ public class CompanyManager
 		
 		setHeadquartersHomeForCompany(companyId, location, null);
 
-		this.setTimeUntilTurnEnd(companyId, Company.instance().turnTimeInSeconds);
-		this.setTimeUntilRoundEnd(companyId, Company.instance().roundTimeInSeconds);
+		this.setTimeUntilTurnEnd(companyId, SeriousBusinessConfiguration.instance().getTurnTimeInSeconds());
+		this.setTimeUntilRoundEnd(companyId, SeriousBusinessConfiguration.instance().getRoundTimeInSeconds());
 
 		this.companyConfig.set(companyId.toString() + ".Name", companyName);
 		this.companyConfig.set(companyId.toString() + ".Created", formatter.format(thisDate));
@@ -1067,7 +1067,7 @@ public class CompanyManager
 			return false;						
 		}		
 		
-		if (!Company.instance().isEnabledInWorld(player.getWorld()))
+		if (!SeriousBusinessConfiguration.instance().isEnabledInWorld(player.getWorld()))
 		{
 			return false;
 		}
@@ -1142,7 +1142,7 @@ public class CompanyManager
 	
 	public boolean handleSupplySign(Player player, String companyName)
 	{
-		if (!Company.instance().isEnabledInWorld(player.getWorld()))
+		if (!SeriousBusinessConfiguration.instance().isEnabledInWorld(player.getWorld()))
 		{
 			return false;
 		}
@@ -1153,7 +1153,7 @@ public class CompanyManager
 			return false;
 		}		
 		
-		if (!Company.instance().isEnabledInWorld(player.getWorld()))
+		if (!SeriousBusinessConfiguration.instance().isEnabledInWorld(player.getWorld()))
 		{
 			return false;
 		}
@@ -1379,7 +1379,7 @@ public class CompanyManager
 		this.setCompanyStockStartValueForRound(companyId, currentRound + 1, currentStockValue);
 
 		increaseCurrentRound(companyId);
-		setTimeUntilRoundEnd(companyId, Company.instance().roundTimeInSeconds);
+		setTimeUntilRoundEnd(companyId, SeriousBusinessConfiguration.instance().getRoundTimeInSeconds());
 						
 		return true;
 	}
@@ -1424,7 +1424,7 @@ public class CompanyManager
 			PlayerManager.instance().resetWork(employeeId, companyId, employeePosition);
 		}		
 		
-		setTimeUntilTurnEnd(companyId, Company.instance().turnTimeInSeconds);
+		setTimeUntilTurnEnd(companyId, SeriousBusinessConfiguration.instance().getTurnTimeInSeconds());
 
 		return true;
 	}

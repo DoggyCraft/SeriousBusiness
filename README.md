@@ -7,6 +7,7 @@ Serious Business
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=bugs)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=DoggyCraftDK_SeriousBusiness&metric=security_rating)](https://sonarcloud.io/dashboard?id=DoggyCraftDK_SeriousBusiness)
 
 ![Business](img/business.jpg)
 

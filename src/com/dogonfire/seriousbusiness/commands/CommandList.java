@@ -13,8 +13,8 @@ import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
-import com.dogonfire.seriousbusiness.PermissionsManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
+import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
 import com.dogonfire.seriousbusiness.TopCompanyComparator;
 import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
 import com.dogonfire.seriousbusiness.CompanyStockValue;
@@ -52,11 +52,11 @@ public class CommandList extends SeriousBusinessCommand
 		
 		if (companies.size() == 0)
 		{
-			sender.sendMessage(ChatColor.RED + "There are no Companies in " + Company.instance().serverName + "!");
+			sender.sendMessage(ChatColor.RED + "There are no Companies in " + SeriousBusinessConfiguration.instance().getServerName() + "!");
 			return;
 		}
 		
-		sender.sendMessage(ChatColor.YELLOW + "--------- The companies in " + Company.instance().serverName + " ---------");
+		sender.sendMessage(ChatColor.YELLOW + "--------- The companies in " + SeriousBusinessConfiguration.instance().getServerName() + " ---------");
 		
 		Collections.sort(companies, new TopCompanyComparator());
 

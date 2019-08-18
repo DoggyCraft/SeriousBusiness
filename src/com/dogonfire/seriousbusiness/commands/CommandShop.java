@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
-import com.dogonfire.seriousbusiness.PermissionsManager;
+import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
 
 public class CommandShop extends SeriousBusinessCommand
 {
@@ -30,7 +30,7 @@ public class CommandShop extends SeriousBusinessCommand
 		
 		if (topCompanies.size() == 0)
 		{
-			player.sendMessage(ChatColor.RED + "There are no companies in " + Company.instance().serverName + "!");
+			player.sendMessage(ChatColor.RED + "There are no companies in " + SeriousBusinessConfiguration.instance().getServerName() + "!");
 			return;
 		}
 		
@@ -52,11 +52,11 @@ public class CommandShop extends SeriousBusinessCommand
 
 		if(n==1)
 		{
-			player.sendMessage(ChatColor.RED + "There are no shops in " + Company.instance().serverName);
+			player.sendMessage(ChatColor.RED + "There are no shops in " + SeriousBusinessConfiguration.instance().getServerName());
 			return;
 		}
 		
-		player.sendMessage(ChatColor.AQUA + "There are " + shops.size() + " shops in " + Company.instance().serverName +":");
+		player.sendMessage(ChatColor.AQUA + "There are " + shops.size() + " shops in " + SeriousBusinessConfiguration.instance().getServerName() +":");
 		player.sendMessage("");
 		
 		for(String shop : shops)

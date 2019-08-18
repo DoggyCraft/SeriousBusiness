@@ -8,8 +8,8 @@ import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
-import com.dogonfire.seriousbusiness.PermissionsManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
+import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 
 
@@ -54,17 +54,17 @@ public class CommandCreate extends SeriousBusinessCommand
 			return;
 		}
 		
-		if (!Company.instance().getEconomyManager().has(player, Company.instance().newCompanyCost))
+		if (!Company.instance().getEconomyManager().has(player, SeriousBusinessConfiguration.instance().getNewCompanyCost()))
 		{
-			player.sendMessage(ChatColor.RED + "You need " + ChatColor.GOLD + Company.instance().newCompanyCost + ChatColor.RED + " to start a new company.");
+			player.sendMessage(ChatColor.RED + "You need " + ChatColor.GOLD + SeriousBusinessConfiguration.instance().getNewCompanyCost() + ChatColor.RED + " to start a new company.");
 			return;
 		}
 		
 		newCompanyName = CompanyManager.instance().formatCompanyName(newCompanyName);
 		
 		UUID companyId = CompanyManager.instance().createCompany(newCompanyName, player.getLocation());
-		Company.instance().getEconomyManager().withdrawPlayer(player, Company.instance().newCompanyCost);
-		CompanyManager.instance().depositCompanyBalance(companyId, Company.instance().newCompanyCost);		
+		Company.instance().getEconomyManager().withdrawPlayer(player, SeriousBusinessConfiguration.instance().getNewCompanyCost());
+		CompanyManager.instance().depositCompanyBalance(companyId, SeriousBusinessConfiguration.instance().getNewCompanyCost());		
 		PlayerManager.instance().setCompanyForEmployee(player.getUniqueId(), companyId);
 		PlayerManager.instance().setCompanyPosition(player.getUniqueId(), JobPosition.Manager);
 		

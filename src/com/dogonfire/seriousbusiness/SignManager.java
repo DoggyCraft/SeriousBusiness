@@ -94,7 +94,7 @@ public class SignManager implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		if (player == null || !Company.instance().isEnabledInWorld(player.getWorld()))
+		if (player == null || !SeriousBusinessConfiguration.instance().isEnabledInWorld(player.getWorld()))
 		{
 			return;
 		}

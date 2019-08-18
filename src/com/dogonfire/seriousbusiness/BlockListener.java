@@ -33,7 +33,7 @@ public class BlockListener implements Listener
 		Player player = event.getPlayer();
 		String companyName = null;
 		
-		if (!Company.instance().isEnabledInWorld(player.getWorld()))
+		if (!SeriousBusinessConfiguration.instance().isEnabledInWorld(player.getWorld()))
 		{
 			return;
 		}
