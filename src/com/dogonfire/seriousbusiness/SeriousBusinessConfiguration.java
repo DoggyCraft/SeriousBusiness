@@ -17,8 +17,8 @@ public class SeriousBusinessConfiguration
 	private FileConfiguration config;
 	private boolean debug = false;
 	private String serverName = "Your Server";
-	private int turnTimeInSeconds = 60;
-	private int roundTimeInSeconds = 10*60;
+	private int turnTimeInSeconds = 5*60;
+	private int roundTimeInSeconds = 30*60;
 	private int maxCEOOfflineTimeInMinutes = 10;
 	private int maxEmployeeOfflineTimeInDays = 14;
 	private int newCompanyCost = 10000;

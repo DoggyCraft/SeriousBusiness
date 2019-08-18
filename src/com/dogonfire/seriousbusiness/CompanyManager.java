@@ -1209,9 +1209,6 @@ public class CompanyManager
 		return true;
 	}
 	
-
-	
-
 	public boolean removeEmployee(UUID believerId)
 	{
 		UUID companyId = PlayerManager.instance().getCompanyForEmployee(believerId);

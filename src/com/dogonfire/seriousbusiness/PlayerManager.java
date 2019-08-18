@@ -201,11 +201,8 @@ public class PlayerManager
 		{
 			return 2;
 		}
-		if (xp > 0)
-		{
-			return 1;
-		}
-		return 0;
+		
+		return 1;
 	}
 	
 	public int getXP(UUID playerId)
@@ -261,24 +258,6 @@ public class PlayerManager
 		this.employeesConfig.set(playerId + ".XP", 0);
 	}
 	
-	public void setReligionChat(UUID believerId, boolean enabled)
-	{
-		if (enabled)
-		{
-			this.employeesConfig.set(believerId + ".ReligionChat", Boolean.valueOf(true));
-		}
-		else
-		{
-			this.employeesConfig.set(believerId + ".ReligionChat", null);
-		}
-		saveTimed();
-	}
-
-	public boolean getReligionChat(UUID believerId)
-	{
-		return this.employeesConfig.getBoolean(believerId + ".ReligionChat");
-	}
-
 	public UUID getCompanyForEmployee(UUID believerId)
 	{
 		try
@@ -290,7 +269,6 @@ public class PlayerManager
 			return null;
 		}
 	}
-
 
 	public Set<String> getEmployees()
 	{
@@ -324,6 +302,14 @@ public class PlayerManager
 		
 		return employeePosition;
 	}
+
+	public double getWageModifier(UUID employeeId)
+	{
+		int xp = getXP(employeeId);			
+		int level = getLevelForXP(xp);
+		
+		return (1 + level/10); 		
+	}
 	
 	public double getWageForEmployee(UUID employeeId, int round)
 	{
@@ -335,8 +321,8 @@ public class PlayerManager
 		{
 			case Manager : 
 			{
-				// Return percentage of profit this round?
-				double wage = 0.05 * CompanyManager.instance().getFinancialReport(companyId, round).profit;
+				// Return a percentage of profit this round
+				double wage = 0.05 * CompanyManager.instance().getFinancialReport(companyId, round).profit * getWageModifier(employeeId);
 				
 				if(wage > 0)
 				{
@@ -352,7 +338,7 @@ public class PlayerManager
 					
 					if(productionThisTurn > CompanyManager.instance().getRequiredProductionPrTurn(companyId)) 						
 					{
-						return CompanyManager.instance().getProductionWage(companyId);						
+						return CompanyManager.instance().getProductionWage(companyId) * getWageModifier(employeeId);						
 					} 
 					
 					return 0;
@@ -364,7 +350,7 @@ public class PlayerManager
 				
 				if(salesThisTurn > CompanyManager.instance().getRequiredSalesPrTurn(companyId)) 						
 				{
-					return CompanyManager.instance().getSalesWage(companyId);						
+					return CompanyManager.instance().getSalesWage(companyId) * getWageModifier(employeeId);						
 				} 
 				
 				return 0;
@@ -609,8 +595,6 @@ public class PlayerManager
 
 		saveTimed();
 	}
-
-	
 
 	public void setInvitation(UUID employeeId, UUID companyId)
 	{
