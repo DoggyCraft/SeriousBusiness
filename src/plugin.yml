@@ -14,6 +14,9 @@ commands:
   job:
     description: "Controls the Serious Business jobs"
     usage: /job
+  jobs:
+    description: "Controls the Serious Business jobs"
+    usage: /job
   land:
     description: "Controls the Serious Business lands"
     usage: /land
@@ -21,6 +24,9 @@ commands:
     description: "Controls the Serious Business tax system"
     usage: /tax
   shop:
+    description: "Controls the Serious Business shopping system"
+    usage: /shop
+  shops:
     description: "Controls the Serious Business shopping system"
     usage: /shop
 permissions: 

@@ -46,6 +46,7 @@ public class ShopCommandExecuter implements CommandExecutor
 	{
 		if (commandList.containsKey(command.name))
 			return;
+		
 		commandList.put(command.name.toLowerCase(), command);
 	}
 
