@@ -70,6 +70,7 @@ public class CommandCreate extends SeriousBusinessCommand
 		
 		Company.instance().getServer().broadcastMessage(ChatColor.WHITE + player.getName() + ChatColor.AQUA + " founded the company " + ChatColor.GOLD + newCompanyName);
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You founded the company " + ChatColor.GOLD + newCompanyName, 1);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You paid " + ChatColor.GOLD + SeriousBusinessConfiguration.instance().getNewCompanyCost() + " wanks" + ChatColor.AQUA + " for the company registration", 1);
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company desc" + ChatColor.AQUA +  " to give your company a description", 3*20);
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help" + ChatColor.AQUA +  " to see information about your job", 6*20);
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help commands" + ChatColor.AQUA +  " to see a list of commands", 9*20);

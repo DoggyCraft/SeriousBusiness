@@ -105,6 +105,14 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		{
 			player.sendMessage(ChatColor.WHITE + "/company report <companyname>" + ChatColor.AQUA + " - Show the latest report any company");
 		}
+		if (PermissionsManager.instance().hasPermission(player, "company.withdraw"))
+		{
+			player.sendMessage(ChatColor.WHITE + "/company withdraw" + ChatColor.AQUA + " - Withdraw from company account");
+		}
+		if (PermissionsManager.instance().hasPermission(player, "company.deposit"))
+		{
+			player.sendMessage(ChatColor.WHITE + "/company deposit" + ChatColor.AQUA + " - Deposit to company account");
+		}
 		if (PermissionsManager.instance().hasPermission(player, "company.setproductname"))
 		{
 			player.sendMessage(ChatColor.WHITE + "/company setproductname <itemname> <customname>" + ChatColor.AQUA + " - Customize a item name for the company");
@@ -144,6 +152,14 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		if (PermissionsManager.instance().hasPermission(player, "company.home.shop"))
 		{
 			player.sendMessage(ChatColor.WHITE + "/company shop" + ChatColor.AQUA + " - Go to your company shop");
+		}
+		if (PermissionsManager.instance().hasPermission(player, "patent.apply"))
+		{
+			player.sendMessage(ChatColor.WHITE + "/patent apply" + ChatColor.AQUA + " - Apply for a trademark on a word");
+		}
+		if (PermissionsManager.instance().hasPermission(player, "patent.list"))
+		{
+			player.sendMessage(ChatColor.WHITE + "/patent list" + ChatColor.AQUA + " - View all patents");
 		}
 	}
 	
@@ -218,7 +234,7 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company hq " + ChatColor.AQUA + " to go to your company headquarters", 6*20);
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company shop " + ChatColor.AQUA + " to go to your company shop", 9*20);
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company products " + ChatColor.AQUA + " to see the products being produced", 12*20);
-		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help" + ChatColor.AQUA + " to see the commands you scan use", 15*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company help" + ChatColor.AQUA + " to see the commands you can use", 15*20);
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company quit" + ChatColor.AQUA +  " to quit your company", 18*20);
 	}
 }

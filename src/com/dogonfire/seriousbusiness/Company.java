@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.dogonfire.seriousbusiness.commands.CompanyCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.JobCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.LandCommandExecuter;
+import com.dogonfire.seriousbusiness.commands.PatentCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.ShopCommandExecuter;
 import com.dogonfire.tasks.InfoTask;
 
@@ -23,6 +24,7 @@ public class Company extends JavaPlugin
 {
 	private Economy economyManager;
 	private CompanyManager companyManager = null;
+	private PatentManager patentManager = null;
 	private PlayerManager playerManager = null;
 	private SignManager signManager = null;
 	private ChestManager chestManager = null;
@@ -37,6 +39,11 @@ public class Company extends JavaPlugin
 		return instance;
 	}
 	
+	public PatentManager getPatentManager()
+	{
+		return patentManager;
+	}
+
 	public LandManager getLandManager()
 	{
 		return landManager;
@@ -83,7 +90,7 @@ public class Company extends JavaPlugin
 
 	public void logDebug(String message)
 	{
-		if (SeriousBusinessConfiguration.instance().isDebug())
+		if (configuration.isDebug())
 		{
 			Logger.getLogger("minecraft").info("[Debug] " + message);
 		}
@@ -115,10 +122,12 @@ public class Company extends JavaPlugin
 		getCommand("job").setExecutor(JobCommandExecuter.instance());
 		getCommand("jobs").setExecutor(JobCommandExecuter.instance());
 		getCommand("land").setExecutor(LandCommandExecuter.instance());
+		getCommand("patent").setExecutor(PatentCommandExecuter.instance());
 		
 		this.configuration = new SeriousBusinessConfiguration();
 		this.permissionsManager = new PermissionsManager();
 		this.companyManager = new CompanyManager();
+		this.patentManager = new PatentManager();
 		this.playerManager = new PlayerManager();
 		this.chestManager = new ChestManager();
 		this.landManager = new LandManager();
@@ -143,13 +152,13 @@ public class Company extends JavaPlugin
 			log("Vault not found. Signs are disabled.");
 		}		
 		
-
 		this.configuration.load();
 		this.companyManager.load();
+		this.patentManager.load();
 		this.playerManager.load();
 		this.landManager.load();
 		
-		getServer().getPluginManager().registerEvents(new BlockListener(), this);
+		getServer().getPluginManager().registerEvents(new EventListener(), this);
 		getServer().getPluginManager().registerEvents(new SignManager(), this);
 
 		Runnable updateTask = new Runnable()
@@ -158,6 +167,7 @@ public class Company extends JavaPlugin
 			{
 				Company.this.companyManager.update();
 				Company.this.landManager.update();
+				Company.this.patentManager.update();
 			}
 		};
 		
@@ -169,6 +179,7 @@ public class Company extends JavaPlugin
 		reloadSettings();
 
 		this.companyManager.save();
+		this.patentManager.save();
 		this.playerManager.save();
 	}	
 }

@@ -1,6 +1,9 @@
 package com.dogonfire.seriousbusiness;
 
+import java.io.IOException;
+
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -9,22 +12,42 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class BlockListener implements Listener
+
+public class EventListener implements Listener
 {
-	static private BlockListener instance;
+	static private EventListener instance;
 	
-	BlockListener()
+	EventListener()
 	{
 		instance = this;
 	}
 
-	static public BlockListener instance()
+	static public EventListener instance()
 	{
 		return instance;
+	}
+	
+	@EventHandler
+	public void onPlayerChat(AsyncPlayerChatEvent event)
+	{
+		final Player player = event.getPlayer();
+		
+		/*
+		int index = event.getMessage().indexOf(">>");
+		
+		if(index == -1)
+		{
+			return;			
+		}*/
+		
+		String newMessage = PatentManager.instance().handleChatWord(event.getPlayer(), event.getMessage());
+
+		event.setMessage(newMessage);		
 	}
 	
 	@EventHandler

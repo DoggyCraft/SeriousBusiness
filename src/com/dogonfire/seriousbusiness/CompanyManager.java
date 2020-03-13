@@ -140,18 +140,11 @@ public class CompanyManager
 		save();
 	}
 
-	public Set<String> getAllGods()
-	{
-		Set<String> gods = this.companyConfig.getKeys(false);
-
-		return gods;
-	}
-
 	public List<UUID> getOfflineCompanies()
 	{
-		Set<String> allGods = this.companyConfig.getKeys(false);
+		Set<String> allCompanies = this.companyConfig.getKeys(false);
 		List<UUID> offlineCompanies = new ArrayList<UUID>();
-		for (String companyIdString : allGods)
+		for (String companyIdString : allCompanies)
 		{
 			UUID companyId = UUID.fromString(companyIdString);
 			

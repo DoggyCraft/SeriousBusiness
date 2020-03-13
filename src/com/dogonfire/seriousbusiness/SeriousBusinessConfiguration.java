@@ -10,7 +10,7 @@ public class SeriousBusinessConfiguration
 	private static SeriousBusinessConfiguration instance;
 
 	public static SeriousBusinessConfiguration instance()
-	{
+	{	
 		return instance;
 	}
 
@@ -21,11 +21,14 @@ public class SeriousBusinessConfiguration
 	private int roundTimeInSeconds = 30*60;
 	private int maxCEOOfflineTimeInMinutes = 10;
 	private int maxEmployeeOfflineTimeInDays = 14;
-	private int newCompanyCost = 10000;
-
+	private int newCompanyCost = 100;
+	private int newPatentCost = 100;
+	private int patentChargePercentage = 1;
+	private int patentMinutes = 5;
 
 	public SeriousBusinessConfiguration()
 	{
+		instance = this;
 	}
 
 	public final int getTurnTimeInSeconds()
@@ -41,6 +44,16 @@ public class SeriousBusinessConfiguration
 	public final int getNewCompanyCost()
 	{
 		return newCompanyCost;
+	}
+	
+	public int getPatentTime()
+	{
+		return patentMinutes;
+	}
+
+	public int getPatentChargePercentage()
+	{
+		return patentChargePercentage;
 	}
 
 	public final int getMaxEmployeeOfflineTimeInDays()
@@ -58,6 +71,12 @@ public class SeriousBusinessConfiguration
 		return serverName;
 	}
 
+	public final int getPatentCost()
+	{
+		
+		return newPatentCost;
+	}
+	
 	public final boolean isDebug()
 	{
 		return debug;

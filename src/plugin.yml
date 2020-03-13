@@ -11,6 +11,9 @@ commands:
   company:
     description: "Controls the Serious Business companies"
     usage: /company
+  patent:
+    description: "Controls the Serious Business patents"
+    usage: /patent
   job:
     description: "Controls the Serious Business jobs"
     usage: /job
@@ -64,6 +67,9 @@ permissions:
       job: true
       job.search: true
       job.apply.goto: true
+      patent: true
+      patent.apply: true
+      patent.list: true
       land: true
       shop: true
       shop.search: true

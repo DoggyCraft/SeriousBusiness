@@ -45,6 +45,7 @@ public class CompanyCommandExecuter implements CommandExecutor
 		registerCommand(new CommandInvite());
 		registerCommand(new CommandInfo());
 		registerCommand(new CommandFire());
+		registerCommand(new CommandList());
 		registerCommand(new CommandQuit());
 		registerCommand(new CommandJobSearch());
 		registerCommand(new CommandSetJobs());
