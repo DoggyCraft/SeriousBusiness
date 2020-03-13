@@ -70,7 +70,7 @@ public class CommandApplyPatent extends SeriousBusinessCommand
 		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
 
 		PatentManager.instance().createPatent(companyId, patentWord);
-		CompanyManager.instance().depositCompanyBalance(companyId, cost);
+		CompanyManager.instance().depositCompanyBalance(companyId, -cost);
 		CompanyManager.instance().increasePatentExpensesPaidThisRound(companyId, currentRound, cost);
 		
 		Company.instance().getServer().broadcastMessage(ChatColor.WHITE + CompanyManager.instance().getCompanyName(companyId) + ChatColor.AQUA + " patented the word " + ChatColor.WHITE + "'" + patentWord + "'");

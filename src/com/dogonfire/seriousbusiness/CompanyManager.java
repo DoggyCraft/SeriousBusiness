@@ -1401,7 +1401,7 @@ public class CompanyManager
 		{
 			JobPosition employeePosition = PlayerManager.instance().getEmployeeCompanyPosition(employeeId);
 			
-			double wage = PlayerManager.instance().getWageForEmployee(employeeId, currentRound);
+			int wage = (int)PlayerManager.instance().getWageForEmployee(employeeId, currentRound);
 						
 			if(wage > 0)
 			{				
@@ -1421,7 +1421,9 @@ public class CompanyManager
 					
 					this.depositCompanyBalance(companyId, -wage);
 					
-					Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You earned " + ChatColor.GOLD + wage + " wanks " + ChatColor.AQUA + " for your " + employeePosition.name() + " work in " + ChatColor.WHITE + companyId.toString() + ChatColor.AQUA + "!", 2);				
+					String companyName = getCompanyName(companyId);
+					
+					Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You earned " + ChatColor.GOLD + wage + " wanks " + ChatColor.AQUA + " for your " + employeePosition.name() + " work in " + ChatColor.WHITE + companyName + ChatColor.AQUA + "!", 2);				
 				}
 			}
 			

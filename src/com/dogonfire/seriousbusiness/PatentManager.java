@@ -186,7 +186,7 @@ public class PatentManager
 			cost = 1;
 		}
 
-		if(Company.instance().getEconomyManager().has(player, cost))
+		if(Company.instance().getEconomyManager().has(player, cost) && Company.instance().getEconomyManager().has(player, 100))
 		{
 			player.sendMessage(ChatColor.YELLOW + "  You have been charged " + cost + ChatColor.YELLOW + " wanks by " + ChatColor.WHITE + CompanyManager.instance().getCompanyName(patent.companyId) + ChatColor.YELLOW + " for using the word '" + patent.word + "'");
 			Company.instance().getEconomyManager().withdrawPlayer(player, cost);
@@ -253,7 +253,9 @@ public class PatentManager
 
 			long timeBefore = System.currentTimeMillis();
 
-			for (Patent patent : patentHolders.values())
+			Collection<Patent> patents = new ArrayList<Patent>(patentHolders.values());
+			
+			for (Patent patent : patents)
 			{
 				if (patent.isExpired())
 				{

@@ -78,7 +78,7 @@ permissions:
       stocks: true
       stocks.buy: true
       stocks.sell: true
-      land: true
+      land.land: true
       shop: true
       shop.search: true
       shop.goto: true

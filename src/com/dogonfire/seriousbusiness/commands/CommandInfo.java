@@ -75,15 +75,15 @@ public class CommandInfo extends SeriousBusinessCommand
 		
 		if(report.stockValueChange > 0)
 		{
-			sender.sendMessage(ChatColor.AQUA + " StockValue: " + report.stockEndValue + ChatColor.GREEN + "+" + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%");
+			sender.sendMessage(ChatColor.AQUA + " StockValue: " + (int)report.stockEndValue + ChatColor.GREEN + "+" + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%");
 		}
 		else if(report.stockValueChange == 0)
 		{
-			sender.sendMessage(ChatColor.AQUA + " StockValue: " + report.stockEndValue);			
+			sender.sendMessage(ChatColor.AQUA + " StockValue: " + (int)report.stockEndValue);			
 		}		
 		else
 		{
-			sender.sendMessage(ChatColor.AQUA + " StockValue: " + report.stockEndValue + ChatColor.RED + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%");			
+			sender.sendMessage(ChatColor.AQUA + " StockValue: " + (int)report.stockEndValue + ChatColor.RED + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%");			
 		}		
 		
 		sender.sendMessage(ChatColor.YELLOW + "People:");
