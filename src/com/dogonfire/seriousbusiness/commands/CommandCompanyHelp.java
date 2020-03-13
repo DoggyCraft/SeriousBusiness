@@ -107,11 +107,11 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		}
 		if (PermissionsManager.instance().hasPermission(player, "company.withdraw"))
 		{
-			player.sendMessage(ChatColor.WHITE + "/company withdraw" + ChatColor.AQUA + " - Withdraw from company account");
+			player.sendMessage(ChatColor.WHITE + "/company withdraw" + ChatColor.AQUA + " - Withdraw wanks from company account");
 		}
 		if (PermissionsManager.instance().hasPermission(player, "company.deposit"))
 		{
-			player.sendMessage(ChatColor.WHITE + "/company deposit" + ChatColor.AQUA + " - Deposit to company account");
+			player.sendMessage(ChatColor.WHITE + "/company deposit" + ChatColor.AQUA + " - Deposit wanks to company account");
 		}
 		if (PermissionsManager.instance().hasPermission(player, "company.setproductname"))
 		{

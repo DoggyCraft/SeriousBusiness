@@ -61,6 +61,8 @@ permissions:
       company.invite: true
       company.workas: false
       company.quit: true
+      company.deposit: true
+      company.withdraw: true
       company.setwage.production: true      
       company.setwage.manager: true      
       company.setwage.sales: true      

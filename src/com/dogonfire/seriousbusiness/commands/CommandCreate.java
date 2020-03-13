@@ -56,7 +56,7 @@ public class CommandCreate extends SeriousBusinessCommand
 		
 		if (!Company.instance().getEconomyManager().has(player, SeriousBusinessConfiguration.instance().getNewCompanyCost()))
 		{
-			player.sendMessage(ChatColor.RED + "You need " + ChatColor.GOLD + SeriousBusinessConfiguration.instance().getNewCompanyCost() + ChatColor.RED + " to start a new company.");
+			player.sendMessage(ChatColor.RED + "You need " + ChatColor.GOLD + SeriousBusinessConfiguration.instance().getNewCompanyCost() + " wanks" + ChatColor.RED + " to start a new company.");
 			return;
 		}
 		
