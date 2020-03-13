@@ -18,6 +18,7 @@ import com.dogonfire.seriousbusiness.commands.JobCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.LandCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.PatentCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.ShopCommandExecuter;
+import com.dogonfire.seriousbusiness.commands.StockCommandExecuter;
 import com.dogonfire.tasks.InfoTask;
 
 public class Company extends JavaPlugin
@@ -29,6 +30,7 @@ public class Company extends JavaPlugin
 	private SignManager signManager = null;
 	private ChestManager chestManager = null;
 	private LandManager landManager = null;
+	private StockManager stockManager = null;
 	private PermissionsManager permissionsManager = null;
 	private SeriousBusinessConfiguration configuration = null;
 	static private Company instance;
@@ -69,6 +71,11 @@ public class Company extends JavaPlugin
 		return economyManager;
 	}
 	
+	public StockManager getStockManager()
+	{
+		return stockManager;
+	}
+
 	public Material getMaterialById(String materialString)
 	{		
 		try
@@ -123,6 +130,7 @@ public class Company extends JavaPlugin
 		getCommand("jobs").setExecutor(JobCommandExecuter.instance());
 		getCommand("land").setExecutor(LandCommandExecuter.instance());
 		getCommand("patent").setExecutor(PatentCommandExecuter.instance());
+		getCommand("stocks").setExecutor(StockCommandExecuter.instance());
 		
 		this.configuration = new SeriousBusinessConfiguration();
 		this.permissionsManager = new PermissionsManager();
@@ -131,6 +139,8 @@ public class Company extends JavaPlugin
 		this.playerManager = new PlayerManager();
 		this.chestManager = new ChestManager();
 		this.landManager = new LandManager();
+		this.signManager = new SignManager();
+		this.stockManager = new StockManager();
 		
 		PluginManager pm = getServer().getPluginManager();
 
@@ -159,7 +169,7 @@ public class Company extends JavaPlugin
 		this.landManager.load();
 		
 		getServer().getPluginManager().registerEvents(new EventListener(), this);
-		getServer().getPluginManager().registerEvents(new SignManager(), this);
+		getServer().getPluginManager().registerEvents(signManager, this);
 
 		Runnable updateTask = new Runnable()
 		{

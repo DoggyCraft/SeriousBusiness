@@ -71,7 +71,7 @@ public class CommandInfo extends SeriousBusinessCommand
 		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);
 		
 		sender.sendMessage(ChatColor.YELLOW + "Financial information:");
-		sender.sendMessage(ChatColor.AQUA + " Balance: " + report.balance + " wanks");
+		sender.sendMessage(ChatColor.AQUA + " Balance: " + (int)(report.balance) + " wanks");
 		
 		if(report.stockValueChange > 0)
 		{

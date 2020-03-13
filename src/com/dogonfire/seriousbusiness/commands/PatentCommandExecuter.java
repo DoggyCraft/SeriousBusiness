@@ -66,6 +66,7 @@ public class PatentCommandExecuter implements CommandExecutor
 			player.sendMessage(ChatColor.YELLOW + "");
 			player.sendMessage(ChatColor.YELLOW + "The trademark registration fee is currently " + ChatColor.WHITE + SeriousBusinessConfiguration.instance().getPatentCost() + " wanks");
 			player.sendMessage(ChatColor.YELLOW + "The trademark usage fee is currently " + ChatColor.WHITE + SeriousBusinessConfiguration.instance().getPatentChargePercentage() + "%" + ChatColor.YELLOW + " of a players total wanks");
+			player.sendMessage(ChatColor.YELLOW + "The trademark expiration time is currently " + ChatColor.WHITE + SeriousBusinessConfiguration.instance().getPatentTime() + " minutes");
 						
 			sender.sendMessage("" + ChatColor.AQUA);
 

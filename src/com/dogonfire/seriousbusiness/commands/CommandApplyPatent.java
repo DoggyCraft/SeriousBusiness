@@ -10,7 +10,6 @@ import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
-import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 import com.dogonfire.seriousbusiness.PatentManager;
 import com.dogonfire.seriousbusiness.PatentManager.Patent;
 
@@ -39,7 +38,7 @@ public class CommandApplyPatent extends SeriousBusinessCommand
 		
 		String patentWord = args[1].toLowerCase();
 		
-		if (patentWord==null || patentWord.length() < 3)
+		if (patentWord==null || patentWord.length() < 3 || args.length != 2)
 		{
 			player.sendMessage(ChatColor.RED + "That is not a valid word for a patent.");
 			return;
@@ -62,14 +61,17 @@ public class CommandApplyPatent extends SeriousBusinessCommand
 		
 		int cost = (1 + PatentManager.instance().getCompanyPatents(companyId).size()) * SeriousBusinessConfiguration.instance().getPatentCost();
 		
-		if (!Company.instance().getEconomyManager().has(player, cost))
+		if (CompanyManager.instance().getBalance(companyId) < cost)
 		{
-			player.sendMessage(ChatColor.RED + "You need " + ChatColor.GOLD + cost + ChatColor.RED + " to patent a new word.");
+			player.sendMessage(ChatColor.RED + "Your company needs " + ChatColor.GOLD + cost + ChatColor.RED + " to patent a new word.");
 			return;
 		}
 		
+		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
+
 		PatentManager.instance().createPatent(companyId, patentWord);
-		Company.instance().getEconomyManager().withdrawPlayer(player, SeriousBusinessConfiguration.instance().getNewCompanyCost());
+		CompanyManager.instance().depositCompanyBalance(companyId, cost);
+		CompanyManager.instance().increasePatentExpensesPaidThisRound(companyId, currentRound, cost);
 		
 		Company.instance().getServer().broadcastMessage(ChatColor.WHITE + CompanyManager.instance().getCompanyName(companyId) + ChatColor.AQUA + " patented the word " + ChatColor.WHITE + "'" + patentWord + "'");
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You patented the word " + ChatColor.WHITE + "'" + patentWord + "'" + ChatColor.AQUA + " for the next " + ChatColor.WHITE + SeriousBusinessConfiguration.instance().getPatentTime() + ChatColor.AQUA + " minutes", 1);

@@ -147,9 +147,7 @@ public class PatentManager
 	}
 
 	public String handleChatWord(Player player, String chat)
-	{
-		Company.instance().log("Chat: " + chat);
-		
+	{	
 		String text = chat.toLowerCase();
 		
 		for (String word : patentHolders.keySet()) 
@@ -172,8 +170,7 @@ public class PatentManager
 				else
 				{
 					deductPlayer(player, patent);					
-				}
-				
+				}				
 			}
 		}
 
@@ -182,7 +179,7 @@ public class PatentManager
 	
 	private void deductPlayer(Player player, Patent patent)
 	{
-		float cost = (float)Company.instance().getEconomyManager().getBalance(player) * SeriousBusinessConfiguration.instance().getPatentChargePercentage() / 100;
+		int cost = (int)((float)Company.instance().getEconomyManager().getBalance(player) * SeriousBusinessConfiguration.instance().getPatentChargePercentage() / 100);
 		
 		if(cost < 1)
 		{
@@ -194,6 +191,9 @@ public class PatentManager
 			player.sendMessage(ChatColor.YELLOW + "  You have been charged " + cost + ChatColor.YELLOW + " wanks by " + ChatColor.WHITE + CompanyManager.instance().getCompanyName(patent.companyId) + ChatColor.YELLOW + " for using the word '" + patent.word + "'");
 			Company.instance().getEconomyManager().withdrawPlayer(player, cost);
 			CompanyManager.instance().depositCompanyBalance(patent.companyId, cost);
+			
+			int currentRound = CompanyManager.instance().getCurrentRound(patent.companyId);	
+			CompanyManager.instance().increasePatentIncomeThisRound(patent.companyId, currentRound, cost);
 		}						
 	}	
 

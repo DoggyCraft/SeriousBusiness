@@ -66,6 +66,9 @@ public class CompanyManager
 		final public HashMap<Material, Integer> itemsProducedAmount;
 		final public HashMap<JobPosition, Double> wagesPaid;
 		
+		final public double patentIncome;
+		final public double patentExpenses;
+
 		final public double companyTaxPercent;
 		final public double salesTaxPercent;
 		
@@ -78,7 +81,7 @@ public class CompanyManager
 				
 		final public double balance;
 		
-		FinancialReport(double companyTaxPercent, double salesTaxPercent, double income, double profit, double stockStartValue, double stockEndValue, double stockValueChange, double balance, HashMap<Material, Integer> itemsSoldAmount, HashMap<Material, Double> itemsSoldValues, HashMap<Material, Integer> itemsProducedAmount, HashMap<JobPosition, Double> wagesPaid)		
+		FinancialReport(double companyTaxPercent, double salesTaxPercent, double income, double profit, double stockStartValue, double stockEndValue, double stockValueChange, double balance, HashMap<Material, Integer> itemsSoldAmount, HashMap<Material, Double> itemsSoldValues, HashMap<Material, Integer> itemsProducedAmount, HashMap<JobPosition, Double> wagesPaid, double patentIncome, double patentExpenses)		
 		{
 			this.companyTaxPercent = companyTaxPercent;
 			this.salesTaxPercent = salesTaxPercent;
@@ -92,6 +95,8 @@ public class CompanyManager
 			this.itemsSoldValues = itemsSoldValues;
 			this.itemsProducedAmount = itemsProducedAmount;
 			this.wagesPaid = wagesPaid;
+			this.patentIncome = patentIncome;
+			this.patentExpenses = patentExpenses;
 		}
 	}
 
@@ -227,7 +232,10 @@ public class CompanyManager
 			totalSoldValue += soldValue;
 		}
 
-		double income = totalSoldValue;
+		double patentIncome = this.getPatentIncomeByRound(companyId, round);
+		double patentExpenses = this.getPatentExpensesByRound(companyId, round);
+
+		double income = totalSoldValue + patentIncome;
 		
 		for(Material producedItem : this.getItemsProducedThisRound(companyId, round))
 		{
@@ -251,8 +259,9 @@ public class CompanyManager
 		double taxesPaid = (landReport.companyTaxEndValue + landReport.salesTaxEndValue) * income / 100;
 				
 		double balance = this.companyConfig.getDouble(companyId.toString() + ".Balance");
+		
 
-		double profit = totalSoldValue - wagesPaidProduction - wagesPaidSales - taxesPaid;
+		double profit = patentIncome + totalSoldValue - wagesPaidProduction - wagesPaidSales - taxesPaid - patentExpenses;
 	
 		double stockStartValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.StartValue");
 		double stockEndValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.EndValue");
@@ -263,7 +272,7 @@ public class CompanyManager
 			stockEndValue = stockStartValue + stockValueChange;			
 		}
 		
-		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid);
+		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid, patentIncome, patentExpenses);
 		
 		return report;		
 	}
@@ -391,6 +400,24 @@ public class CompanyManager
 
 		saveTimed();				
 	}
+	
+	public void increasePatentExpensesPaidThisRound(UUID companyId, int round, double value)
+	{
+		int currentExpenses = companyConfig.getInt(companyId.toString() + ".Round." + round + ".PatentExpenses");	
+		currentExpenses += value;		
+		companyConfig.set(companyId.toString() + ".Round." + round + ".PatentExpenses", currentExpenses);	
+
+		saveTimed();								
+	}
+
+	public void increasePatentIncomeThisRound(UUID companyId, int round, double value)
+	{
+		int currentIncome = companyConfig.getInt(companyId.toString() + ".Round." + round + ".PatentIncome");	
+		currentIncome += value;		
+		companyConfig.set(companyId.toString() + ".Round." + round + ".PatentIncome", currentIncome);	
+
+		saveTimed();				
+	}
 
 	public void increaseItemsSoldThisRound(UUID companyId, int round, Material itemType, int amount, double value)
 	{
@@ -448,6 +475,16 @@ public class CompanyManager
 		saveTimed();				
 	}
 	
+	public int getPatentExpensesByRound(UUID companyId, int round)
+	{
+		return companyConfig.getInt(companyId.toString() + ".Round." + round + ".PatentExpenses");			
+	}
+
+	public int getPatentIncomeByRound(UUID companyId, int round)
+	{
+		return companyConfig.getInt(companyId.toString() + ".Round." + round + ".PatentIncome");			
+	}
+
 	public void setItemProductName(UUID companyId, Material material, String name)
 	{
 		this.companyConfig.set(companyId.toString() + ".ItemDetails." + material.name() + ".ProductName", name);
@@ -1295,30 +1332,6 @@ public class CompanyManager
 			}
 		}
 	}
-
-/*
-	public void GodSayWithQuestion(UUID companyId, Player player, String message, int delay)
-	{
-		if (player == null)
-		{
-			this.plugin.logDebug("GodSay(): Player is null!");
-			return;
-		}
-		if (!this.plugin.isEnabledInWorld(player.getWorld()))
-		{
-			return;
-		}
-				
-		if (!this.plugin.getPermissionsManager().hasPermission(player, "gods.listen"))
-		{
-			return;
-		}
-
-		this.plugin.sendInfo(player.getUniqueId(), message, delay);
-
-		this.plugin.sendInfo(player.getUniqueId(), "Answer by using " + ChatColor.WHITE + "/company yes or /gods company", delay + 80);
-	}
-	*/
 
 	public boolean isDeadCompany(UUID companyId)
 	{

@@ -71,6 +71,17 @@ public class CommandReport extends SeriousBusinessCommand
 		
 		sender.sendMessage(ChatColor.YELLOW + "------------ Financial Report for round " + currentRound + " ------------");
 
+		sender.sendMessage(ChatColor.YELLOW + "Income from patents:");
+
+		if(report.patentIncome > 0)
+		{
+			sender.sendMessage(ChatColor.WHITE + " None.");						
+		}
+		else
+		{
+			sender.sendMessage(ChatColor.GREEN + " +" + report.patentIncome + " wanks");			
+		}
+		
 		sender.sendMessage(ChatColor.YELLOW + "Income from sales:");
 
 		if(report.itemsSoldAmount.keySet().size()==0)
@@ -87,11 +98,16 @@ public class CommandReport extends SeriousBusinessCommand
 
 		sender.sendMessage(ChatColor.YELLOW + "Expenses:");
 
-		if(report.wagesPaid.keySet().size()==0)
+		if(report.wagesPaid.keySet().size()==0 && report.patentExpenses == 0)
 		{
 			sender.sendMessage(ChatColor.WHITE + " None.");						
 		}
 
+		if(report.patentExpenses > 0)
+		{
+			sender.sendMessage(ChatColor.RED + " -" + report.patentExpenses + " wanks - Bought trademarks.");		
+		}
+		
 		// Wages paid
 		for(JobPosition employeePosition : report.wagesPaid.keySet())
 		{
@@ -102,7 +118,7 @@ public class CommandReport extends SeriousBusinessCommand
 				sender.sendMessage(ChatColor.RED + " -" + wages + " wanks - Paid wages to " + employeePosition.name() + ".");
 			}
 		}
-				
+		
 		sender.sendMessage(ChatColor.YELLOW + "Taxes:");
 		double totalTax = 0;
 		

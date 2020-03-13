@@ -24,7 +24,7 @@ public class SeriousBusinessConfiguration
 	private int newCompanyCost = 100;
 	private int newPatentCost = 100;
 	private int patentChargePercentage = 1;
-	private int patentMinutes = 5;
+	private int patentMinutes = 10;
 
 	public SeriousBusinessConfiguration()
 	{

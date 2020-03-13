@@ -32,6 +32,9 @@ commands:
   shops:
     description: "Controls the Serious Business shopping system"
     usage: /shop
+  stocks:
+    description: "Controls the Serious Business stocks system"
+    usage: /stocks
 permissions: 
   company.*: 
     children: 
@@ -72,6 +75,9 @@ permissions:
       patent: true
       patent.apply: true
       patent.list: true
+      stocks: true
+      stocks.buy: true
+      stocks.sell: true
       land: true
       shop: true
       shop.search: true
