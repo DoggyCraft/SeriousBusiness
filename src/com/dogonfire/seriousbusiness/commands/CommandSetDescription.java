@@ -25,11 +25,11 @@ public class CommandSetDescription extends SeriousBusinessCommand
 	{
 		Player player = (Player)sender;
 		
-		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId())!=JobPosition.Manager)
-		{
-			sender.sendMessage(ChatColor.RED + "Only managers can set company description.");
-			return;
-		}
+		//if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId())!=JobPosition.Manager)
+		//{
+		//	sender.sendMessage(ChatColor.RED + "Only managers can set company description.");
+		//	return;
+		//}
 		
 		UUID companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 

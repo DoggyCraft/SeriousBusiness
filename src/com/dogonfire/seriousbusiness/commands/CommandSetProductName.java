@@ -30,7 +30,7 @@ public class CommandSetProductName extends SeriousBusinessCommand
 		
 		if (companyId==null)
 		{
-			player.sendMessage(ChatColor.RED + "You don't have a job.");
+			player.sendMessage(ChatColor.RED + "You are not working in a company.");
 			return;
 		}
 

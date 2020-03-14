@@ -31,11 +31,11 @@ public class CommandSetSalesWage extends SeriousBusinessCommand
 			return;
 		}
 
-		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
-		{
-			player.sendMessage(ChatColor.RED + "Only managers can set wages");
-			return;
-		}
+		//if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
+		//{
+		//	player.sendMessage(ChatColor.RED + "Only managers can set wages");
+		//	return;
+		//}
 
 		double wage = 0;
 		

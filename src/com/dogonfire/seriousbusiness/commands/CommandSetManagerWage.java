@@ -27,15 +27,15 @@ public class CommandSetManagerWage extends SeriousBusinessCommand
 		
 		if (companyId==null)
 		{
-			player.sendMessage(ChatColor.RED + "You don't have a job.");
+			player.sendMessage(ChatColor.RED + "You are not working in a company");
 			return;
 		}
 
-		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
-		{
-			player.sendMessage(ChatColor.RED + "Only managers can set wages");
-			return;
-		}
+		//if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
+		//{
+		//	player.sendMessage(ChatColor.RED + "Only managers can set wages");
+		//	return;
+		//}
 
 		double percent = 0;
 		

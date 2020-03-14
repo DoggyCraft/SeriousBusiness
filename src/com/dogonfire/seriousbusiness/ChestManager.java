@@ -76,9 +76,9 @@ public class ChestManager
 			return false;
 		}
 		
-		if(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Production)
+		if(PlayerManager.instance().getCompanyForEmployee(player.getUniqueId()) == null )
 		{
-			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in production to set supply chests.", 1);
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in a company to set supply chests.", 1);
 			return false;			
 		}
 						

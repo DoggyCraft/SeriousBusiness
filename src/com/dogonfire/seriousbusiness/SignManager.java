@@ -118,8 +118,6 @@ public class SignManager implements Listener
 		
 		if (Company.instance().getSignManager().isSellSign(block, event.getLine(0)))
 		{			
-			Company.instance().log(player.getName() + " isSellSign");
-
 			if (!Company.instance().getSignManager().handleNewSellSign(event))
 			{
 				event.setCancelled(true);
@@ -159,9 +157,9 @@ public class SignManager implements Listener
 			return false;
 		}
 		
-		if(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Sales)
+		if(PlayerManager.instance().getCompanyForEmployee(player.getUniqueId()) == null )
 		{
-			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in sales to set sell signs.", 1);
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in a company to set sell signs.", 1);
 			return false;			
 		}
 				
