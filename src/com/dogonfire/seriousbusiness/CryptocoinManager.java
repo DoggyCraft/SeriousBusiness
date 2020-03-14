@@ -124,7 +124,8 @@ public class CryptocoinManager
 			
 			for (CryptoCoin cryptoCoin : coins)
 			{
-				
+				// Calculate reward based on chain length
+				// Choose at random among mining machines, which miner gets the reward
 			}
 			
 			long timeAfter = System.currentTimeMillis();

@@ -111,6 +111,12 @@ public class LoanManager
 		return companyId;
 	}
 
+	public void sendTheCollector(UUID companyId, UUID playerId, int howManyDeaths)
+	{
+		// The Collector will hunt, haunt and kill the player <howManyDeaths> times before going away
+		// At each kill, The Collector will take 1 valuable item from players inventory
+		// The Collector reminds the player that he has not paid his loan, so he is here to break bones
+	}
 
 	public void update()
 	{
