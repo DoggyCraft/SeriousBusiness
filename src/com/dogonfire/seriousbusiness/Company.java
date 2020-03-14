@@ -15,8 +15,10 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.dogonfire.seriousbusiness.commands.CompanyCommandExecuter;
+import com.dogonfire.seriousbusiness.commands.CryptoCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.JobCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.LandCommandExecuter;
+import com.dogonfire.seriousbusiness.commands.LawsuitCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.PatentCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.ShopCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.StockCommandExecuter;
@@ -154,6 +156,8 @@ public class Company extends JavaPlugin
 		getCommand("land").setExecutor(LandCommandExecuter.instance());
 		getCommand("patent").setExecutor(PatentCommandExecuter.instance());
 		getCommand("stocks").setExecutor(StockCommandExecuter.instance());
+		getCommand("crypto").setExecutor(CryptoCommandExecuter.instance());
+		getCommand("lawsuit").setExecutor(LawsuitCommandExecuter.instance());
 		
 		this.configuration = new SeriousBusinessConfiguration();
 		this.permissionsManager = new PermissionsManager();

@@ -11,6 +11,10 @@ import java.util.UUID;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import com.dogonfire.seriousbusiness.commands.CourtCaseType;
+
+
+
 
 public class CourtManager
 {
@@ -21,26 +25,20 @@ public class CourtManager
 	private long						lastSaveTime;
 	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
 	private Queue<CourtCase>			playerCases 		= new PriorityQueue<CourtCase>(); // TODO: Should be a queue
+	private int courtCaseid;
+	
 	DateFormat							formatter			= new SimpleDateFormat(this.pattern);
 
-	enum CourtCaseType
-	{
-		SalesTaxFraud,		 // Company has moved money between lands to avoid sales taxes
-		StockManipulation,   // Company has hoarded and instantly sold/bought more items exceeding policy max in order to manipulate stock value
-		LoanSharking,   	 // Company has issued loans with rates exceeding policy max		
-		TaxAvoidance,   	 // Company has invested in cryptocurrency/items in order to avoid taxes		
-		TradingIllegalItems, // Company has bought or sold illegal items in a land
-		//IllegalTrademarks    // Company has issued too many active patents
-	}
-	
 	final public class CourtCase
-	{	
+	{
+		final public int Id;
 		final public UUID playerId;
 		final public UUID companyId;
 		final public CourtCaseType caseType;
 		
-		CourtCase(CourtCaseType caseType, UUID playerId, UUID companyId)		
+		CourtCase(int id, CourtCaseType caseType, UUID playerId, UUID companyId)		
 		{
+			this.Id = id;
 			this.companyId = companyId;
 			this.playerId = playerId;
 			this.caseType = caseType;
@@ -115,21 +113,41 @@ public class CourtManager
 	// Players can randomly (without actual knowledge) fire court cases against companies and hope that they will actually hit criminal behaviour
 	public UUID applyCase(CourtCaseType caseType, UUID playerId, UUID companyId)
 	{
-		// Check whether player case exist, too many, irrelavent and other reasons to reject the case
+		// Check whether player case exist, too many, irrelevant and other reasons to reject the case
 		
 		return createCase(caseType, playerId, companyId);
 	}	
 	
-	public UUID createCase(CourtCaseType caseType, UUID companyId, UUID playerId)
+	public UUID createCase(CourtCaseType caseType, UUID playerId, UUID companyId)
 	{
-		playerCases.add(new CourtCase(caseType, playerId, companyId));
+		playerCases.add(new CourtCase(courtCaseid++, caseType, playerId, companyId));
 		
 		save();
 		
 		String companyName = CompanyManager.instance().getCompanyName(companyId);
-		Company.instance().broadcastInfo(Company.instance().getServer().getPlayer(playerId).getDisplayName() + " sued " + companyName + " for " + getCaseTypeDescription(caseType) + "!");
+		Company.instance().broadcastInfo(Company.instance().getServer().getPlayer(playerId).getDisplayName() + " filed a lawsuit against " + companyName + " for " + getCaseTypeDescription(caseType) + "!");
 		
 		return companyId;
+	}
+
+	private void decideNotGuilty(CourtCase courtCase, int amount)
+	{
+		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
+		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
+		
+		Company.instance().broadcastInfo("The Court ruled " + companyName + " NOT GUILTY of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + " companyName " + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().broadcastInfo(companyName + " was given " + amount + " wanks as compensation for emotional damage!");		
+	}
+	
+	private void decideGuilty(CourtCase courtCase, int amount)
+	{
+		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
+		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
+
+		Company.instance().broadcastInfo("The Court ruled " + companyName + " GUILTY of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + " companyName " + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().broadcastInfo(companyName + " was fined " + amount + " wanks!");
 	}
 
 	public void update()
@@ -140,6 +158,18 @@ public class CourtManager
 
 			// Decide on 1 court case at a time. Let players wait for court decisions
 			// Evaluate company actions during the last 5 turns/rounds
+			CourtCase courtCase = playerCases.poll();
+					
+			if(random.nextInt(3) > 0)
+			{
+				int amount = SeriousBusinessConfiguration.instance().getCourtCaseCost();
+				decideNotGuilty(courtCase, amount);
+			}
+			else
+			{
+				int amount = 10000 + random.nextInt(50000);
+				decideGuilty(courtCase, amount);					
+			}			
 		}	
 	}
 }

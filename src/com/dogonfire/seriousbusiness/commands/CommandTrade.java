@@ -31,17 +31,17 @@ public class CommandTrade extends SeriousBusinessCommand
 		
 		if (companyId==null)
 		{
-			player.sendMessage(ChatColor.RED + "You don't have a job.");
+			player.sendMessage(ChatColor.RED + "You are not working in a company.");
 			return;
 		}
 		
 		String companyName = CompanyManager.instance().getCompanyName(companyId);
 
-		if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
-		{
-			player.sendMessage(ChatColor.RED + "Only managers can set trade policies");
-			return;
-		}
+		//if (PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Manager)
+		//{
+		//	player.sendMessage(ChatColor.RED + "Only managers can set trade policies");
+		//	return;
+		//}
 
 		double sellprice = 0;
 		Material itemType;

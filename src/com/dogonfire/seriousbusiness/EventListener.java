@@ -202,11 +202,11 @@ public class EventListener implements Listener
 					return;
 				}
 
-				companyName = sign.getLine(2);
+				companyName = sign.getLine(1);
 
 				if (companyName.trim().length() == 0)
 				{
-					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 3.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 2.", 1);
 					return;
 				}
 
@@ -214,7 +214,7 @@ public class EventListener implements Listener
 
 				if (companyName.length() <= 1)
 				{
-					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid company name must be on line 3.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid company name must be on line 2.", 1);
 					return;
 				}
 

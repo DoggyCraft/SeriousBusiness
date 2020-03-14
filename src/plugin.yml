@@ -35,6 +35,9 @@ commands:
   stocks:
     description: "Controls the Serious Business stocks system"
     usage: /stocks
+  lawsuit:
+    description: "Controls the Serious Business lawsuit system"
+    usage: /lawsuit
   crypto:
     description: "Controls the Serious Business crypto currency system"
     usage: /crypto
@@ -83,6 +86,7 @@ permissions:
       stocks.buy: true
       stocks.sell: true
       land.land: true
+      lawsuit.sue: true
       shop: true
       shop.search: true
       shop.goto: true

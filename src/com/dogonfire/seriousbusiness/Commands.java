@@ -2107,31 +2107,7 @@
 //
 //	private boolean CommandHeadquarters(CommandSender sender, String[] args)
 //	{
-//		Player player = (Player) sender;
-//
-//		if (!player.isOp() && (!this.plugin.getPermissionsManager().hasPermission(player, "company.home.hq")))
-//		{
-//			sender.sendMessage(ChatColor.RED + "You do not have permission for that");
-//			return false;
-//		}
 //		
-//		UUID companyId = this.plugin.getEmployeeManager().getCompanyForEmployee(player.getUniqueId());
-//		
-//		if (companyId == null)
-//		{
-//			sender.sendMessage(ChatColor.RED + "You do not work in a company");
-//			return false;
-//		}
-//		
-//		Location location = this.plugin.getCompanyManager().getHeadquartersForCompany(companyId);
-//		
-//		if (location == null)
-//		{
-//			sender.sendMessage(ChatColor.RED + "No HQ location is set for this company");
-//			return false;
-//		}
-//
-//		player.teleport(location);
 //
 //		return true;
 //	}
