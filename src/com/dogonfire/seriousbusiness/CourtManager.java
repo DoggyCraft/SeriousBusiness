@@ -29,9 +29,10 @@ public class CourtManager
 
 	enum CourtCaseType
 	{
-		TaxFraud,
-		StockManipulation,
-		LoanSharking,		
+		SalesTaxFraud,		// Company has moved money between lands to avoid sales taxes
+		StockManipulation,  // Company has hoarded and instantly sold/bought more items exceeding policy max in order to manipulate stock value
+		LoanSharking,   	// Company has issued loans with rates exceeding policy max		
+		TaxAvoidance,   	// Company has invested in cryptocurrency/items in order to avoid taxes		
 	}
 	
 	final public class CourtCase
@@ -106,6 +107,7 @@ public class CourtManager
 		return playerCases.values();
 	}
 		
+	// Players can randomly (without actual knowledge) fire court cases against companies and hope that they will actually hit criminal behaviour
 	public UUID applyCase(UUID playerId, UUID companyId, int amount, int rate, int minutes)
 	{
 		// Check whether player case exist, too many, irrelavent and other reasons to reject the case
