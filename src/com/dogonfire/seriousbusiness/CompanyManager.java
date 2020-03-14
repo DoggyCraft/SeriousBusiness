@@ -210,7 +210,7 @@ public class CompanyManager
 				
 		this.companyConfig.set(companyId.toString() + ".Balance", balance);
 
-		saveTimed();				
+		save();				
 	}
 
 	public FinancialReport getFinancialReport(UUID companyId, int round)

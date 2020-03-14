@@ -53,8 +53,15 @@ public class CommandSue extends SeriousBusinessCommand
 			case "tii"	: courtCaseType = CourtCaseType.TradingIllegalItems; break;
 			default 	: player.sendMessage(ChatColor.RED + "That is not a valid legal charge type"); return; 
 		}
-
-		UUID companyId = CompanyManager.instance().getCompanyIdByName(args[1]);
+		
+		String companyName = args[2];
+		
+		for(int a=3; a<args.length; a++)
+		{
+			companyName += " " + args[a];
+		}
+	
+		UUID companyId = CompanyManager.instance().getCompanyIdByName(companyName);
 		
 		if(companyId == null)
 		{		

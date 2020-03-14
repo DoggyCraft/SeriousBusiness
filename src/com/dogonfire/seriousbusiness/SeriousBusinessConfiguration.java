@@ -27,7 +27,7 @@ public class SeriousBusinessConfiguration
 	private int patentChargePercentage = 1;
 	private int patentMinutes = 10;
 	public int renameCompanyCost = 10;
-	public int courtCaseCost;
+	public int courtCaseCost = 100;
 
 	public SeriousBusinessConfiguration()
 	{

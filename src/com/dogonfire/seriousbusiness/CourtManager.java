@@ -14,6 +14,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.dogonfire.seriousbusiness.commands.CourtCaseType;
 
+import net.md_5.bungee.api.ChatColor;
+
 
 
 
@@ -26,7 +28,7 @@ public class CourtManager
 	private long						lastSaveTime;
 	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
 	private Queue<CourtCase>			playerCases 		= new PriorityQueue<CourtCase>(); // TODO: Should be a queue
-	private int courtCaseid;
+	private int courtCaseid = 1;
 	
 	DateFormat							formatter			= new SimpleDateFormat(this.pattern);
 
@@ -126,7 +128,7 @@ public class CourtManager
 		save();
 		
 		String companyName = CompanyManager.instance().getCompanyName(companyId);
-		Company.instance().broadcastInfo(Company.instance().getServer().getPlayer(playerId).getDisplayName() + " filed a lawsuit against " + companyName + " for " + getCaseTypeDescription(caseType) + "!");
+		Company.instance().broadcastInfo(Company.instance().getServer().getPlayer(playerId).getDisplayName() + ChatColor.AQUA + " filed a lawsuit against " + ChatColor.GOLD + companyName + ChatColor.AQUA + " for " + ChatColor.GOLD + getCaseTypeDescription(caseType) + "!");
 		
 		return companyId;
 	}
@@ -137,8 +139,8 @@ public class CourtManager
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
 		OfflinePlayer player = Company.instance().getServer().getOfflinePlayer(courtCase.playerId);
 		
-		Company.instance().broadcastInfo("The Court ruled " + companyName + " NOT GUILTY of " + getCaseTypeDescription(courtCase.caseType) + "!");		
-		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + " companyName " + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.GREEN + " NOT GUILTY" + ChatColor.AQUA + " of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo(companyName + " was given " + amount + " wanks as compensation for emotional damage!");		
 
 		CompanyManager.instance().depositCompanyBalance(courtCase.companyId, amount);
@@ -146,21 +148,26 @@ public class CourtManager
 	
 	private void decideGuilty(CourtCase courtCase, int amount)
 	{
+		if(amount > CompanyManager.instance().getBalance(courtCase.companyId))
+		{
+			amount = (int)CompanyManager.instance().getBalance(courtCase.companyId);
+		}
+
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
 		OfflinePlayer player = Company.instance().getServer().getOfflinePlayer(courtCase.playerId);
 		
-		Company.instance().broadcastInfo("The Court ruled " + companyName + " GUILTY of " + getCaseTypeDescription(courtCase.caseType) + "!");		
-		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + " companyName " + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.RED + "GUILTY" + ChatColor.AQUA + " of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo(companyName + " was fined " + amount + " wanks!");
-			
+				
 		CompanyManager.instance().depositCompanyBalance(courtCase.companyId, -amount);
 		Company.instance().getEconomyManager().depositPlayer(player, amount);
 	}
 
 	public void update()
 	{
-		if (this.random.nextInt(50) == 0)
+		if (this.random.nextInt(100) == 0)
 		{
 			Company.instance().logDebug("Processing court cases...");
 
