@@ -267,11 +267,16 @@ public class CompanyManager
 		double stockEndValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.EndValue");
 		double stockValueChange = profit / stockStartValue;
 		
+		if(stockStartValue + stockValueChange < 1)
+		{
+			stockValueChange = 1 - stockStartValue;
+		}
+
 		if(stockEndValue == 0)
 		{
 			stockEndValue = stockStartValue + stockValueChange;			
 		}
-		
+			
 		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid, patentIncome, patentExpenses);
 		
 		return report;		
@@ -1377,7 +1382,7 @@ public class CompanyManager
  
 		this.companySayToEmployees(companyId, ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company report " + currentRound + ChatColor.AQUA + " to view the full report.", 2);//sendInfo(player.getUniqueId(), message, ChatColor.AQUA, "", "", delay);
 						
-		double currentStockValue = report.stockStartValue + report.stockValueChange;
+		double currentStockValue = report.stockStartValue + report.stockValueChange;	
 		
 		this.setCompanyStockEndValueForRound(companyId, currentRound, currentStockValue);
 		this.setCompanyStockStartValueForRound(companyId, currentRound + 1, currentStockValue);
@@ -1406,9 +1411,7 @@ public class CompanyManager
 			if(wage > 0)
 			{				
 				OfflinePlayer offlinePlayer = Company.instance().getServer().getOfflinePlayer(employeeId);
-				
-				Company.instance().getEconomyManager().depositPlayer(offlinePlayer, wage);
-				
+							
 				Player player = Company.instance().getServer().getPlayer(employeeId);
 				if(player!=null)
 				{
@@ -1419,6 +1422,7 @@ public class CompanyManager
 						case Production : this.increaseProductionWagesPaidThisRound(companyId, currentRound, wage); break;						
 					}					
 					
+					Company.instance().getEconomyManager().depositPlayer(player, wage);
 					this.depositCompanyBalance(companyId, -wage);
 					
 					String companyName = getCompanyName(companyId);
