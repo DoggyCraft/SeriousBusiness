@@ -54,11 +54,10 @@ public class PatentManager
 		instance = this;
 		
 		blacklistedWords.add("you");
-		blacklistedWords.add("me");
 		blacklistedWords.add("mig");
 		blacklistedWords.add("dig");
-		//blacklistedWords.add("doggy");
-		//blacklistedWords.add("doggy");
+		blacklistedWords.add("jeg");
+		blacklistedWords.add("ikke");
 	}
 
 	static public PatentManager instance()

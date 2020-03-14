@@ -61,7 +61,7 @@ public class CommandApplyPatent extends SeriousBusinessCommand
 		if (patent != null)
 		{
 			String companyName = CompanyManager.instance().getCompanyName(patent.companyId);
-			player.sendMessage(ChatColor.RED + "The word '" + patentWord + "' is already patented by " + companyName + "");
+			player.sendMessage(ChatColor.RED + "The word '" + patentWord + "' is already patented by " + ChatColor.GOLD + companyName + "");
 			return;
 		}
 		
