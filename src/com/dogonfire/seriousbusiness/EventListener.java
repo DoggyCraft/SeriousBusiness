@@ -132,6 +132,67 @@ public class EventListener implements Listener
 				}
 			}
 			
+			if (SignManager.instance().isBuySign(event.getClickedBlock(), sign.getLine(0)))
+			{
+
+				if (!event.getPlayer().isOp() && !PermissionsManager.instance().hasPermission(event.getPlayer(), "company.customer.sell"))
+				{
+					Company.instance().sendInfo(player.getUniqueId(), ChatColor.DARK_RED + "You are not allowed to sell.", 1);
+					return;
+				}
+
+				Block block = event.getClickedBlock();
+
+				companyName = sign.getLine(1);
+
+				if (companyName.trim().length() == 0)
+				{
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 2.", 1);
+					return;
+				}
+
+				companyName = companyName.trim();
+
+				if (companyName.length() <= 1)
+				{
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid company name must be on line 2.", 1);
+					return;
+				}
+
+				companyName = CompanyManager.instance().formatCompanyName(ChatColor.stripColor(companyName));
+
+				String itemName = sign.getLine(2);
+
+				if (itemName.trim().length() == 0)
+				{
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A item name must be on line 3.", 1);
+					return;
+				}
+
+				if (itemName.length() <= 1)
+				{
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid item name must be on line 3.", 1);
+					return;
+				}
+
+				Material itemType = null;
+
+				try
+				{
+					itemType = Material.valueOf(ChatColor.stripColor(itemName));
+				}
+				catch (Exception ex)
+				{
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid item name must be on line 3.", 1);
+					return;
+				}
+
+				if (CompanyManager.instance().handleSignBuy(block.getLocation(), event.getPlayer(), companyName, itemType))
+				{
+					Company.instance().log(event.getPlayer().getDisplayName() + " sold to " + companyName + " using a buy sign");
+				}
+			}
+			
 			if (SignManager.instance().isSupplySign(event.getClickedBlock(), sign.getLine(0)))
 			{
 

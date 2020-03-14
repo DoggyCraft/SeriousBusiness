@@ -675,6 +675,18 @@ public class CompanyManager
 		return 1;//companyConfig.getDouble("Ad.Location." + material.name() + ".SalePrice");						
 	}
 	
+	public double getItemBuyPrice(UUID companyId, Material material)
+	{		
+		double price = companyConfig.getDouble(companyId.toString() + ".ItemDetails." + material.name() + ".BuyPrice");		
+		
+		if(price<=0)
+		{
+			price = 1;
+		}
+		
+		return price;
+	}
+
 	public double getItemSalesPrice(UUID companyId, Material material)
 	{		
 		double price = companyConfig.getDouble(companyId.toString() + ".ItemDetails." + material.name() + ".SalePrice");		
@@ -1175,6 +1187,89 @@ public class CompanyManager
 		return true;
 	}
 
+	
+	public boolean handleSignBuy(Location location, Player player, String companyName, Material itemType)
+	{
+		UUID playerCompanyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());	
+		String playerCompanyName = CompanyManager.instance().getCompanyName(playerCompanyId);	
+		
+		if(playerCompanyName!=null && playerCompanyName.equals(companyName))
+		{
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You can't sell to your own shop, bozo", 2);	
+			return false;						
+		}		
+		
+		if (!SeriousBusinessConfiguration.instance().isEnabledInWorld(player.getWorld()))
+		{
+			return false;
+		}
+		
+		UUID companyId = CompanyManager.instance().getCompanyIdByName(companyName);
+		
+		if(!CompanyManager.instance().isCompanyTradingItem(companyId, itemType))
+		{
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "Your company is not trading this type of item.", 2);	
+			return false;
+		}		
+
+		double price = CompanyManager.instance().getItemBuyPrice(companyId, itemType);
+
+		if(!Company.instance().getEconomyManager().has(player, price))
+		{
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You do not have enough wanks for that", 2);				
+			return false;
+		}
+		
+		if(!CompanyManager.instance().decreaseItemStock(companyId, itemType, 1))
+		{
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.WHITE + companyId.toString() + ChatColor.RED + " does not have any " + itemType.name() + " to sell.", 2);	
+			return false;			
+		}
+
+		if(player.getInventory().getItemInMainHand().getType()!=Material.AIR)
+		{
+			if(player.getInventory().getItemInMainHand().getType()==itemType)
+			{
+				player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()+1);				
+			}
+			else
+			{
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "Clear your hands before you buy anything.", 2);	
+				return false;				
+			}
+		}		
+		else
+		{
+			ItemStack item = new ItemStack(itemType, 1);
+			
+			ItemMeta itemMeta = item.getItemMeta();
+			
+			itemMeta.setDisplayName(CompanyManager.instance().getItemProductName(companyId, itemType));
+			itemMeta.setLore(CompanyManager.instance().getItemProductDescription(companyId, itemType));
+			
+			item.setItemMeta(itemMeta);
+			
+			player.getInventory().setItemInMainHand(item);		
+		}
+		
+		int currentRound = CompanyManager.instance().getCurrentRound(companyId);	
+		int amount = 1;
+		
+		Company.instance().getEconomyManager().withdrawPlayer(player, price);
+		CompanyManager.instance().depositCompanyBalance(companyId, price);		
+		CompanyManager.instance().increaseItemsSoldThisRound(companyId, currentRound, itemType, amount, amount*CompanyManager.instance().getItemSalesPrice(companyId, itemType));
+				
+		for(UUID employeeId : PlayerManager.instance().getOnlineEmployeesInCompanyByPosition(companyId, JobPosition.Sales))
+		{
+			Company.instance().sendInfo(employeeId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " sold 1 " + itemType.name() + " to your store", 2);	
+			PlayerManager.instance().addWork(employeeId, companyName, JobPosition.Sales);
+			PlayerManager.instance().addXP(employeeId, 1);
+		}
+		
+		Company.instance().sendInfo(player.getUniqueId(), "You sold 1 " + ChatColor.WHITE + itemType.name() + ChatColor.AQUA + " to " + ChatColor.WHITE + companyId.toString() + " for " + price + " wanks" , 2);
+				
+		return true;
+	}
 	
 	public boolean handleSupplySign(Player player, String companyName)
 	{

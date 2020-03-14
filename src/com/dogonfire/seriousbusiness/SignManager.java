@@ -73,6 +73,21 @@ public class SignManager implements Listener
 		return true;
 	}
 
+	public boolean isBuySign(Block block, String firstLine)
+	{		
+		if (block.getType() != Material.OAK_WALL_SIGN)
+		{
+			return false;
+		}
+				
+		if (firstLine == null || !firstLine.equalsIgnoreCase("[Buy]"))
+		{
+			return false;
+		}
+				
+		return true;
+	}
+
 	public boolean isSupplySign(Block block, String firstLine)
 	{
 		
