@@ -34,6 +34,7 @@ public class Company extends JavaPlugin
 	private StockManager stockManager = null;
 	private LoanManager loanManager = null;
 	private CourtManager courtManager = null;
+	private PolicyManager policyManager = null;
 	private CryptocoinManager cryptoCoinManager = null;
 	private PermissionsManager permissionsManager = null;
 	private SeriousBusinessConfiguration configuration = null;
@@ -166,6 +167,7 @@ public class Company extends JavaPlugin
 		this.loanManager = new LoanManager();
 		this.cryptoCoinManager = new CryptocoinManager();
 		this.courtManager = new CourtManager();
+		this.policyManager = new PolicyManager();
 		
 		PluginManager pm = getServer().getPluginManager();
 
