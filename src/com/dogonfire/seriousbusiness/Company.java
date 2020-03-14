@@ -32,6 +32,7 @@ public class Company extends JavaPlugin
 	private ChestManager chestManager = null;
 	private LandManager landManager = null;
 	private StockManager stockManager = null;
+	private LoanManager loanManager = null;
 	private PermissionsManager permissionsManager = null;
 	private SeriousBusinessConfiguration configuration = null;
 	static private Company instance;
@@ -75,6 +76,11 @@ public class Company extends JavaPlugin
 	public StockManager getStockManager()
 	{
 		return stockManager;
+	}
+
+	public LoanManager getLoanManager()
+	{
+		return loanManager;
 	}
 
 	public Material getMaterialById(String materialString)
@@ -150,6 +156,7 @@ public class Company extends JavaPlugin
 		this.landManager = new LandManager();
 		this.signManager = new SignManager();
 		this.stockManager = new StockManager();
+		this.loanManager = new LoanManager();
 		
 		PluginManager pm = getServer().getPluginManager();
 
@@ -176,6 +183,8 @@ public class Company extends JavaPlugin
 		this.patentManager.load();
 		this.playerManager.load();
 		this.landManager.load();
+		this.loanManager.load();
+		this.stockManager.load();
 		
 		getServer().getPluginManager().registerEvents(new EventListener(), this);
 		getServer().getPluginManager().registerEvents(signManager, this);

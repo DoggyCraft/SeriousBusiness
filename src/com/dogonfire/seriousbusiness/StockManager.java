@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 
 public class StockManager
 {
-	private static StockManager		instance;
+	private static StockManager			instance;
 	private FileConfiguration			stockConfig		= null;
 	private File						stockConfigFile	= null;
 	private Random						random			= new Random();
