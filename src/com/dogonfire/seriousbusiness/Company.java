@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -114,6 +115,14 @@ public class Company extends JavaPlugin
 		getServer().getScheduler().runTaskLater(this, new InfoTask(this, playerId, message), delay);
 	}
 
+	public void broadcastInfo(String message)
+	{
+		for(Player player : getServer().getOnlinePlayers())
+		{
+			player.sendMessage(ChatColor.WHITE + "[" + ChatColor.GOLD + "Company" + ChatColor.WHITE + "] " +  ChatColor.AQUA + message);
+		}
+	}
+	
 	public void reloadSettings()
 	{
 	}

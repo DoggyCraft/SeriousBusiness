@@ -1492,7 +1492,9 @@ public class CompanyManager
 				if (isDeadCompany(offlineCompanyId))
 				{
 					String offlineCompanyName = CompanyManager.instance().getCompanyName(offlineCompanyId);
+					int rounds = CompanyManager.instance().getCurrentRound(offlineCompanyId);
 					Company.instance().log("Removed dead offline Company '" + offlineCompanyName + "'");
+					Company.instance().broadcastInfo(offlineCompanyName + " went bankrupt after " + rounds + " rounds of operation");
 				}
 			}
 			
