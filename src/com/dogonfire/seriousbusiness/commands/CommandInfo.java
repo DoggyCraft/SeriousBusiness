@@ -40,7 +40,7 @@ public class CommandInfo extends SeriousBusinessCommand
 			companyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
 			if (companyId == null)
 			{
-				sender.sendMessage(ChatColor.RED + "You do not have a job.");
+				sender.sendMessage(ChatColor.RED + "You do not work in a company.");
 				return;
 			}			
 			
@@ -49,6 +49,12 @@ public class CommandInfo extends SeriousBusinessCommand
 		else
 		{
 			companyId = CompanyManager.instance().getCompanyIdByName(companyName);
+
+			if (companyId == null)
+			{
+				sender.sendMessage(ChatColor.RED + "No such company.");
+				return;
+			}			
 		}
 		
 		DecimalFormat df = new DecimalFormat();

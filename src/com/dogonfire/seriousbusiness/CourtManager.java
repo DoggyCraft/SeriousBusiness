@@ -29,10 +29,12 @@ public class CourtManager
 
 	enum CourtCaseType
 	{
-		SalesTaxFraud,		// Company has moved money between lands to avoid sales taxes
-		StockManipulation,  // Company has hoarded and instantly sold/bought more items exceeding policy max in order to manipulate stock value
-		LoanSharking,   	// Company has issued loans with rates exceeding policy max		
-		TaxAvoidance,   	// Company has invested in cryptocurrency/items in order to avoid taxes		
+		SalesTaxFraud,		 // Company has moved money between lands to avoid sales taxes
+		StockManipulation,   // Company has hoarded and instantly sold/bought more items exceeding policy max in order to manipulate stock value
+		LoanSharking,   	 // Company has issued loans with rates exceeding policy max		
+		TaxAvoidance,   	 // Company has invested in cryptocurrency/items in order to avoid taxes		
+		TradingIllegalItems, // Company has bought or sold illegal items in a land
+		//IllegalTrademarks    // Company has too many active patents
 	}
 	
 	final public class CourtCase
@@ -134,6 +136,7 @@ public class CourtManager
 			Company.instance().logDebug("Processing court cases...");
 
 			// Decide on 1 court case at a time. Let players wait for court decisions
+			// Evaluate company actions during the last 5 turns/rounds
 		}	
 	}
 }

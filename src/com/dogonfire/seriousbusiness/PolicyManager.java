@@ -12,6 +12,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -28,6 +29,7 @@ public class PolicyManager
 	
 	// Policies
 	private int 						maxAllowedItemsSoldPrRound = 100;
+	private Collection<Material>		illegalItems = new ArrayList<Material>();		
 	
 	PolicyManager()
 	{

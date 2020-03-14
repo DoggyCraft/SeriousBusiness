@@ -31,11 +31,11 @@ public class CompanyManager
 	private static CompanyManager		instance;
 	private FileConfiguration			companyConfig		= null;
 	private File						companyConfigFile	= null;
-	private Random						random			= new Random();
+	private Random						random				= new Random();
 	private List<UUID>					onlineCompanies		= new ArrayList<UUID>();
 	private long						lastSaveTime;
-	private String						pattern			= "HH:mm:ss dd-MM-yyyy";
-	DateFormat							formatter		= new SimpleDateFormat(this.pattern);
+	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
+	DateFormat							formatter			= new SimpleDateFormat(this.pattern);
 
 	public enum JobPosition
 	{
