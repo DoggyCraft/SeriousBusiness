@@ -16,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -424,6 +423,29 @@ public class CompanyManager
 		saveTimed();				
 	}
 
+	
+	public void increaseItemsBoughtThisRound(UUID companyId, int round, Material itemType, int amount, double value)
+	{
+		List<String> itemsList = companyConfig.getStringList(companyId.toString() + ".Round." + round + ".ItemsBought");	
+						
+		if(!itemsList.contains(itemType.name()))
+		{
+			itemsList.add(itemType.name());
+			
+			companyConfig.set(companyId.toString() + ".Round." + round + ".ItemsBought", itemsList);
+		}
+
+		int currentAmount = companyConfig.getInt(companyId.toString() + ".Round." + round + "." + itemType.name() + ".AmountBought");	
+		currentAmount += amount;
+		companyConfig.set(companyId.toString() + ".Round." + round + "." + itemType.name() + ".AmountSold", currentAmount);	
+
+		int currentValue = companyConfig.getInt(companyId.toString() + ".Round." + round + "." + itemType.name() + ".ValueBought");			
+		currentValue += value;
+		companyConfig.set(companyId.toString() + ".Round." + round + "." + itemType.name() + ".ValueBought", currentValue);	
+		
+		save();				
+	}
+	
 	public void increaseItemsSoldThisRound(UUID companyId, int round, Material itemType, int amount, double value)
 	{
 		List<String> itemsList = companyConfig.getStringList(companyId.toString() + ".Round." + round + ".ItemsSold");	
@@ -612,7 +634,7 @@ public class CompanyManager
 		return currentStock;
 	}
 	
-	public void increaseItemStock(UUID companyId, Material material, int amount)
+	public boolean increaseItemStock(UUID companyId, Material material, int amount)
 	{		
 		List<String> itemsList = companyConfig.getStringList(companyId.toString() + ".Items");	
 		
@@ -625,11 +647,18 @@ public class CompanyManager
 				
 		int currentStock = companyConfig.getInt(companyId.toString() + ".ItemDetails." + material.name() + ".InStock");	
 				
+		if(currentStock >= 50)
+		{
+			return false;
+		}
+		
 		currentStock += amount;
 		
 		companyConfig.set(companyId.toString() + ".ItemDetails." + material.name() + ".InStock", currentStock);	
 		
 		saveTimed();
+		
+		return true;
 	}
 
 	public boolean decreaseItemStock(UUID companyId, Material material, int amount)
@@ -1184,8 +1213,6 @@ public class CompanyManager
 		for(UUID employeeId : PlayerManager.instance().getOnlineEmployeesInCompanyByPosition(companyId, JobPosition.Sales))
 		{
 			Company.instance().sendInfo(employeeId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " bought 1 " + itemType.name() + " from your store", 2);	
-			PlayerManager.instance().addWork(employeeId, companyName, JobPosition.Sales);
-			PlayerManager.instance().addXP(employeeId, 1);
 		}
 		
 		Company.instance().sendInfo(player.getUniqueId(), "You bought 1 " + ChatColor.WHITE + itemType.name() + ChatColor.AQUA + " from " + ChatColor.WHITE + companyId.toString() + " for " + price + " wanks" , 2);
@@ -1226,9 +1253,9 @@ public class CompanyManager
 			return false;
 		}
 		
-		if(!CompanyManager.instance().decreaseItemStock(companyId, itemType, 1))
+		if(!CompanyManager.instance().increaseItemStock(companyId, itemType, 1))
 		{
-			Company.instance().sendInfo(player.getUniqueId(), ChatColor.WHITE + companyId.toString() + ChatColor.RED + " does not have any " + itemType.name() + " to sell.", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.WHITE + companyId.toString() + ChatColor.RED + " is not buying more " + itemType.name(), 2);	
 			return false;			
 		}
 
@@ -1261,15 +1288,13 @@ public class CompanyManager
 		int currentRound = CompanyManager.instance().getCurrentRound(companyId);	
 		int amount = 1;
 		
-		Company.instance().getEconomyManager().withdrawPlayer(player, price);
-		CompanyManager.instance().depositCompanyBalance(companyId, price);		
-		CompanyManager.instance().increaseItemsSoldThisRound(companyId, currentRound, itemType, amount, amount*CompanyManager.instance().getItemSalesPrice(companyId, itemType));
+		Company.instance().getEconomyManager().depositPlayer(player, price);
+		CompanyManager.instance().depositCompanyBalance(companyId, -price);		
+		CompanyManager.instance().increaseItemsBoughtThisRound(companyId, currentRound, itemType, amount, amount*CompanyManager.instance().getItemBuyPrice(companyId, itemType));
 				
 		for(UUID employeeId : PlayerManager.instance().getOnlineEmployeesInCompanyByPosition(companyId, JobPosition.Sales))
 		{
 			Company.instance().sendInfo(employeeId, ChatColor.WHITE + player.getName() + ChatColor.AQUA + " sold 1 " + itemType.name() + " to your store", 2);	
-			PlayerManager.instance().addWork(employeeId, companyName, JobPosition.Sales);
-			PlayerManager.instance().addXP(employeeId, 1);
 		}
 		
 		Company.instance().sendInfo(player.getUniqueId(), "You sold 1 " + ChatColor.WHITE + itemType.name() + ChatColor.AQUA + " to " + ChatColor.WHITE + companyId.toString() + " for " + price + " wanks" , 2);
@@ -1329,7 +1354,7 @@ public class CompanyManager
 		
 		CompanyManager.instance().increaseItemStock(companyId, player.getInventory().getItemInMainHand().getType(), itemAmount);
 		
-		PlayerManager.instance().addWork(player.getUniqueId(), companyName, JobPosition.Production);
+		PlayerManager.instance().addWork(player.getUniqueId(), JobPosition.Production);
 		PlayerManager.instance().addXP(player.getUniqueId(), 1);
 		
 		if(player.getInventory().getItemInMainHand().getAmount() > itemAmount)
@@ -1511,8 +1536,6 @@ public class CompanyManager
 						
 			if(wage > 0)
 			{				
-				OfflinePlayer offlinePlayer = Company.instance().getServer().getOfflinePlayer(employeeId);
-							
 				Player player = Company.instance().getServer().getPlayer(employeeId);
 				if(player!=null)
 				{

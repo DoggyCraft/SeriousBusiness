@@ -759,7 +759,7 @@ public class PlayerManager
 		}		
 	}
 	
-	public boolean addWork(UUID employeeId, String companyName, JobPosition employeePosition)
+	public boolean addWork(UUID employeeId, JobPosition employeePosition)
 	{
 		String lastPrayer = this.employeesConfig.getString(employeeId + ".LastWork");
 
@@ -819,7 +819,6 @@ public class PlayerManager
 		//	return false;
 		//}
 				
-		this.employeesConfig.set(employeeId + ".Company", companyName);
 		this.employeesConfig.set(employeeId + ".LastWork", formatter.format(thisDate));
 
 		saveTimed();
