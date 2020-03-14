@@ -46,9 +46,13 @@ The goal is to provide as many business and financial mechanics as possible for 
 * Get fined at contract breach
 * Take loans in other companies
 
-# A Cryptocoin alt-currency called "Nudes"
+# Cryptocoins alt-currencies
+* Custom named coins
+* Players can choose which coin to mine. Miners must set physical miners in the world.
 * Wildly swings in value
-* No company pays wages in Nudes
+* Players can choose to pay eachother using crypto-coins
+* Players can choose to invest in crypto-coins
+* No company pays wages in alt-coins
 
 # Insurance
 

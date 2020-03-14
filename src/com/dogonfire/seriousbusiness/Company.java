@@ -33,6 +33,7 @@ public class Company extends JavaPlugin
 	private LandManager landManager = null;
 	private StockManager stockManager = null;
 	private LoanManager loanManager = null;
+	private CryptocoinManager cryptoCoinManager = null;
 	private PermissionsManager permissionsManager = null;
 	private SeriousBusinessConfiguration configuration = null;
 	static private Company instance;
@@ -46,6 +47,11 @@ public class Company extends JavaPlugin
 	public PatentManager getPatentManager()
 	{
 		return patentManager;
+	}
+
+	public CryptocoinManager getCryptoCoinManager()
+	{
+		return cryptoCoinManager;
 	}
 
 	public LandManager getLandManager()
@@ -157,6 +163,7 @@ public class Company extends JavaPlugin
 		this.signManager = new SignManager();
 		this.stockManager = new StockManager();
 		this.loanManager = new LoanManager();
+		this.cryptoCoinManager = new CryptocoinManager();
 		
 		PluginManager pm = getServer().getPluginManager();
 
@@ -185,6 +192,7 @@ public class Company extends JavaPlugin
 		this.landManager.load();
 		this.loanManager.load();
 		this.stockManager.load();
+		this.cryptoCoinManager.load();
 		
 		getServer().getPluginManager().registerEvents(new EventListener(), this);
 		getServer().getPluginManager().registerEvents(signManager, this);
