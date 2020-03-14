@@ -38,12 +38,18 @@ public class CommandApplyPatent extends SeriousBusinessCommand
 		
 		String patentWord = args[1].toLowerCase();
 		
-		if (patentWord==null || patentWord.length() < 3 || args.length != 2)
+		if (patentWord==null || args.length != 2)
 		{
 			player.sendMessage(ChatColor.RED + "That is not a valid word for a patent.");
 			return;
 		}		
 			
+		if (patentWord.length() < 4)
+		{
+			player.sendMessage(ChatColor.RED + "That word is too short for a patent.");
+			return;
+		}		
+
 		if (PatentManager.instance().isBlacklisted(patentWord))
 		{
 			player.sendMessage(ChatColor.RED + "That word is blacklisted, sorry.");

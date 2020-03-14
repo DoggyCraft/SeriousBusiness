@@ -168,16 +168,19 @@ public class CourtManager
 			// Evaluate company actions during the last 5 turns/rounds
 			CourtCase courtCase = playerCases.poll();
 					
-			if(random.nextInt(3) > 0)
-			{
-				int amount = SeriousBusinessConfiguration.instance().getCourtCaseCost();
-				decideNotGuilty(courtCase, amount);
+			if(courtCase!=null)
+			{						
+				if(random.nextInt(3) > 0)
+				{
+					int amount = SeriousBusinessConfiguration.instance().getCourtCaseCost();
+					decideNotGuilty(courtCase, amount);
+				}
+				else
+				{
+					int amount = 10000 + random.nextInt(50000);
+					decideGuilty(courtCase, amount);					
+				}			
 			}
-			else
-			{
-				int amount = 10000 + random.nextInt(50000);
-				decideGuilty(courtCase, amount);					
-			}			
 		}	
 	}
 }

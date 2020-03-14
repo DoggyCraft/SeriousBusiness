@@ -20,34 +20,46 @@ public class CommandSue extends SeriousBusinessCommand
 		this.permission = "lawsuit.sue";
 	}
 
+	private void onHelp(Player player)
+	{
+		player.sendMessage(ChatColor.WHITE + "Usage: /lawsuit sue <companyname> <chargetype>");
+		player.sendMessage(ChatColor.WHITE + "Chargetype examples:");
+		player.sendMessage(ChatColor.WHITE + " STF - Sales tax fraud");
+		player.sendMessage(ChatColor.WHITE + " SMP - Stock manipulation");
+		player.sendMessage(ChatColor.WHITE + " LSH - Loan sharking");
+		player.sendMessage(ChatColor.WHITE + " TAV - Tax avoidance");
+		player.sendMessage(ChatColor.WHITE + " TII - Trading illegal items");
+	}
+	
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player)sender;
-				
+		CourtCaseType courtCaseType = CourtCaseType.SalesTaxFraud;
+		
 		//STF SalesTaxFraud,		 // Company has moved money between lands to avoid sales taxes
 		//SMP StockManipulation,   // Company has hoarded and instantly sold/bought more items exceeding policy max in order to manipulate stock value
 		//LSH LoanSharking,   	 // Company has issued loans with rates exceeding policy max		
 		//TAV TaxAvoidance,   	 // Company has invested in cryptocurrency/items in order to avoid taxes		
 		//TII TradingIllegalItems, 		
 
-		if(args.length != 3)
+		switch(args[1].toLowerCase())
 		{
-			player.sendMessage(ChatColor.WHITE + "Usage: /lawsuit sue <companyname> <chargetype>");
-			player.sendMessage(ChatColor.WHITE + "Chargetype examples:");
-			player.sendMessage(ChatColor.WHITE + " STF - Sales tax fraud");
-			player.sendMessage(ChatColor.WHITE + " SMP - Stock manipulation");
-			player.sendMessage(ChatColor.WHITE + " LSH - Loan sharking");
-			player.sendMessage(ChatColor.WHITE + " TAV - Tax avoidance");
-			player.sendMessage(ChatColor.WHITE + " TII - Trading illegal items");
-			return;
-		}	
+			case "help"	: onHelp(player); break;
+			case "stf"	: courtCaseType = CourtCaseType.SalesTaxFraud; break;
+			case "smp"	: courtCaseType = CourtCaseType.StockManipulation; break;
+			case "lsh"	: courtCaseType = CourtCaseType.LoanSharking; break;
+			case "tav"	: courtCaseType = CourtCaseType.TaxAvoidance; break;
+			case "tii"	: courtCaseType = CourtCaseType.TradingIllegalItems; break;
+			default 	: player.sendMessage(ChatColor.RED + "That is not a valid legal charge type"); return; 
+		}
 
 		UUID companyId = CompanyManager.instance().getCompanyIdByName(args[1]);
 		
 		if(companyId == null)
 		{		
-			player.sendMessage(ChatColor.RED + "That is not a valid legal charge type");
+			player.sendMessage(ChatColor.RED + "No such company");
+			return;
 		}
 				
 		int amount = SeriousBusinessConfiguration.instance().getCourtCaseCost();
@@ -58,15 +70,7 @@ public class CommandSue extends SeriousBusinessCommand
 			return;									
 		}
 		
-		switch(args[2].toLowerCase())
-		{
-			case "stf"	: CourtManager.instance().applyCase(CourtCaseType.SalesTaxFraud, player.getUniqueId(), companyId); break;
-			case "smp"	: CourtManager.instance().applyCase(CourtCaseType.StockManipulation, player.getUniqueId(), companyId); break;
-			case "lsh"	: CourtManager.instance().applyCase(CourtCaseType.LoanSharking, player.getUniqueId(), companyId); break;
-			case "tav"	: CourtManager.instance().applyCase(CourtCaseType.TaxAvoidance, player.getUniqueId(), companyId); break;
-			case "tii"	: CourtManager.instance().applyCase(CourtCaseType.TradingIllegalItems, player.getUniqueId(), companyId); break;
-			default 	: player.sendMessage(ChatColor.RED + "That is not a valid legal charge type"); return; 
-		}
+		CourtManager.instance().applyCase(courtCaseType, player.getUniqueId(), companyId);
 		
 		Company.instance().getEconomyManager().withdrawPlayer(player, amount);	
 	}
