@@ -18,9 +18,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LoanManager
 {
-	private static LoanManager		instance;
-	private FileConfiguration			patentConfig		= null;
-	private File						patentConfigFile	= null;
+	private static LoanManager			instance;
+	private FileConfiguration			loansConfig		= null;
+	private File						loansConfigFile	= null;
 	private Random						random				= new Random();
 	private long						lastSaveTime;
 	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
@@ -60,27 +60,27 @@ public class LoanManager
 	
 	public void load()
 	{
-		this.patentConfigFile = new File(Company.instance().getDataFolder(), "loans.yml");
+		this.loansConfigFile = new File(Company.instance().getDataFolder(), "loans.yml");
 
-		this.patentConfig = YamlConfiguration.loadConfiguration(this.patentConfigFile);
+		this.loansConfig = YamlConfiguration.loadConfiguration(this.loansConfigFile);
 
-		Company.instance().log("Loaded " + this.patentConfig.getKeys(false).size() + " loans.");
+		Company.instance().log("Loaded " + this.loansConfig.getKeys(false).size() + " loans.");
 	}
 
 	public void save()
 	{
 		this.lastSaveTime = System.currentTimeMillis();
-		if ((this.patentConfig == null) || (this.patentConfigFile == null))
+		if ((this.loansConfig == null) || (this.loansConfigFile == null))
 		{
 			return;
 		}
 		try
 		{
-			this.patentConfig.save(this.patentConfigFile);
+			this.loansConfig.save(this.loansConfigFile);
 		}
 		catch (Exception ex)
 		{
-			Company.instance().log("Could not save config to " + this.patentConfigFile + ": " + ex.getMessage());
+			Company.instance().log("Could not save config to " + this.loansConfigFile + ": " + ex.getMessage());
 		}
 	}
 

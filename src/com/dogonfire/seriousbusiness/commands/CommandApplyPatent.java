@@ -50,6 +50,12 @@ public class CommandApplyPatent extends SeriousBusinessCommand
 			return;
 		}
 
+		if (PatentManager.instance().getCompanyPatents(companyId).size() > SeriousBusinessConfiguration.instance().getMaxCompanyPatents())
+		{
+			player.sendMessage(ChatColor.RED + "Your company cannot have more than " + ChatColor.GOLD + SeriousBusinessConfiguration.instance().getMaxCompanyPatents() + ChatColor.RED + " active patents");
+			return;
+		}
+
 		Patent patent = PatentManager.instance().getPatent(patentWord);
 
 		if (patent != null)

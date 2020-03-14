@@ -21,6 +21,7 @@ public class SeriousBusinessConfiguration
 	private int roundTimeInSeconds = 30*60;
 	private int maxCEOOfflineTimeInMinutes = 10;
 	private int maxEmployeeOfflineTimeInDays = 14;
+	private int maxCompanyPatents = 5;
 	private int newCompanyCost = 100;
 	private int newPatentCost = 100;
 	private int patentChargePercentage = 1;
@@ -85,6 +86,11 @@ public class SeriousBusinessConfiguration
 	public final boolean isEnabledInWorld(World world)
 	{
 		return true;
+	}
+	
+	public final int getMaxCompanyPatents()
+	{
+		return maxCompanyPatents;
 	}
 	
 	public void load()

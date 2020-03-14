@@ -19,8 +19,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class CryptocoinManager
 {
 	private static CryptocoinManager	instance;
-	private FileConfiguration			patentConfig		= null;
-	private File						patentConfigFile	= null;
+	private FileConfiguration			crytoCoinConfig		= null;
+	private File						crytoCoinConfigFile	= null;
 	private Random						random				= new Random();
 	private long						lastSaveTime;
 	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
@@ -60,27 +60,27 @@ public class CryptocoinManager
 	
 	public void load()
 	{
-		this.patentConfigFile = new File(Company.instance().getDataFolder(), "cryptocoins.yml");
+		this.crytoCoinConfigFile = new File(Company.instance().getDataFolder(), "cryptocoins.yml");
 
-		this.patentConfig = YamlConfiguration.loadConfiguration(this.patentConfigFile);
+		this.crytoCoinConfig = YamlConfiguration.loadConfiguration(this.crytoCoinConfigFile);
 
-		Company.instance().log("Loaded " + this.patentConfig.getKeys(false).size() + " cryptocoins.");
+		Company.instance().log("Loaded " + this.crytoCoinConfig.getKeys(false).size() + " cryptocoins.");
 	}
 
 	public void save()
 	{
 		this.lastSaveTime = System.currentTimeMillis();
-		if ((this.patentConfig == null) || (this.patentConfigFile == null))
+		if ((this.crytoCoinConfig == null) || (this.crytoCoinConfigFile == null))
 		{
 			return;
 		}
 		try
 		{
-			this.patentConfig.save(this.patentConfigFile);
+			this.crytoCoinConfig.save(this.crytoCoinConfigFile);
 		}
 		catch (Exception ex)
 		{
-			Company.instance().log("Could not save config to " + this.patentConfigFile + ": " + ex.getMessage());
+			Company.instance().log("Could not save config to " + this.crytoCoinConfigFile + ": " + ex.getMessage());
 		}
 	}
 
