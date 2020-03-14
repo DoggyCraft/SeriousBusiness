@@ -97,6 +97,10 @@ public class CommandCompanyHelp extends SeriousBusinessCommand
 		{
 			player.sendMessage(ChatColor.WHITE + "/company products" + ChatColor.AQUA + " - Show items in your company storage");
 		}
+		if (PermissionsManager.instance().hasPermission(player, "company.rename"))
+		{
+			player.sendMessage(ChatColor.WHITE + "/company rename" + ChatColor.AQUA + " - Rename your company");
+		}
 		if (PermissionsManager.instance().hasPermission(player, "company.report"))
 		{
 			player.sendMessage(ChatColor.WHITE + "/company report" + ChatColor.AQUA + " - Show the latest report for your company");

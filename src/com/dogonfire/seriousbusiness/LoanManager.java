@@ -21,24 +21,28 @@ public class LoanManager
 	private static LoanManager			instance;
 	private FileConfiguration			loansConfig		= null;
 	private File						loansConfigFile	= null;
-	private Random						random				= new Random();
+	private Random						random			= new Random();
 	private long						lastSaveTime;
-	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
-	private HashMap<UUID, Loan>			playerLoans 		= new HashMap<UUID, Loan>();
-	DateFormat							formatter			= new SimpleDateFormat(this.pattern);
+	private String						pattern			= "HH:mm:ss dd-MM-yyyy";
+	private HashMap<UUID, Loan>			playerLoans 	= new HashMap<UUID, Loan>();
+	DateFormat							formatter		= new SimpleDateFormat(this.pattern);
 
 	final public class Loan
 	{	
 		final public UUID companyId;
 		final public UUID playerId;
 		final public int amount;
+		final public int rate;
+		final public int deaths;
 		final public Date dueDate;
 		
-		Loan(UUID companyId, UUID playerId, int amount, Date dueDate)		
+		Loan(UUID companyId, UUID playerId, int amount, int rate, int deaths, Date dueDate)		
 		{
 			this.companyId = companyId;
 			this.playerId = playerId;
 			this.amount = amount;
+			this.rate = rate;
+			this.deaths = deaths;
 			this.dueDate = dueDate;
 		}
 		
@@ -114,7 +118,7 @@ public class LoanManager
 	public void sendTheCollector(UUID companyId, UUID playerId, int howManyDeaths)
 	{
 		// The Collector will hunt, haunt and kill the player <howManyDeaths> times before going away
-		// At each kill, The Collector will take 1 valuable item from players inventory
+		// At each kill, The Collector will take a random item from players inventory
 		// The Collector reminds the player that he has not paid his loan, so he is here to break bones
 	}
 
@@ -132,7 +136,7 @@ public class LoanManager
 			{
 				if (loan.isDue())
 				{
-					CompanyManager.instance().sendInfoToEmployees(loan.companyId, "Your loan of " + loan.amount + " is due. Pay within 5 minutes or The Collector will be send after you.", ChatColor.YELLOW, 10);
+					CompanyManager.instance().sendInfoToEmployees(loan.companyId, "Your loan of " + loan.amount + " is due. Pay within 5 minutes or The Collector will come for you.", ChatColor.YELLOW, 10);
 					
 					//deleteLoan(loan.word);
 					

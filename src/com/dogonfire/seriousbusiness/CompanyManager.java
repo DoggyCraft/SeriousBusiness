@@ -932,6 +932,12 @@ public class CompanyManager
 		
 		return companyId;
 	}
+	
+	public void renameCompany(UUID companyId, String companyName)
+	{
+		this.companyConfig.set(companyId.toString() + ".Name", companyName);
+		save();		
+	}
 
 	public String getCompanyName(UUID companyId)
 	{

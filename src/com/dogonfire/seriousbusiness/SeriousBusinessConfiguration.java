@@ -26,6 +26,7 @@ public class SeriousBusinessConfiguration
 	private int newPatentCost = 100;
 	private int patentChargePercentage = 1;
 	private int patentMinutes = 10;
+	public int renameCompanyCost = 10;
 
 	public SeriousBusinessConfiguration()
 	{
@@ -45,6 +46,11 @@ public class SeriousBusinessConfiguration
 	public final int getNewCompanyCost()
 	{
 		return newCompanyCost;
+	}
+	
+	public final int getRenameCompanyCost()
+	{
+		return renameCompanyCost;		
 	}
 	
 	public int getPatentTime()

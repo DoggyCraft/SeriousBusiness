@@ -35,6 +35,12 @@ public class CommandCreate extends SeriousBusinessCommand
 			return;
 		}
 		
+		if (args.length < 2)
+		{
+			player.sendMessage(ChatColor.WHITE + "  Usage: /company create <name>");
+			return;
+		}		
+
 		String newCompanyName = args[1];
 		
 		for(int a=2; a<args.length; a++)
