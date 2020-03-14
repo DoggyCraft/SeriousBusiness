@@ -277,7 +277,6 @@ public class PlayerManager
 		return allBelievers;
 	}
 
-
 	public void setCompanyPosition(UUID employeeId, JobPosition employeePosition)
 	{
 		employeesConfig.set(employeeId.toString() + ".JobPosition", employeePosition.toString());
@@ -485,31 +484,6 @@ public class PlayerManager
 
 		this.employeesConfig.set(believerId + ".LastPriestOffer", formatter.format(thisDate));
 		saveTimed();
-	}
-
-	boolean getChangingGod(UUID believerId)
-	{
-		String changingGodString = this.employeesConfig.getString(believerId + ".ChangingGod");
-
-		String pattern = "HH:mm:ss dd-MM-yyyy";
-		DateFormat formatter = new SimpleDateFormat(pattern);
-		Date changingGodDate = null;
-		boolean changing = false;
-		Date thisDate = new Date();
-		try
-		{
-			changingGodDate = formatter.parse(changingGodString);
-
-			long diff = thisDate.getTime() - changingGodDate.getTime();
-			long diffSeconds = diff / 1000L;
-
-			changing = diffSeconds <= 10L;
-		}
-		catch (Exception ex)
-		{
-			changing = false;
-		}
-		return changing;
 	}
 
 	public void setInvitationTime(UUID believerId)

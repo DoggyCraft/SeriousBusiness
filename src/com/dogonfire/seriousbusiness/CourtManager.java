@@ -98,6 +98,20 @@ public class CourtManager
 		return (CourtCase[]) playerCases.toArray();
 	}
 		
+	private String getCaseTypeDescription(CourtCaseType caseType)
+	{
+		switch(caseType)
+		{
+		case SalesTaxFraud : return "Sales tax fraud";
+		case StockManipulation : return "Stock manipulation";
+		case LoanSharking : return "Loan sharking";
+		case TaxAvoidance : return "Tax avoidance";
+		case TradingIllegalItems : return "Trading illegal Items";		
+		}
+		
+		return "UNKNOWN";
+	}
+	
 	// Players can randomly (without actual knowledge) fire court cases against companies and hope that they will actually hit criminal behaviour
 	public UUID applyCase(CourtCaseType caseType, UUID playerId, UUID companyId)
 	{
@@ -111,6 +125,9 @@ public class CourtManager
 		playerCases.add(new CourtCase(caseType, playerId, companyId));
 		
 		save();
+		
+		String companyName = CompanyManager.instance().getCompanyName(companyId);
+		Company.instance().broadcastInfo(Company.instance().getServer().getPlayer(playerId).getDisplayName() + " sued " + companyName + " for " + getCaseTypeDescription(caseType) + "!");
 		
 		return companyId;
 	}

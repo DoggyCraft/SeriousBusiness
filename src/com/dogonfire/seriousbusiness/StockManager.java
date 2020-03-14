@@ -95,20 +95,60 @@ public class StockManager
 		return null;
 	}
 			
-	private void sellStock(Player playerId, int amount)
+	public void sellStock(Player playerId, UUID companyId, int amount)
 	{
+		Date thisDate = new Date();
+		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
+		int stockValue = (int)CompanyManager.instance().getFinancialReport(companyId, currentRound).stockEndValue;
+		float value = 0;
+
+		for(int : )
+		{
+			if(amount > 0)
+			{
+				String companyIdString = this.stockConfig.getInt(playerId.toString() + ".Stocks." + transactionId + ".Amount", stockValue);	
+
+				if(!companyIdString.equals(companyIdString))
+				{
+					continue;				
+				}
+		
+				int stockAmount = this.stockConfig.getInt(playerId.toString() + ".Stocks." + transactionId + ".Amount");	
+				double value = this.stockConfig.getDouble(playerId.toString() + ".Stocks." + transactionId + ".Value");
+			
+				if(amount - stockAmount < 0)
+				{
+					stockAmount = amount;
+					this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId + ".Amount", stockAmount);	
+				}
+				else
+				{
+					this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId, null);					
+				}
+			
+				amount -= stockAmount;
+			
+				Company.instance().getEconomyManager().depositPlayer(player, value * stockAmount);
+			}
+		}					
 	}	
 
-	public void buyStockValue(UUID playerId, int amount)
-	{			
-		int stockValue = 1 ;//CompanyManager.instance();
+	public void buyStock(UUID playerId, UUID companyId, int amount)
+	{
+		Date thisDate = new Date();
+		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
+		int stockValue = (int)CompanyManager.instance().getFinancialReport(companyId, currentRound).stockEndValue;
 		
-		//this.stockConfig.set(playerId.toString() + ".Bought." + ".Amount", amount);
-		//this.stockConfig.set(playerId.toString() + ".Bought." + ".CompanyId", companyId);
-		this.stockConfig.set(playerId.toString() + ".Bought." + ".Value", stockValue);
+		long transactionId = thisDate.getTime();
+		this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId + ".CompanyId", companyId.toString());
+		this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId + ".Value", stockValue);
+		this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId + ".Amount", stockValue);
+
+		Player player = Company.instance().getServer().getPlayer(playerId);
+		
+		Company.instance().getEconomyManager().depositPlayer(player, -amount * stockValue);
 	}
-	
-		
+			
 	public UUID createStock(UUID companyId)
 	{
 		Calendar c = Calendar.getInstance();

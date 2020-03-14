@@ -4,14 +4,9 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Random;
-import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -83,7 +78,7 @@ public class PolicyManager
 		{
 			Company.instance().logDebug("Processing policies...");
 
-			// Change policies max limits slightly, broadcase news to company employees
+			// Change policies max limits slightly, broadcast news to company employees
 		}	
 	}
 }

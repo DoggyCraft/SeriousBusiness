@@ -32,7 +32,7 @@ public class StockCommandExecuter implements CommandExecutor
 	private StockCommandExecuter()
 	{
 		commandList = new TreeMap<String, SeriousBusinessCommand>();
-		//registerCommand(new CommandStocks());
+		registerCommand(new CommandStockBuy());
 		//registerCommand(new CommandStocksBuy());
 		//registerCommand(new CommandStocksSell());
 	}
@@ -58,6 +58,8 @@ public class StockCommandExecuter implements CommandExecutor
 		sender.sendMessage(ChatColor.AQUA + "");
 		sender.sendMessage(ChatColor.YELLOW + "Buy stocks using " + ChatColor.WHITE + "/stocks buy <company> <amount>");
 		sender.sendMessage(ChatColor.YELLOW + "Sell stocks using " + ChatColor.WHITE + "/stocks sell <company> <amount>");
+		sender.sendMessage(ChatColor.AQUA + "");
+		sender.sendMessage(ChatColor.YELLOW + "TIP: Buy stock at low value and sell the stock when they reach higher value");
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
