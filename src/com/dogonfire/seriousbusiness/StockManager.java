@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.configuration.file.FileConfiguration;
@@ -95,35 +96,34 @@ public class StockManager
 		return null;
 	}
 			
-	public void sellStock(Player playerId, UUID companyId, int amount)
+	public void sellStock(Player player, UUID companyId, int amount)
 	{
-		Date thisDate = new Date();
 		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
-		int stockValue = (int)CompanyManager.instance().getFinancialReport(companyId, currentRound).stockEndValue;
-		float value = 0;
 
-		for(int : )
+		Set<String> stocks = this.stockConfig.getConfigurationSection(player.getUniqueId().toString() + ".Stocks.").getKeys(false);
+		
+		for(String transactionId : stocks)
 		{
 			if(amount > 0)
 			{
-				String companyIdString = this.stockConfig.getInt(playerId.toString() + ".Stocks." + transactionId + ".Amount", stockValue);	
+				String companyIdString = this.stockConfig.getString(player.getUniqueId().toString() + ".Stocks." + transactionId + ".CompanyId");	
 
-				if(!companyIdString.equals(companyIdString))
+				if(!companyId.toString().equals(companyIdString))
 				{
 					continue;				
 				}
 		
-				int stockAmount = this.stockConfig.getInt(playerId.toString() + ".Stocks." + transactionId + ".Amount");	
-				double value = this.stockConfig.getDouble(playerId.toString() + ".Stocks." + transactionId + ".Value");
+				int stockAmount = this.stockConfig.getInt(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Amount");	
+				double value = this.stockConfig.getDouble(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Value");
 			
 				if(amount - stockAmount < 0)
 				{
 					stockAmount = amount;
-					this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId + ".Amount", stockAmount);	
+					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Amount", stockAmount);	
 				}
 				else
 				{
-					this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId, null);					
+					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId, null);					
 				}
 			
 				amount -= stockAmount;
