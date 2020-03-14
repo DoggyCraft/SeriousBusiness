@@ -184,6 +184,11 @@ public class PatentManager
 		{
 			cost = 1;
 		}
+		
+		if(cost > 10 * SeriousBusinessConfiguration.instance().getPatentCost())
+		{
+			cost = 10 * SeriousBusinessConfiguration.instance().getPatentCost();
+		}
 
 		if(Company.instance().getEconomyManager().has(player, cost) && Company.instance().getEconomyManager().has(player, 100))
 		{
