@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -134,20 +135,27 @@ public class CourtManager
 	{
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
+		OfflinePlayer player = Company.instance().getServer().getOfflinePlayer(courtCase.playerId);
 		
 		Company.instance().broadcastInfo("The Court ruled " + companyName + " NOT GUILTY of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + " companyName " + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo(companyName + " was given " + amount + " wanks as compensation for emotional damage!");		
+
+		CompanyManager.instance().depositCompanyBalance(courtCase.companyId, amount);
 	}
 	
 	private void decideGuilty(CourtCase courtCase, int amount)
 	{
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
-
+		OfflinePlayer player = Company.instance().getServer().getOfflinePlayer(courtCase.playerId);
+		
 		Company.instance().broadcastInfo("The Court ruled " + companyName + " GUILTY of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + " companyName " + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo(companyName + " was fined " + amount + " wanks!");
+			
+		CompanyManager.instance().depositCompanyBalance(courtCase.companyId, -amount);
+		Company.instance().getEconomyManager().depositPlayer(player, amount);
 	}
 
 	public void update()
