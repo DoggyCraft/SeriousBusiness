@@ -98,8 +98,6 @@ public class StockManager
 			
 	public void sellStock(Player player, UUID companyId, int amount)
 	{
-		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
-
 		Set<String> stocks = this.stockConfig.getConfigurationSection(player.getUniqueId().toString() + ".Stocks.").getKeys(false);
 		
 		for(String transactionId : stocks)
@@ -116,19 +114,18 @@ public class StockManager
 				int stockAmount = this.stockConfig.getInt(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Amount");	
 				double value = this.stockConfig.getDouble(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Value");
 			
-				if(amount - stockAmount < 0)
+				if(stockAmount - amount < 0)
 				{
-					stockAmount = amount;
-					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Amount", stockAmount);	
+					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId, null);					
+					Company.instance().getEconomyManager().depositPlayer(player, value * stockAmount);
+					amount -= stockAmount;
 				}
 				else
 				{
-					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId, null);					
-				}
-			
-				amount -= stockAmount;
-			
-				Company.instance().getEconomyManager().depositPlayer(player, value * stockAmount);
+					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Amount", stockAmount - amount);	
+					Company.instance().getEconomyManager().depositPlayer(player, value * (stockAmount - amount));
+					return;
+				}						
 			}
 		}					
 	}	

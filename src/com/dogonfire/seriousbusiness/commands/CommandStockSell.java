@@ -15,12 +15,12 @@ import com.dogonfire.seriousbusiness.StockManager;
 
 
 
-public class CommandStockBuy extends SeriousBusinessCommand
+public class CommandStockSell extends SeriousBusinessCommand
 {
-	protected CommandStockBuy()
+	protected CommandStockSell()
 	{
-		super("buy");
-		this.permission = "stock.buy";
+		super("sell");
+		this.permission = "stock.sell";
 	}
 
 	@Override
@@ -30,12 +30,12 @@ public class CommandStockBuy extends SeriousBusinessCommand
 		
 		if(args.length != 3)
 		{
-			player.sendMessage(ChatColor.RED + "Usage: /stocks buy <companyname> <amount>");
+			player.sendMessage(ChatColor.RED + "Usage: /stocks sell <companyname> <amount>");
 			return;
 		}
 		
 		int amount;
-			
+				
 		UUID companyId = CompanyManager.instance().getCompanyIdByName(args[1]);
 
 		if(companyId == null)
@@ -56,7 +56,7 @@ public class CommandStockBuy extends SeriousBusinessCommand
 			return;
 		}
 						
-		StockManager.instance().buyStock(player.getUniqueId(), companyId, amount);		
-		Company.instance().broadcastInfo(ChatColor.WHITE + player.getName() + ChatColor.AQUA + " bought " + amount + " " + companyName + " stocks ");		
+		StockManager.instance().sellStock(player, companyId, amount);		
+		Company.instance().broadcastInfo(ChatColor.WHITE + player.getName() + ChatColor.AQUA + " sold " + amount + " " + companyName + " stocks ");		
 	}
 }

@@ -33,8 +33,7 @@ public class StockCommandExecuter implements CommandExecutor
 	{
 		commandList = new TreeMap<String, SeriousBusinessCommand>();
 		registerCommand(new CommandStockBuy());
-		//registerCommand(new CommandStocksBuy());
-		//registerCommand(new CommandStocksSell());
+		registerCommand(new CommandStockSell());
 	}
 
 	protected Collection<SeriousBusinessCommand> getCommands()
