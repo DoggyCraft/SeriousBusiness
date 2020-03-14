@@ -12,7 +12,6 @@ import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
-import com.dogonfire.seriousbusiness.PermissionsManager;
 
 
 public class CommandInfo extends SeriousBusinessCommand

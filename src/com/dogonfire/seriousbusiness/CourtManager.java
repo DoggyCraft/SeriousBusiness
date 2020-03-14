@@ -3,15 +3,11 @@ package com.dogonfire.seriousbusiness;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -24,7 +20,7 @@ public class CourtManager
 	private Random						random				= new Random();
 	private long						lastSaveTime;
 	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
-	private HashMap<UUID, CourtCase>	playerCases 		= new HashMap<UUID, CourtCase>(); // TODO: Should be a queue
+	private Queue<CourtCase>			playerCases 		= new PriorityQueue<CourtCase>(); // TODO: Should be a queue
 	DateFormat							formatter			= new SimpleDateFormat(this.pattern);
 
 	enum CourtCaseType
@@ -34,28 +30,21 @@ public class CourtManager
 		LoanSharking,   	 // Company has issued loans with rates exceeding policy max		
 		TaxAvoidance,   	 // Company has invested in cryptocurrency/items in order to avoid taxes		
 		TradingIllegalItems, // Company has bought or sold illegal items in a land
-		//IllegalTrademarks    // Company has too many active patents
+		//IllegalTrademarks    // Company has issued too many active patents
 	}
 	
 	final public class CourtCase
 	{	
 		final public UUID playerId;
 		final public UUID companyId;
-		final public int amount;
-		final public Date decisionDate;
+		final public CourtCaseType caseType;
 		
-		CourtCase(UUID playerId, UUID companyId, int amount, Date decisionDate)		
+		CourtCase(CourtCaseType caseType, UUID playerId, UUID companyId)		
 		{
 			this.companyId = companyId;
 			this.playerId = playerId;
-			this.amount = amount;
-			this.decisionDate = decisionDate;
-		}
-		
-		public boolean isDue()
-		{
-			return new Date().after(decisionDate);
-		}
+			this.caseType = caseType;
+		}		
 	}
 	
 	CourtManager()
@@ -104,25 +93,22 @@ public class CourtManager
 		save();
 	}
 
-	public Collection<CourtCase> getLoans()
+	public CourtCase[] getCases()
 	{	
-		return playerCases.values();
+		return (CourtCase[]) playerCases.toArray();
 	}
 		
 	// Players can randomly (without actual knowledge) fire court cases against companies and hope that they will actually hit criminal behaviour
-	public UUID applyCase(UUID playerId, UUID companyId, int amount, int rate, int minutes)
+	public UUID applyCase(CourtCaseType caseType, UUID playerId, UUID companyId)
 	{
 		// Check whether player case exist, too many, irrelavent and other reasons to reject the case
 		
-		return createCase(playerId, companyId, amount, rate, minutes);
+		return createCase(caseType, playerId, companyId);
 	}	
 	
-	public UUID createCase(UUID companyId, UUID playerId, int amount, int rate, int minutes)
+	public UUID createCase(CourtCaseType caseType, UUID companyId, UUID playerId)
 	{
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.MINUTE, SeriousBusinessConfiguration.instance().getPatentTime());
-		
-		//loans.put(word, new Loan(companyId, word, c.getTime()));
+		playerCases.add(new CourtCase(caseType, playerId, companyId));
 		
 		save();
 		
