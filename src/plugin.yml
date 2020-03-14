@@ -35,6 +35,9 @@ commands:
   stocks:
     description: "Controls the Serious Business stocks system"
     usage: /stocks
+  crypto:
+    description: "Controls the Serious Business crypto currency system"
+    usage: /crypto
 permissions: 
   company.*: 
     children: 
@@ -83,6 +86,7 @@ permissions:
       shop: true
       shop.search: true
       shop.goto: true
+      crypto: true
     default: false
     description: "Gives access to all Serious Business commands"
   company.listen: 
