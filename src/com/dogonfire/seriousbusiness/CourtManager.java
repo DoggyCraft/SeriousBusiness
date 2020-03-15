@@ -177,7 +177,6 @@ public class CourtManager
 		//Company.instance().getEconomyManager().depositPlayer(player, amount);
 	}
 
-	// TODO: Policy changes over time. Avoid policy changes when there are pending court cases
 	public void update()
 	{
 		if (this.random.nextInt(500) == 0)

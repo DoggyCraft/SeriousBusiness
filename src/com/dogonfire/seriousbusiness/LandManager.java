@@ -161,7 +161,7 @@ public class LandManager implements Listener
 			case BIRCH_FOREST :
 				first = new String[] {"Upper ", "Lower ", "High ", "", "", "", "", ""};
 				second = new String[] {"Green", "Pine", "Cold", "Wood", "Moss", "Berry", "Fruit", "Branch", "Stick"};
-				third = new String[] {"forest", "wood", "bush"};
+				third = new String[] {"forest", "wood", "bush", "weed"};
 				break;
 			case MOUNTAINS :
 				first = new String[] {"Upper ", "Lower ", "High ", "", "", "", "", ""};
@@ -170,7 +170,7 @@ public class LandManager implements Listener
 			default :
 				first = new String[] {"Upper ", "Lower ", "High ", "", "", "", "", "", ""};
 				second = new String[] {"Dirt", "Wood", "Small", "Sand", "Sky", "Little", "Big", "Leaf", "Summer", "Green", "Cloud", "Nut", "Light", "Cow", "Sheep", "Water"};
-				third = new String[] {"ville", "city", "hill", "town", "land", "place"};
+				third = new String[] {"ville", "city", "hill", "town", "land", "place", "hat", "weed"};
 				break;				
 		}
 		
@@ -268,6 +268,12 @@ public class LandManager implements Listener
 		if(section==null)
 		{
 			return;			
+		}
+		
+		// Policy changes over time. Avoid policy changes when there are pending court cases
+		if(CourtManager.instance().getCases().length > 0)
+		{
+			return;
 		}
 		
 		String hashString = (String)section.getKeys(false).toArray()[random.nextInt(section.getKeys(false).size())];
