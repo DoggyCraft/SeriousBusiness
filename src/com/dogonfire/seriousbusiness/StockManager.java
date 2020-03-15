@@ -116,13 +116,16 @@ public class StockManager
 			
 				if(stockAmount - amount < 0)
 				{
-					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId, null);					
+					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId, null);
+					save();
+					
 					Company.instance().getEconomyManager().depositPlayer(player, value * stockAmount);
 					amount -= stockAmount;
 				}
 				else
 				{
 					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Amount", stockAmount - amount);	
+					save();
 					Company.instance().getEconomyManager().depositPlayer(player, value * (stockAmount - amount));
 					return;
 				}						
@@ -144,6 +147,8 @@ public class StockManager
 		Player player = Company.instance().getServer().getPlayer(playerId);
 		
 		Company.instance().getEconomyManager().depositPlayer(player, -amount * stockValue);
+
+		save();
 	}
 			
 	public UUID createStock(UUID companyId)
