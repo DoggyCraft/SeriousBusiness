@@ -39,17 +39,22 @@ public class CommandStockSell extends SeriousBusinessCommand
 			player.sendMessage(ChatColor.RED + "That is not a valid amount");
 			return;
 		}
+		
+		String companyName = args[2];
+		
+		for(int a=3; a<args.length; a++)
+		{
+			companyName += " " + args[a];
+		}
 
-		UUID companyId = CompanyManager.instance().getCompanyIdByName(args[2]);
+		UUID companyId = CompanyManager.instance().getCompanyIdByName(companyName);
 
 		if(companyId == null)
 		{
 			player.sendMessage(ChatColor.RED + "No company with that name");
 			return;			
 		}
-		
-		String companyName = CompanyManager.instance().getCompanyName(companyId);
-									
+										
 		StockManager.instance().sellStock(player, companyId, amount);		
 		Company.instance().broadcastInfo(ChatColor.WHITE + player.getName() + ChatColor.AQUA + " sold " + amount + " " + companyName + " stocks ");		
 	}

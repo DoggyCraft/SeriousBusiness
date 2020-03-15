@@ -47,7 +47,7 @@ public class CommandStockBuy extends SeriousBusinessCommand
 			companyName += " " + args[a];
 		}
 		
-		UUID companyId = CompanyManager.instance().getCompanyIdByName(args[1]);
+		UUID companyId = CompanyManager.instance().getCompanyIdByName(companyName);
 
 		if(companyId == null)
 		{
