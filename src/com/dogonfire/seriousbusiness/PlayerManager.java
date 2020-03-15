@@ -245,7 +245,7 @@ public class PlayerManager
 		}
 		else
 		{
-			Company.instance().getServer().getPlayer(playerId).sendMessage(ChatColor.AQUA + "You now have " + ChatColor.GOLD + newXP + ChatColor.AQUA + employeePosition.name() + " skill");
+			Company.instance().getServer().getPlayer(playerId).sendMessage(ChatColor.AQUA + "You now have " + ChatColor.GOLD + newXP + " " + ChatColor.AQUA + employeePosition.name() + " skill");
 		}
 		
 		this.employeesConfig.set(playerId + ".XP", newXP);

@@ -41,6 +41,7 @@ public class CompanyManager
 		Production,
 		Sales,
 		Manager,
+		Law,
 		//Research
 	}
 
@@ -1345,15 +1346,15 @@ public class CompanyManager
 		
 		if(playerCompanyName==null || !playerCompanyName.equals(companyName))
 		{
-			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You need to work in " + ChatColor.GOLD + companyName + ChatColor.AQUA + " to use this sign.", 2);	
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You need to work in " + ChatColor.GOLD + companyName + ChatColor.RED + " to use this sign.", 2);	
 			return false;
 		}
 		
-		if(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Production)
-		{
-			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in production to use this sign.", 2);	
-			return false;
-		}
+		//if(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Production)
+		//{
+		//	Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in production to use this sign.", 2);	
+		//	return false;
+		//}
 
 		UUID companyId = CompanyManager.instance().getCompanyIdByName(companyName);
 		
