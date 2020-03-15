@@ -126,8 +126,7 @@ public class SignManager implements Listener
 				return;
 			}
 			
-			PlayerManager.instance().addWork(player.getUniqueId(), JobPosition.Sales);
-			PlayerManager.instance().addXP(player.getUniqueId(), 1);
+			PlayerManager.instance().addXP(player.getUniqueId(), JobPosition.Sales, 1);
 
 			Company.instance().log(player.getName() + " placed a sell sign.");
 			
@@ -144,8 +143,7 @@ public class SignManager implements Listener
 				return;
 			}
 			
-			PlayerManager.instance().addWork(player.getUniqueId(), JobPosition.Production);
-			PlayerManager.instance().addXP(player.getUniqueId(), 1);
+			PlayerManager.instance().addXP(player.getUniqueId(), JobPosition.Production, 1);
 
 			Company.instance().log(player.getName() + " placed a supply sign.");
 

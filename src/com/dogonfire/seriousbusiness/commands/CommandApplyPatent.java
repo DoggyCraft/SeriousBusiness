@@ -10,6 +10,7 @@ import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
+import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 import com.dogonfire.seriousbusiness.PatentManager;
 import com.dogonfire.seriousbusiness.PatentManager.Patent;
 
@@ -79,6 +80,8 @@ public class CommandApplyPatent extends SeriousBusinessCommand
 			return;
 		}
 		
+		PlayerManager.instance().addXP(player.getUniqueId(), JobPosition.Law, 1);
+
 		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
 
 		PatentManager.instance().createPatent(companyId, patentWord);

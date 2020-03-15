@@ -1369,8 +1369,7 @@ public class CompanyManager
 		
 		CompanyManager.instance().increaseItemStock(companyId, player.getInventory().getItemInMainHand().getType(), itemAmount);
 		
-		PlayerManager.instance().addWork(player.getUniqueId(), JobPosition.Production);
-		PlayerManager.instance().addXP(player.getUniqueId(), 1);
+		PlayerManager.instance().addXP(player.getUniqueId(), JobPosition.Production, 1);
 		
 		if(player.getInventory().getItemInMainHand().getAmount() > itemAmount)
 		{
@@ -1556,9 +1555,10 @@ public class CompanyManager
 				{
 					switch(employeePosition)
 					{
-						case Manager 	: this.increaseManagerWagesPaidThisRound(companyId, currentRound, wage); PlayerManager.instance().addXP(employeeId, 1); break;						
+						case Manager 	: this.increaseManagerWagesPaidThisRound(companyId, currentRound, wage); PlayerManager.instance().addXP(employeeId, JobPosition.Manager, 1); break;						
 						case Sales 		: this.increaseSalesWagesPaidThisRound(companyId, currentRound, wage); break;						
-						case Production : this.increaseProductionWagesPaidThisRound(companyId, currentRound, wage); break;						
+						case Production : this.increaseProductionWagesPaidThisRound(companyId, currentRound, wage); break;
+						default: break;						
 					}					
 					
 					Company.instance().getEconomyManager().depositPlayer(player, wage);

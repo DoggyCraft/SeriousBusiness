@@ -128,7 +128,9 @@ public class PlayerManager
 					case 8: return "CEO";
 					default: return "Legendary CEO";
 				}
-			}			
+			}
+		default:
+			break;			
 		}
 
 		return "Epic";
@@ -210,26 +212,27 @@ public class PlayerManager
 		return this.employeesConfig.getInt(playerId.toString() + ".XP");
 	}
 
-	public void addXP(UUID playerId, int xp)
+	public void addXP(UUID playerId, JobPosition employeePosition, int xp)
 	{
 		if (Company.instance().getServer().getPlayer(playerId).getGameMode() == GameMode.CREATIVE)
 		{
 			return;
 		}
 		
-		int oldXP = this.employeesConfig.getInt(playerId + ".XP");
+		int oldXP = this.employeesConfig.getInt(playerId + "." + employeePosition.toString() + ".XP");						
 		int newXP = oldXP + xp;
 		int oldLevel = getLevelForXP(oldXP);
-		JobPosition employeePosition = this.getEmployeeCompanyPosition(playerId);
-
 		int newLevel = getLevelForXP(newXP);
+		
+		this.employeesConfig.set(playerId + "." + employeePosition.toString()+ ".XP", newXP);
+
 		if (newLevel > oldLevel)
 		{
 			if (oldLevel == 0)
 			{
 				Player player = Company.instance().getServer().getPlayer(playerId);
 				player.getWorld().setThundering(true);
-				player.getWorld().setThunderDuration(3600);
+				player.getWorld().setThunderDuration(200);
 
 				//this.plugin.getServer().broadcastMessage(ChatColor.AQUA + "Beware! A new " + ChatColor.RED + "Witch" + ChatColor.AQUA + " has appeared in " + this.plugin.serverName + "!");
                 //i.a(WerewolfManager.this).a(player, TurningWolvesText, 5);
@@ -249,13 +252,37 @@ public class PlayerManager
 		}
 		
 		this.employeesConfig.set(playerId + ".XP", newXP);
+		
+		setWorked(playerId);
 
 		save();
-	}
-
+	}	
+	
 	public void clearXP(UUID playerId)
 	{
 		this.employeesConfig.set(playerId + ".XP", 0);
+	}
+	
+	private void setWorked(UUID playerId)
+	{
+		String lastPrayer = this.employeesConfig.getString(playerId.toString() + ".LastWork");
+
+		String pattern = "HH:mm:ss dd-MM-yyyy";
+		DateFormat formatter = new SimpleDateFormat(pattern);
+		Date lastPrayerDate = null;
+		Date thisDate = new Date();
+		
+		try
+		{
+			lastPrayerDate = formatter.parse(lastPrayer);
+		}
+		catch (Exception ex)
+		{
+			lastPrayerDate = new Date();
+			lastPrayerDate.setTime(0L);
+		}		
+				
+		this.employeesConfig.set(playerId.toString() + ".LastWork", formatter.format(thisDate));
 	}
 	
 	public UUID getCompanyForEmployee(UUID believerId)
@@ -353,7 +380,9 @@ public class PlayerManager
 				} 
 				
 				return 0;
-			} 
+			}
+		default:
+			break; 
 		}
 		
 		return 0;		
@@ -731,81 +760,5 @@ public class PlayerManager
 				
  			} break;
 		}		
-	}
-	
-	public boolean addWork(UUID employeeId, JobPosition employeePosition)
-	{
-		String lastPrayer = this.employeesConfig.getString(employeeId + ".LastWork");
-
-		String pattern = "HH:mm:ss dd-MM-yyyy";
-		DateFormat formatter = new SimpleDateFormat(pattern);
-		Date lastPrayerDate = null;
-		Date thisDate = new Date();
-		
-		try
-		{
-			lastPrayerDate = formatter.parse(lastPrayer);
-		}
-		catch (Exception ex)
-		{
-			lastPrayerDate = new Date();
-			lastPrayerDate.setTime(0L);
-		}
-		
-		switch(this.getEmployeeCompanyPosition(employeeId))
-		{
-			case Production : 
-			{
-				int work = this.employeesConfig.getInt(employeeId + ".ProductionThisTurn");				
-				work++;
-				this.employeesConfig.set(employeeId + ".ProductionThisTurn", work);
-			} break;
-			
-			case Sales : 
-			{
-				int work = this.employeesConfig.getInt(employeeId + ".SalesThisTurn");				
-				work++;
-				this.employeesConfig.set(employeeId + ".SalesThisTurn", work);
-			} break;
-			
-			case Manager :
-			default:	
-			{
-			} break;
-
-		}
-
-		/*
-		String oldCompany = this.employeesConfig.getString(employeeId + ".Company");
-		
-		if (oldCompany != null && !oldCompany.equals(companyName))
-		{
-			work = 0;
-			lastPrayerDate.setTime(0L);
-		}
-*/		
-		//long diff = thisDate.getTime() - lastPrayerDate.getTime();
-
-		//long diffMinutes = diff / 60000L;
-		
-		//if (diffMinutes < this.plugin.minBelieverPrayerTime)
-		//{
-		//	return false;
-		//}
-				
-		this.employeesConfig.set(employeeId + ".LastWork", formatter.format(thisDate));
-
-		saveTimed();
-
-		return true;
-	}
-
-	public void setLastPrayerDate(UUID believerId)
-	{
-		String pattern = "HH:mm:ss dd-MM-yyyy";
-		DateFormat formatter = new SimpleDateFormat(pattern);
-		Date thisDate = new Date();
-
-		this.employeesConfig.set(believerId + ".LastPrayer", formatter.format(thisDate));
 	}	
 }

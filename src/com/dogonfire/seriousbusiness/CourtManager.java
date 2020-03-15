@@ -13,6 +13,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 import com.dogonfire.seriousbusiness.commands.CourtCaseType;
 
 
@@ -128,6 +129,7 @@ public class CourtManager
 			}
 		}
 		
+		PlayerManager.instance().addXP(playerId, JobPosition.Law, 1);
 		
 		return createCase(caseType, playerId, companyId);
 	}	
