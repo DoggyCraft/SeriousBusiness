@@ -96,15 +96,17 @@ public class StockManager
 		return null;
 	}
 			
-	public void sellStock(Player player, UUID companyId, int amount)
+	public int sellStock(Player player, UUID companyId, int amount)
 	{
 		Set<String> stocks = this.stockConfig.getConfigurationSection(player.getUniqueId().toString() + ".Stocks.").getKeys(false);
+		int soldAmount = 0;
 		
 		for(String transactionId : stocks)
 		{
-			if(amount > 0)
+			if(amount > soldAmount)
 			{
 				String companyIdString = this.stockConfig.getString(player.getUniqueId().toString() + ".Stocks." + transactionId + ".CompanyId");	
+				int toSell = amount - soldAmount;
 
 				if(!companyId.toString().equals(companyIdString))
 				{
@@ -114,23 +116,26 @@ public class StockManager
 				int stockAmount = this.stockConfig.getInt(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Amount");	
 				double value = this.stockConfig.getDouble(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Value");
 			
-				if(stockAmount - amount < 0)
+				if(stockAmount - toSell < 0)
 				{
 					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId, null);
 					save();
 					
 					Company.instance().getEconomyManager().depositPlayer(player, value * stockAmount);
-					amount -= stockAmount;
+					soldAmount += stockAmount;
 				}
 				else
 				{
-					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Amount", stockAmount - amount);	
+					this.stockConfig.set(player.getUniqueId().toString() + ".Stocks." + transactionId + ".Amount", stockAmount - toSell);	
 					save();
-					Company.instance().getEconomyManager().depositPlayer(player, value * (stockAmount - amount));
-					return;
+					Company.instance().getEconomyManager().depositPlayer(player, value * toSell);
+					
+					soldAmount += toSell;
 				}						
 			}
-		}					
+		}
+		
+		return soldAmount;
 	}	
 
 	public void buyStock(UUID playerId, UUID companyId, int amount)
@@ -142,7 +147,7 @@ public class StockManager
 		long transactionId = thisDate.getTime();
 		this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId + ".CompanyId", companyId.toString());
 		this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId + ".Value", stockValue);
-		this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId + ".Amount", stockValue);
+		this.stockConfig.set(playerId.toString() + ".Stocks." + transactionId + ".Amount", amount);
 
 		Player player = Company.instance().getServer().getPlayer(playerId);
 		
