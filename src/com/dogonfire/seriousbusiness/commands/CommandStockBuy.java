@@ -12,6 +12,7 @@ import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PermissionsManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.StockManager;
+import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
 
 
 
@@ -55,7 +56,11 @@ public class CommandStockBuy extends SeriousBusinessCommand
 			return;			
 		}
 											
+		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
+		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);
+		
 		StockManager.instance().buyStock(player.getUniqueId(), companyId, amount);		
-		Company.instance().broadcastInfo(ChatColor.WHITE + player.getName() + ChatColor.AQUA + " bought " + amount + " " + companyName + " stocks ");		
+		Company.instance().broadcastInfo(ChatColor.AQUA + player.getName() + ChatColor.AQUA + " bought " + amount + " " + companyName + " stocks at " + ChatColor.GOLD + report.stockEndValue);		
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + " You paid " + (report.stockEndValue*amount) + " wanks.", 1);		
 	}
 }

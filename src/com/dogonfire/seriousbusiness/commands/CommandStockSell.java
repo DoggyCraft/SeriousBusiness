@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
+import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
 import com.dogonfire.seriousbusiness.PermissionsManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.StockManager;
@@ -49,6 +50,9 @@ public class CommandStockSell extends SeriousBusinessCommand
 
 		UUID companyId = CompanyManager.instance().getCompanyIdByName(companyName);
 
+		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
+		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);
+		
 		if(companyId == null)
 		{
 			player.sendMessage(ChatColor.RED + "No company with that name");
@@ -56,6 +60,7 @@ public class CommandStockSell extends SeriousBusinessCommand
 		}
 										
 		StockManager.instance().sellStock(player, companyId, amount);		
-		Company.instance().broadcastInfo(ChatColor.WHITE + player.getName() + ChatColor.AQUA + " sold " + amount + " " + companyName + " stocks ");		
+		Company.instance().broadcastInfo(ChatColor.AQUA + player.getName() + ChatColor.AQUA + " sold " + amount + " " + companyName + " stocks at " + ChatColor.GOLD + report.stockEndValue);		
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + " You recieved " + report.stockEndValue*amount + " wanks", 1);		
 	}
 }
