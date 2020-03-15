@@ -12,9 +12,9 @@ import com.dogonfire.seriousbusiness.CourtManager;
 import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
 
 
-public class CommandSue extends SeriousBusinessCommand
+public class CommandLawsuitSue extends SeriousBusinessCommand
 {
-	protected CommandSue()
+	protected CommandLawsuitSue()
 	{
 		super("sue");
 		this.permission = "lawsuit.sue";

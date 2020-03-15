@@ -94,9 +94,9 @@ public class CourtManager
 		save();
 	}
 
-	public CourtCase[] getCases()
+	public Object[] getCases()
 	{	
-		return (CourtCase[]) playerCases.toArray();
+		return playerCases.toArray();
 	}
 		
 	private String getCaseTypeDescription(CourtCaseType caseType)

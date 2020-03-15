@@ -15,12 +15,12 @@ import com.dogonfire.seriousbusiness.LandManager.LandReport;
 
 
 
-public class CommandLand extends SeriousBusinessCommand
+public class CommandLandInfo extends SeriousBusinessCommand
 {
-	protected CommandLand()
+	protected CommandLandInfo()
 	{
-		super("land");
-		this.permission = "land";
+		super("info");
+		this.permission = "land.info";
 	}
 
 	@Override

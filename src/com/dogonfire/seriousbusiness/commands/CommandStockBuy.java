@@ -27,13 +27,7 @@ public class CommandStockBuy extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player)sender;
-		
-		if(args.length != 3)
-		{
-			player.sendMessage(ChatColor.RED + "Usage: /stocks buy <amount> <companyname>");
-			return;
-		}
-		
+				
 		int amount;
 			
 		try
