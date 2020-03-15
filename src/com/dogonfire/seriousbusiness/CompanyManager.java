@@ -1468,7 +1468,7 @@ public class CompanyManager
 	{
 		int currentRound = this.getCurrentRound(companyId);
 
-		if (PlayerManager.instance().getPlayersInCompany(companyId).size() == 0 && CompanyManager.instance().getCompanyStockStartValueForRound(companyId, currentRound) < 1.0F)
+		if (PlayerManager.instance().getPlayersInCompany(companyId).size() == 0 || CompanyManager.instance().getCompanyStockStartValueForRound(companyId, currentRound) < 1.0F)
 		{
 			removeCompany(companyId);
 
