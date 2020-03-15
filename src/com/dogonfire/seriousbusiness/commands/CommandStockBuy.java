@@ -30,12 +30,29 @@ public class CommandStockBuy extends SeriousBusinessCommand
 		
 		if(args.length != 3)
 		{
-			player.sendMessage(ChatColor.RED + "Usage: /stocks buy <companyname> <amount>");
+			player.sendMessage(ChatColor.RED + "Usage: /stocks buy <amount> <companyname>");
 			return;
 		}
 		
 		int amount;
 			
+		try
+		{
+			amount = Integer.valueOf(args[1]);
+		}
+		catch(Exception exception)
+		{
+			player.sendMessage(ChatColor.RED + "That is not a valid amount");
+			return;
+		}	
+		
+		String companyName = args[2];
+		
+		for(int a=3; a<args.length; a++)
+		{
+			companyName += " " + args[a];
+		}
+		
 		UUID companyId = CompanyManager.instance().getCompanyIdByName(args[1]);
 
 		if(companyId == null)
@@ -43,19 +60,7 @@ public class CommandStockBuy extends SeriousBusinessCommand
 			player.sendMessage(ChatColor.RED + "No company with that name");
 			return;			
 		}
-		
-		String companyName = CompanyManager.instance().getCompanyName(companyId);
-				
-		try
-		{
-			amount = Integer.valueOf(args[2]);
-		}
-		catch(Exception exception)
-		{
-			player.sendMessage(ChatColor.RED + "That is not a valid amount");
-			return;
-		}
-						
+											
 		StockManager.instance().buyStock(player.getUniqueId(), companyId, amount);		
 		Company.instance().broadcastInfo(ChatColor.WHITE + player.getName() + ChatColor.AQUA + " bought " + amount + " " + companyName + " stocks ");		
 	}
