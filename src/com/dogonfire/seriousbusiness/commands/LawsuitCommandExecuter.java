@@ -35,6 +35,7 @@ public class LawsuitCommandExecuter implements CommandExecutor
 		commandList = new TreeMap<String, SeriousBusinessCommand>();
 		registerCommand(new CommandLawsuitSue());
 		registerCommand(new CommandLawsuitHelp());
+		registerCommand(new CommandLawsuitList());
 	}
 
 	protected Collection<SeriousBusinessCommand> getCommands()
@@ -59,6 +60,7 @@ public class LawsuitCommandExecuter implements CommandExecutor
 		sender.sendMessage(ChatColor.AQUA + "");
 		sender.sendMessage(ChatColor.YELLOW + "Make a lawsuit using " + ChatColor.WHITE + "/lawsuit sue <chargetype> <company>");
 		sender.sendMessage(ChatColor.YELLOW + "View charge types using " + ChatColor.WHITE + "/lawsuit help");
+		sender.sendMessage(ChatColor.YELLOW + "View current lawsuit investigations using " + ChatColor.WHITE + "/lawsuit list");
 		sender.sendMessage(ChatColor.AQUA + "");
 		sender.sendMessage(ChatColor.YELLOW + "TIP: You dont have to have definite proof to make a lawsuit against a company");
 	}

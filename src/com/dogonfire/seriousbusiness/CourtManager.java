@@ -99,7 +99,7 @@ public class CourtManager
 		return playerCases.toArray();
 	}
 		
-	private String getCaseTypeDescription(CourtCaseType caseType)
+	public String getCaseTypeDescription(CourtCaseType caseType)
 	{
 		switch(caseType)
 		{

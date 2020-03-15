@@ -27,7 +27,7 @@ public class CommandPatents extends SeriousBusinessCommand
 	protected CommandPatents()
 	{
 		super("list");
-		this.permission = "company.list";
+		this.permission = "patent.list";
 	}
 
 	@Override
