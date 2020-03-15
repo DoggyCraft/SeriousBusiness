@@ -198,6 +198,28 @@ public class LandManager implements Listener
 		return hash;
 	}
 	
+	public long getLandIdByName(String name)
+	{
+		ConfigurationSection section = this.landConfig.getConfigurationSection("Land");
+		
+		if(section==null)
+		{
+			return 0;			
+		}
+
+		for(String landIdString : section.getKeys(false))
+		{
+			String companyName = this.landConfig.getString("Land." + landIdString + ".Name");
+			
+			if(companyName!=null && companyName.equals(name))
+			{
+				return Long.parseLong(landIdString);
+			}			
+		}
+		
+		return 0;
+	}
+	
 	public long registerCompanyLocation(UUID companyId, Location location, Location previousLocation)
 	{
 		long hash = hashLocation(location);

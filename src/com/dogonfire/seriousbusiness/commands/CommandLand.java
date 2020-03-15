@@ -27,8 +27,28 @@ public class CommandLand extends SeriousBusinessCommand
 	public void onCommand(CommandSender sender, String command, String... args)
 	{
 		Player player = (Player) sender;
+		String landName = null;
+		LandReport report = null;
 
-		LandReport report = LandManager.instance().getLandReport(player.getLocation());
+		if (args.length > 1)
+		{
+			landName = args[1];
+			
+			for(int a=2; a<args.length; a++)
+			{
+				landName += " " + args[a];
+			}
+		}
+		
+		if(landName==null)
+		{
+			report = LandManager.instance().getLandReport(player.getLocation());
+		}
+		else
+		{
+			long landId = LandManager.instance().getLandIdByName(landName);			
+			report = LandManager.instance().getLandReport(landId);
+		}
 
 		sender.sendMessage(ChatColor.YELLOW + "Land information:");
 		sender.sendMessage(ChatColor.YELLOW + "  Name: " + ChatColor.AQUA + report.name);

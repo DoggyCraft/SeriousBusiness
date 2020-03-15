@@ -12,6 +12,7 @@ import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
+import com.dogonfire.seriousbusiness.LandManager;
 
 
 public class CommandInfo extends SeriousBusinessCommand
@@ -29,11 +30,11 @@ public class CommandInfo extends SeriousBusinessCommand
 		String companyName = null;
 		UUID companyId = null;
 		
-		if (args.length == 2)
+		if (args.length > 1)
 		{
 			companyName = args[1];
 			
-			for(int a=3; a<args.length; a++)
+			for(int a=2; a<args.length; a++)
 			{
 				companyName += " " + args[a];
 			}
@@ -79,7 +80,10 @@ public class CommandInfo extends SeriousBusinessCommand
 
 		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
 		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);
-		
+
+		sender.sendMessage(ChatColor.YELLOW + "Headquarters location:");
+		sender.sendMessage(ChatColor.AQUA + " " + LandManager.instance().getLandName(CompanyManager.instance().getHeadquartersForCompany(companyId)));
+
 		sender.sendMessage(ChatColor.YELLOW + "Financial information:");
 		sender.sendMessage(ChatColor.AQUA + " Balance: " + (int)(report.balance) + " wanks");
 		
