@@ -184,7 +184,13 @@ public class CourtManager
 				}
 				else
 				{
-					int amount = 10000 + random.nextInt(50000);
+					int amount = (int)(CompanyManager.instance().getBalance(courtCase.companyId) * SeriousBusinessConfiguration.instance().getLawsuitFinePercentage() / 100);
+							
+					if(amount < 1)
+					{
+						amount = 1;
+					}
+							
 					decideGuilty(courtCase, amount);					
 				}			
 			}

@@ -32,6 +32,11 @@ public class CommandInfo extends SeriousBusinessCommand
 		if (args.length == 2)
 		{
 			companyName = args[1];
+			
+			for(int a=3; a<args.length; a++)
+			{
+				companyName += " " + args[a];
+			}
 		}
 		
 		if (companyName == null)
