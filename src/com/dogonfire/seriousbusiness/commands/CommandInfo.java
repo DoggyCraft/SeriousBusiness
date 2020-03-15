@@ -22,6 +22,33 @@ public class CommandInfo extends SeriousBusinessCommand
 		super("info");
 		this.permission = "company.info";
 	}
+	
+	private String reputationText(int reputationValue)
+	{
+		if(reputationValue > 10)
+		{
+			return ChatColor.GREEN + "Outstanding (" + reputationValue + ")";
+		}
+		
+		if(reputationValue >= 5)
+		{
+			return ChatColor.GREEN + "Good (" + reputationValue + ")";
+		}
+
+		if(reputationValue >= 0)
+		{
+			return ChatColor.WHITE + "None (" + reputationValue + ")";
+		}
+		
+		if(reputationValue >= -5)
+		{
+			return ChatColor.RED + "Shady (" + reputationValue + ")";
+		}
+
+
+		return ChatColor.RED + "Criminal";
+	}
+	
 
 	@Override
 	public void onCommand(CommandSender sender, String command, String... args)
@@ -81,8 +108,8 @@ public class CommandInfo extends SeriousBusinessCommand
 		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
 		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);
 
-		sender.sendMessage(ChatColor.YELLOW + "Headquarters location:");
-		sender.sendMessage(ChatColor.AQUA + " " + LandManager.instance().getLandName(CompanyManager.instance().getHeadquartersForCompany(companyId)));
+		sender.sendMessage(ChatColor.YELLOW + "Headquarters location: " + ChatColor.AQUA + " " + LandManager.instance().getLandName(CompanyManager.instance().getHeadquartersForCompany(companyId)));
+		sender.sendMessage(ChatColor.YELLOW + "Reputation:" + ChatColor.AQUA + " " + reputationText(CompanyManager.instance().getCompanyReputation(companyId)));
 
 		sender.sendMessage(ChatColor.YELLOW + "Financial information:");
 		sender.sendMessage(ChatColor.AQUA + " Balance: " + (int)(report.balance) + " wanks");

@@ -378,13 +378,27 @@ public class CompanyManager
 		return companyConfig.getInt(companyId.toString() + ".Round." + round + ".ProductionWages");
 	}	
 
+	public int getCompanyReputation(UUID companyId)
+	{
+		return companyConfig.getInt(companyId.toString() + ".Reputation");
+	}	
+
+	public void increaseCompanyReputation(UUID companyId, int changeValue)
+	{
+		int currentReputation = companyConfig.getInt(companyId.toString() + ".Reputation");	
+		currentReputation += changeValue;		
+		companyConfig.set(companyId.toString() + ".Reputation", currentReputation);	
+
+		save();				
+	}
+
 	public void increaseManagerWagesPaidThisRound(UUID companyId, int round, double value)
 	{
 		int currentWages = companyConfig.getInt(companyId.toString() + ".Round." + round + ".ManagerWages");	
 		currentWages += value;		
 		companyConfig.set(companyId.toString() + ".Round." + round + ".ManagerWages", currentWages);	
 
-		saveTimed();				
+		save();				
 	}
 
 	public void increaseSalesWagesPaidThisRound(UUID companyId, int round, double value)
@@ -393,7 +407,7 @@ public class CompanyManager
 		currentWages += value;		
 		companyConfig.set(companyId.toString() + ".Round." + round + ".SalesWages", currentWages);	
 
-		saveTimed();				
+		save();				
 	}
 
 	public void increaseProductionWagesPaidThisRound(UUID companyId, int round, double value)
@@ -402,7 +416,7 @@ public class CompanyManager
 		currentWages += value;		
 		companyConfig.set(companyId.toString() + ".Round." + round + ".ProductionWages", currentWages);	
 
-		saveTimed();				
+		save();				
 	}
 	
 	public void increasePatentExpensesPaidThisRound(UUID companyId, int round, double value)
@@ -411,7 +425,7 @@ public class CompanyManager
 		currentExpenses += value;		
 		companyConfig.set(companyId.toString() + ".Round." + round + ".PatentExpenses", currentExpenses);	
 
-		saveTimed();								
+		save();								
 	}
 
 	public void increasePatentIncomeThisRound(UUID companyId, int round, double value)
@@ -420,7 +434,7 @@ public class CompanyManager
 		currentIncome += value;		
 		companyConfig.set(companyId.toString() + ".Round." + round + ".PatentIncome", currentIncome);	
 
-		saveTimed();				
+		save();				
 	}
 
 	

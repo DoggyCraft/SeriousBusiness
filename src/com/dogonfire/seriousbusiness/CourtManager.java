@@ -8,13 +8,12 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.dogonfire.seriousbusiness.commands.CourtCaseType;
-
-import net.md_5.bungee.api.ChatColor;
 
 
 
@@ -149,12 +148,16 @@ public class CourtManager
 	{
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
-		OfflinePlayer player = Company.instance().getServer().getOfflinePlayer(courtCase.playerId);
 		
 		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.GREEN + " NOT GUILTY" + ChatColor.AQUA + " of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo(companyName + " was given " + amount + " wanks as compensation for emotional damage!");		
 
+		int repuationChange = 1;
+
+		CompanyManager.instance().increaseCompanyReputation(courtCase.companyId, repuationChange);
+		CompanyManager.instance().sendInfoToEmployees(courtCase.companyId, "Your company reputation was increased by " + repuationChange, ChatColor.GREEN, 1);
+		
 		//CompanyManager.instance().depositCompanyBalance(courtCase.companyId, amount);
 	}
 	
@@ -167,12 +170,16 @@ public class CourtManager
 
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
-		OfflinePlayer player = Company.instance().getServer().getOfflinePlayer(courtCase.playerId);
 		
 		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.RED + "GUILTY" + ChatColor.AQUA + " of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo(companyName + " was fined " + amount + " wanks!");
-				
+	
+		int repuationChange = -1;
+		
+		CompanyManager.instance().increaseCompanyReputation(courtCase.companyId, repuationChange);
+		CompanyManager.instance().sendInfoToEmployees(courtCase.companyId, "Your company reputation was decreased by " + (-repuationChange), ChatColor.RED, 1);
+
 		//CompanyManager.instance().depositCompanyBalance(courtCase.companyId, -amount);
 		//Company.instance().getEconomyManager().depositPlayer(player, amount);
 	}
