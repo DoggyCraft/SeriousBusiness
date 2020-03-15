@@ -76,6 +76,10 @@ public class CommandLand extends SeriousBusinessCommand
 			sender.sendMessage(ChatColor.YELLOW + "  Income Tax: " + ChatColor.AQUA + df.format(report.incomeTaxEndValue) + "%" + ChatColor.YELLOW + "   " + ChatColor.GREEN + df.format(100 * (report.incomeTaxValueChange / report.incomeTaxStartValue)) + "%");
 		}
 
+		sender.sendMessage(ChatColor.YELLOW + "  Max loan rate: " + ChatColor.AQUA + df.format(report.maxLoanRateValue) + "%");
+		sender.sendMessage(ChatColor.YELLOW + "  Patent fee: " + ChatColor.AQUA + df.format(report.maxChatPrMinute) + "%");
+		sender.sendMessage(ChatColor.YELLOW + "  Max chat pr minute: " + ChatColor.AQUA + df.format(report.maxChatPrMinute));
+
 		List<UUID> companies = LandManager.instance().getCompanies(player.getLocation());
 
 		if (companies != null && companies.size() > 0)
