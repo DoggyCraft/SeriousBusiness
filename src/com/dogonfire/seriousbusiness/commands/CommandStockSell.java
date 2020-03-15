@@ -60,6 +60,13 @@ public class CommandStockSell extends SeriousBusinessCommand
 		}
 										
 		int soldAmount = StockManager.instance().sellStock(player, companyId, amount);		
+		
+		if(soldAmount == 0)
+		{
+			player.sendMessage(ChatColor.RED + "You do not have any " + companyName + " stocks to sell");
+			return;			
+		}
+		
 		Company.instance().broadcastInfo(ChatColor.AQUA + player.getName() + ChatColor.AQUA + " sold " + soldAmount + " " + companyName + " stocks at " + ChatColor.GOLD + report.stockEndValue);		
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + " You recieved " + report.stockEndValue*soldAmount + " wanks", 1);		
 	}
