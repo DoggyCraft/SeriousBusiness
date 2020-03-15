@@ -103,6 +103,7 @@ public class CourtManager
 	{
 		switch(caseType)
 		{
+		case Spamming : return "Spamming";
 		case SalesTaxFraud : return "Sales tax fraud";
 		case StockManipulation : return "Stock manipulation";
 		case LoanSharking : return "Loan sharking";
@@ -114,14 +115,25 @@ public class CourtManager
 	}
 	
 	// Players can randomly (without actual knowledge) fire court cases against companies and hope that they will actually hit criminal behaviour
-	public UUID applyCase(CourtCaseType caseType, UUID playerId, UUID companyId)
+	public int applyCase(CourtCaseType caseType, UUID playerId, UUID companyId)
 	{
 		// Check whether player case exist, too many, irrelevant and other reasons to reject the case
+		for(CourtCase courtCase : playerCases)
+		{
+			if(courtCase.playerId.equals(playerId))
+			{
+				if(courtCase.caseType == caseType && courtCase.companyId.equals(companyId))
+				{
+					return 0;
+				}				
+			}
+		}
+		
 		
 		return createCase(caseType, playerId, companyId);
 	}	
 	
-	public UUID createCase(CourtCaseType caseType, UUID playerId, UUID companyId)
+	public int createCase(CourtCaseType caseType, UUID playerId, UUID companyId)
 	{
 		playerCases.add(new CourtCase(courtCaseid++, caseType, playerId, companyId));
 		
@@ -130,7 +142,7 @@ public class CourtManager
 		String companyName = CompanyManager.instance().getCompanyName(companyId);
 		Company.instance().broadcastInfo(Company.instance().getServer().getPlayer(playerId).getDisplayName() + ChatColor.AQUA + " filed a lawsuit against " + ChatColor.GOLD + companyName + ChatColor.AQUA + " for " + ChatColor.GOLD + getCaseTypeDescription(caseType) + "!");
 		
-		return companyId;
+		return courtCaseid - 1;
 	}
 
 	private void decideNotGuilty(CourtCase courtCase, int amount)
@@ -143,7 +155,7 @@ public class CourtManager
 		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.GREEN + " NOT GUILTY" + ChatColor.AQUA + " of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo(companyName + " was given " + amount + " wanks as compensation for emotional damage!");		
 
-		CompanyManager.instance().depositCompanyBalance(courtCase.companyId, amount);
+		//CompanyManager.instance().depositCompanyBalance(courtCase.companyId, amount);
 	}
 	
 	private void decideGuilty(CourtCase courtCase, int amount)
@@ -161,13 +173,14 @@ public class CourtManager
 		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.RED + "GUILTY" + ChatColor.AQUA + " of " + getCaseTypeDescription(courtCase.caseType) + "!");		
 		Company.instance().broadcastInfo(companyName + " was fined " + amount + " wanks!");
 				
-		CompanyManager.instance().depositCompanyBalance(courtCase.companyId, -amount);
-		Company.instance().getEconomyManager().depositPlayer(player, amount);
+		//CompanyManager.instance().depositCompanyBalance(courtCase.companyId, -amount);
+		//Company.instance().getEconomyManager().depositPlayer(player, amount);
 	}
 
+	// TODO: Policy changes over time. Avoid policy changes when there are pending court cases
 	public void update()
 	{
-		if (this.random.nextInt(100) == 0)
+		if (this.random.nextInt(500) == 0)
 		{
 			Company.instance().logDebug("Processing court cases...");
 

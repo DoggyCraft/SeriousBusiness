@@ -58,7 +58,7 @@ public class StockCommandExecuter implements CommandExecutor
 		sender.sendMessage(ChatColor.YELLOW + "Buy stocks using " + ChatColor.WHITE + "/stocks buy <amount> <companyname>");
 		sender.sendMessage(ChatColor.YELLOW + "Sell stocks using " + ChatColor.WHITE + "/stocks sell <amount> <companyname>");
 		sender.sendMessage(ChatColor.AQUA + "");
-		sender.sendMessage(ChatColor.YELLOW + "TIP: Buy stock at low value and sell the stock when they reach higher value");
+		sender.sendMessage(ChatColor.YELLOW + "TIP: Buy stock at low value and sell the stock when they reach a higher value");
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)

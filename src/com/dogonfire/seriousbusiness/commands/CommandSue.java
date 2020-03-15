@@ -24,11 +24,12 @@ public class CommandSue extends SeriousBusinessCommand
 	{
 		player.sendMessage(ChatColor.WHITE + "Usage: /lawsuit sue <companyname> <chargetype>");
 		player.sendMessage(ChatColor.WHITE + "Chargetype examples:");
-		player.sendMessage(ChatColor.WHITE + " STF - Sales tax fraud");
-		player.sendMessage(ChatColor.WHITE + " SMP - Stock manipulation");
-		player.sendMessage(ChatColor.WHITE + " LSH - Loan sharking");
-		player.sendMessage(ChatColor.WHITE + " TAV - Tax avoidance");
-		player.sendMessage(ChatColor.WHITE + " TII - Trading illegal items");
+		player.sendMessage(ChatColor.WHITE + " SPM - Spamming (Chatted sentence amount exceeding policy max)");
+		player.sendMessage(ChatColor.WHITE + " STF - Sales tax fraud (Moving money between lands to avoid sales taxes)");
+		player.sendMessage(ChatColor.WHITE + " SMP - Stock manipulation (Sold/bought more items exceeding policy max to manipulate stock value)");
+		player.sendMessage(ChatColor.WHITE + " LSH - Loan sharking (Issued loans with rates exceeding policy max)");
+		player.sendMessage(ChatColor.WHITE + " TAV - Tax avoidance (Invested in cryptocurrency/items in order to avoid taxes)");
+		//player.sendMessage(ChatColor.WHITE + " TII - Trading illegal items ()");
 	}
 	
 	@Override
@@ -46,6 +47,7 @@ public class CommandSue extends SeriousBusinessCommand
 		switch(args[1].toLowerCase())
 		{
 			case "help"	: onHelp(player); break;
+			case "spm"	: courtCaseType = CourtCaseType.Spamming; break;
 			case "stf"	: courtCaseType = CourtCaseType.SalesTaxFraud; break;
 			case "smp"	: courtCaseType = CourtCaseType.StockManipulation; break;
 			case "lsh"	: courtCaseType = CourtCaseType.LoanSharking; break;
@@ -77,8 +79,16 @@ public class CommandSue extends SeriousBusinessCommand
 			return;									
 		}
 		
-		CourtManager.instance().applyCase(courtCaseType, player.getUniqueId(), companyId);
+		int caseId = CourtManager.instance().applyCase(courtCaseType, player.getUniqueId(), companyId);
 		
-		Company.instance().getEconomyManager().withdrawPlayer(player, amount);	
+		if(caseId != 0)
+		{
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Your case number is " + ChatColor.WHITE + "#" + caseId, 1);
+			Company.instance().getEconomyManager().withdrawPlayer(player, amount);
+		}
+		else
+		{
+			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "The court has rejected your application. You already have a similiar case under review.", 1);
+		}
 	}
 }

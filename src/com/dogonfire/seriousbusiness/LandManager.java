@@ -45,8 +45,12 @@ public class LandManager implements Listener
 		final public double incomeTaxStartValue;
 		final public double incomeTaxEndValue;
 		final public double incomeTaxValueChange;
-		
-		LandReport(String name, double companyTaxStartValue, double companyTaxEndValue, double salesTaxStartValue, double salesTaxEndValue, double incomeTaxStartValue, double incomeTaxEndValue)
+
+		final public double maxLoanRateValue;
+		final public int maxChatPrMinute;
+		final public double patentTax;
+
+		LandReport(String name, double companyTaxStartValue, double companyTaxEndValue, double salesTaxStartValue, double salesTaxEndValue, double incomeTaxStartValue, double incomeTaxEndValue, double maxLoanRateValue, int maxChatPrMinute, double patentTax)
 		{
 			this.name = name;
 			this.companyTaxStartValue = companyTaxStartValue;
@@ -59,6 +63,10 @@ public class LandManager implements Listener
 			this.companyTaxValueChange = companyTaxEndValue - companyTaxStartValue;
 			this.salesTaxValueChange = salesTaxEndValue - salesTaxStartValue;
 			this.incomeTaxValueChange = incomeTaxEndValue - incomeTaxStartValue;
+			
+			this.maxLoanRateValue = maxLoanRateValue;
+			this.maxChatPrMinute = maxChatPrMinute;
+			this.patentTax = patentTax;
 		}
 	}
 	
@@ -91,7 +99,10 @@ public class LandManager implements Listener
 				this.landConfig.getDouble("Land." + hash + ".SalesTax.Previous"),
 				this.landConfig.getDouble("Land." + hash + ".SalesTax.Current"),
 				this.landConfig.getDouble("Land." + hash + ".IncomeTax.Previous"),
-				this.landConfig.getDouble("Land." + hash + ".IncomeTax.Current")
+				this.landConfig.getDouble("Land." + hash + ".IncomeTax.Current"),
+				this.landConfig.getDouble("Land." + hash + ".MaxLoanRate.Current"),
+				this.landConfig.getInt("Land." + hash + ".MaxChatPrMinute.Current"),
+				this.landConfig.getDouble("Land." + hash + ".PatentTax.Current")
 				);
 				
 		return report;
@@ -117,12 +128,17 @@ public class LandManager implements Listener
 		long hash = hashLocation(location);
 		
 		this.landConfig.set("Land." + hash + ".Name", generateLandName(location.getWorld().getBiome(location.getBlockX(), location.getBlockZ())));
+		this.landConfig.set("Land." + hash + ".PatentTax.Previous", 1.0f + random.nextInt(30) / 30);
+		this.landConfig.set("Land." + hash + ".PatentTax.Current", 1.0f + random.nextInt(30) / 30 );
+		this.landConfig.set("Land." + hash + ".MaxChatPrMinute.Previous", 1.0f + random.nextInt(30) / 30);
+		this.landConfig.set("Land." + hash + ".MaxChatPrMinute.Current", 1.0f + random.nextInt(30) / 30 );
 		this.landConfig.set("Land." + hash + ".CompanyTax.Previous", 5.0f + random.nextInt(30));
 		this.landConfig.set("Land." + hash + ".CompanyTax.Current", 5.0f + random.nextInt(30));
 		this.landConfig.set("Land." + hash + ".SalesTax.Previous", 5.0f + random.nextInt(30));		
 		this.landConfig.set("Land." + hash + ".SalesTax.Current", 5.0f + random.nextInt(30));		
 		this.landConfig.set("Land." + hash + ".IncomeTax.Previous", 5.0f + random.nextInt(30));		
 		this.landConfig.set("Land." + hash + ".IncomeTax.Current", 5.0f + random.nextInt(30));		
+		this.landConfig.set("Land." + hash + ".MaxLoanRate.Current", 10.0f + random.nextInt(10));		
 
 		save();
 	}
@@ -259,7 +275,7 @@ public class LandManager implements Listener
 		//TODO: Vary taxes accordingly to number (and performance?) of companies in the region. Land with more companies can afford lower taxes
 		
 		double currentCompanyTax = this.landConfig.getDouble("Land." + hashString + ".CompanyTax.Current");
-		double newCompanyTax = currentCompanyTax + (random.nextInt(11) - 20) / 100.0f;
+		double newCompanyTax = currentCompanyTax + (random.nextInt(21) - 10) / 100.0f;
 
 		if(newCompanyTax > 90)
 		{
@@ -274,7 +290,7 @@ public class LandManager implements Listener
 		this.landConfig.set("Land." + hashString + ".CompanyTax.Current", newCompanyTax);
 		
 		double currentSalesTax = this.landConfig.getDouble("Land." + hashString + ".SalesTax.Current");
-		double newSalesTax = currentSalesTax + (random.nextInt(11) - 20) / 100.0f;
+		double newSalesTax = currentSalesTax + (random.nextInt(21) - 10) / 100.0f;
 		
 		if(newSalesTax > 90)
 		{
@@ -289,7 +305,7 @@ public class LandManager implements Listener
 		this.landConfig.set("Land." + hashString + ".SalesTax.Current", newSalesTax);
 
 		double currentIncomeTax = this.landConfig.getDouble("Land." + hashString + ".IncomeTax.Current");
-		double newIncomeTax = currentSalesTax + (random.nextInt(11) - 20) / 100.0f;
+		double newIncomeTax = currentSalesTax + (random.nextInt(21) - 10) / 100.0f;
 		
 		if(newIncomeTax > 90)
 		{
