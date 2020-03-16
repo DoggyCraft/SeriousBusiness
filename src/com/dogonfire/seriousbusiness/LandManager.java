@@ -278,7 +278,7 @@ public class LandManager implements Listener
 		
 	public void update()
 	{
-		if(System.currentTimeMillis() - lastTime < 10000)
+		if(System.currentTimeMillis() - lastTime < 30000)
 		{
 			return;
 		}

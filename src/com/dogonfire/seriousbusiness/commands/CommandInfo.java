@@ -27,7 +27,7 @@ public class CommandInfo extends SeriousBusinessCommand
 	{
 		if(reputationValue > 10)
 		{
-			return ChatColor.GREEN + "Outstanding (" + reputationValue + ")";
+			return ChatColor.GOLD + "Outstanding (" + reputationValue + ")";
 		}
 		
 		if(reputationValue >= 5)
@@ -45,8 +45,12 @@ public class CommandInfo extends SeriousBusinessCommand
 			return ChatColor.RED + "Shady (" + reputationValue + ")";
 		}
 
+		if(reputationValue >= -10)
+		{
+			return ChatColor.RED + "Criminal (" + reputationValue + ")";
+		}
 
-		return ChatColor.RED + "Criminal";
+		return ChatColor.BLACK + "Evil";
 	}
 	
 
@@ -112,6 +116,8 @@ public class CommandInfo extends SeriousBusinessCommand
 		sender.sendMessage(ChatColor.YELLOW + "Reputation:" + ChatColor.AQUA + " " + reputationText(CompanyManager.instance().getCompanyReputation(companyId)));
 
 		sender.sendMessage(ChatColor.YELLOW + "Financial information:");
+		sender.sendMessage(ChatColor.AQUA + " Loan Rate: " + (int)(report.loanRate) + " %");
+		sender.sendMessage(ChatColor.AQUA + " Total Active Loans: " + (int)(report.issuedLoans) + " wanks");
 		sender.sendMessage(ChatColor.AQUA + " Balance: " + (int)(report.balance) + " wanks");
 		
 		if(report.stockValueChange > 0)

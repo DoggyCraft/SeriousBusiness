@@ -19,6 +19,7 @@ import com.dogonfire.seriousbusiness.commands.CryptoCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.JobCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.LandCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.LawsuitCommandExecuter;
+import com.dogonfire.seriousbusiness.commands.LoanCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.PatentCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.ShopCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.StockCommandExecuter;
@@ -158,6 +159,7 @@ public class Company extends JavaPlugin
 		getCommand("stocks").setExecutor(StockCommandExecuter.instance());
 		getCommand("crypto").setExecutor(CryptoCommandExecuter.instance());
 		getCommand("lawsuit").setExecutor(LawsuitCommandExecuter.instance());
+		getCommand("loan").setExecutor(LoanCommandExecuter.instance());
 		
 		this.configuration = new SeriousBusinessConfiguration();
 		this.permissionsManager = new PermissionsManager();

@@ -87,6 +87,7 @@ public class CommandApplyPatent extends SeriousBusinessCommand
 		PatentManager.instance().createPatent(companyId, patentWord);
 		CompanyManager.instance().depositCompanyBalance(companyId, -cost);
 		CompanyManager.instance().increasePatentExpensesPaidThisRound(companyId, currentRound, cost);
+		CompanyManager.instance().registerActivePatents(companyId);
 		
 		Company.instance().getServer().broadcastMessage(ChatColor.WHITE + CompanyManager.instance().getCompanyName(companyId) + ChatColor.AQUA + " patented the word " + ChatColor.WHITE + "'" + patentWord + "'");
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You patented the word " + ChatColor.WHITE + "'" + patentWord + "'" + ChatColor.AQUA + " for the next " + ChatColor.WHITE + SeriousBusinessConfiguration.instance().getPatentTime() + ChatColor.AQUA + " minutes", 1);

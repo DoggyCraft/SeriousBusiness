@@ -38,6 +38,9 @@ commands:
   lawsuit:
     description: "Controls the Serious Business lawsuit system"
     usage: /lawsuit
+  loan:
+    description: "Controls the Serious Business loan system"
+    usage: /lawsuit
   crypto:
     description: "Controls the Serious Business crypto currency system"
     usage: /crypto
@@ -87,6 +90,8 @@ permissions:
       stocks.sell: true
       land.land: true
       lawsuit.sue: true
+      loan.issue: true
+      loan.setrate: true
       shop: true
       shop.search: true
       shop.goto: true

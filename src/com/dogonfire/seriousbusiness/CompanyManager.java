@@ -23,6 +23,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.dogonfire.seriousbusiness.LandManager.LandReport;
+import com.dogonfire.seriousbusiness.PatentManager.Patent;
 
 
 public class CompanyManager
@@ -78,10 +79,17 @@ public class CompanyManager
 		final public double stockStartValue;
 		final public double stockEndValue;
 		final public double stockValueChange;		
-				
+
+		final public double loanRate;
+
 		final public double balance;
 		
-		FinancialReport(double companyTaxPercent, double salesTaxPercent, double income, double profit, double stockStartValue, double stockEndValue, double stockValueChange, double balance, HashMap<Material, Integer> itemsSoldAmount, HashMap<Material, Double> itemsSoldValues, HashMap<Material, Integer> itemsProducedAmount, HashMap<JobPosition, Double> wagesPaid, double patentIncome, double patentExpenses)		
+		final public double issuedLoans;
+		final public double maxLoanRate;
+		final public int maxActivePatents;
+
+		FinancialReport(double companyTaxPercent, double salesTaxPercent, double income, double profit, double stockStartValue, double stockEndValue, double stockValueChange, double balance, HashMap<Material, Integer> itemsSoldAmount, HashMap<Material, Double> itemsSoldValues, 
+				HashMap<Material, Integer> itemsProducedAmount, HashMap<JobPosition, Double> wagesPaid, double patentIncome, double patentExpenses, double issuedLoans, double loanRate, double maxLoanRate, int maxActivePatents)		
 		{
 			this.companyTaxPercent = companyTaxPercent;
 			this.salesTaxPercent = salesTaxPercent;
@@ -97,6 +105,10 @@ public class CompanyManager
 			this.wagesPaid = wagesPaid;
 			this.patentIncome = patentIncome;
 			this.patentExpenses = patentExpenses;
+			this.loanRate = loanRate;
+			this.issuedLoans = issuedLoans;
+			this.maxLoanRate = maxLoanRate;
+			this.maxActivePatents = maxActivePatents;
 		}
 	}
 
@@ -260,7 +272,11 @@ public class CompanyManager
 				
 		double balance = this.companyConfig.getDouble(companyId.toString() + ".Balance");
 		
-
+		double loanRate = this.getLoanRateForRound(companyId, round);
+		double maxLoanRate = this.getMaxLoanRateForRound(companyId, round);
+		int maxActivePatents = this.getMaxPatentsForRound(companyId, round);
+		double totalIssuedLoans = this.getMaxPatentsForRound(companyId, round);
+		
 		double profit = patentIncome + totalSoldValue - wagesPaidProduction - wagesPaidSales - taxesPaid - patentExpenses;
 	
 		double stockStartValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.StartValue");
@@ -277,7 +293,7 @@ public class CompanyManager
 			stockEndValue = stockStartValue + stockValueChange;			
 		}
 			
-		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid, patentIncome, patentExpenses);
+		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid, patentIncome, patentExpenses, totalIssuedLoans, loanRate, maxLoanRate, maxActivePatents);
 		
 		return report;		
 	}
@@ -383,7 +399,7 @@ public class CompanyManager
 	{
 		return companyConfig.getInt(companyId.toString() + ".Reputation");
 	}	
-
+	
 	public void increaseCompanyReputation(UUID companyId, int changeValue)
 	{
 		int currentReputation = companyConfig.getInt(companyId.toString() + ".Reputation");	
@@ -790,6 +806,111 @@ public class CompanyManager
 		}
 		
 		this.companyConfig.set(companyId.toString() + ".Round." + round + ".Stock.EndValue", value);
+	}
+	
+	public void setLoanRate(UUID companyId, double value)
+	{
+		int round = this.getCurrentRound(companyId);
+		
+		setLoanRateForRound(companyId, round, value);
+	}
+	
+	public void setLoanRateForRound(UUID companyId, int round, double value)
+	{	
+		double loanRate = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".CurrentLoanRate");
+
+		if(value > loanRate)
+		{
+			this.companyConfig.set(companyId.toString() + ".Round." + round + ".MaxLoanRate", value);				
+		}		
+
+		this.companyConfig.set(companyId.toString() + ".Round." + round + ".CurrentLoanRate", value);				
+	}
+
+	public void addLoansIssued(UUID companyId, double value)
+	{
+		int round = this.getCurrentRound(companyId);
+		
+		double amount = this.getLoanIssued(companyId);
+		
+		amount += value;
+
+		setLoansIssuedForRound(companyId, round, amount);
+	}
+
+	public void setLoansIssuedForRound(UUID companyId, int round, double value)
+	{
+		double loanRate = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".CurrentLoansIssued");
+
+		if(value > loanRate)
+		{
+			this.companyConfig.set(companyId.toString() + ".Round." + round + ".MaxLoanIssued", value);				
+		}		
+
+		this.companyConfig.set(companyId.toString() + ".Round." + round + ".CurrentLoansIssued", value);				
+	}
+
+	public double getLoanIssued(UUID companyId)
+	{
+		int round = this.getCurrentRound(companyId);
+		return this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".CurrentLoansIssued");		
+	}
+	
+	public double getLoanRateForRound(UUID companyId, int round)
+	{	
+		return this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".CurrentLoanRate");
+	}
+
+	public double getLoanRate(UUID companyId)
+	{	
+		int round = this.getCurrentRound(companyId);
+		return getLoanRateForRound(companyId, round);
+	}
+
+	public double getMaxLoanRateForRound(UUID companyId, int round)
+	{	
+		return this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".MaxLoanRate");
+	}
+
+	public double getMaxLoanRateValue(UUID companyId)
+	{	
+		int round = this.getCurrentRound(companyId);
+		return getMaxLoanRateForRound(companyId, round);
+	}
+
+	public void registerActivePatents(UUID companyId)
+	{
+		int round = CompanyManager.instance().getCurrentRound(companyId);
+		List<Patent> existingPatents = PatentManager.instance().getCompanyPatents(companyId);
+		int maxPatents = companyConfig.getInt(companyId.toString() + ".Round." + round + ".MaxPatents");
+
+		if(existingPatents.size() > maxPatents)
+		{
+			companyConfig.set(companyId.toString() + ".Round." + round + ".MaxPatents", existingPatents);
+		}
+	}
+	
+	public void setPatentsRound(UUID companyId, int round, int patents)
+	{	
+		int maxPatents = companyConfig.getInt(companyId.toString() + ".Round." + round + ".MaxPatents");
+
+		if(patents > maxPatents)
+		{
+			this.companyConfig.set(companyId.toString() + ".Round." + round + ".MaxPatents", patents);				
+		}		
+
+		this.companyConfig.set(companyId.toString() + ".Round." + round + ".CurrentPatents", patents);				
+	}
+
+	public int getMaxPatentsForRound(UUID companyId, int round)
+	{	
+		return this.companyConfig.getInt(companyId.toString() + ".Round." + round + ".MaxPatents");
+	}
+
+	public int getMaxPatents(UUID companyId)
+	{	
+		int round = this.getCurrentRound(companyId);
+		return getMaxPatentsForRound(companyId, round);
 	}
 
 	public void setTimeUntilTurnEnd(UUID companyId, int timeInSeconds)
@@ -1524,8 +1645,18 @@ public class CompanyManager
 						
 		double currentStockValue = report.stockStartValue + report.stockValueChange;	
 		
+		// Carry-over to next round
 		this.setCompanyStockEndValueForRound(companyId, currentRound, currentStockValue);
 		this.setCompanyStockStartValueForRound(companyId, currentRound + 1, currentStockValue);
+
+		double currentLoanIssued = this.getLoanIssued(companyId);	
+		this.setLoansIssuedForRound(companyId, currentRound + 1, currentLoanIssued);
+
+		double currentLoanRate = this.getLoanRate(companyId);
+		this.setLoanRateForRound(companyId, currentRound + 1, currentLoanRate);
+
+		int currentPatents = PatentManager.instance().getCompanyPatents(companyId).size();
+		this.setPatentsRound(companyId, currentRound + 1, currentPatents);
 
 		increaseCurrentRound(companyId);
 		setTimeUntilRoundEnd(companyId, SeriousBusinessConfiguration.instance().getRoundTimeInSeconds());
