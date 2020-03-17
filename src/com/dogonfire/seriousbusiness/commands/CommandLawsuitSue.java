@@ -56,6 +56,12 @@ public class CommandLawsuitSue extends SeriousBusinessCommand
 			case "tii"	: courtCaseType = CourtCaseType.TradingIllegalItems; break;
 			default 	: player.sendMessage(ChatColor.RED + "That is not a valid legal charge type"); return; 
 		}*/
+
+		if(args.length < 2)
+		{
+			player.sendMessage(ChatColor.WHITE + "Usage: /lawsuit sue <companyname>");
+			return;			
+		}
 		
 		String companyName = args[1];
 		

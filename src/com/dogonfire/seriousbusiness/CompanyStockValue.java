@@ -33,7 +33,7 @@ public class CompanyStockValue
 		return this.stockChange;
 	}
 
-	public double getNumberOfEmployees()
+	public int getNumberOfEmployees()
 	{
 		return this.numberOfEmployees;
 	}
