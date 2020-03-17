@@ -3,6 +3,7 @@ package com.dogonfire.seriousbusiness.commands;
 
 public enum CourtCaseType
 {
+	FreeForm,			   // Any freeform accusation with 
 	Spamming,		 	   // Company has chatted an sentence amount exceeding policy max
 	SalesTaxFraud,		   // Company has moved money between lands to avoid sales taxes
 	StockManipulation,     // Company has hoarded and instantly sold/bought more items exceeding policy max in order to manipulate stock value

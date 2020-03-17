@@ -173,6 +173,22 @@ public class CompanyManager
 		return offlineCompanies;
 	}
 
+	public List<UUID> getCompanies()
+	{
+		Set<String> allCompanies = this.companyConfig.getKeys(false);
+		List<UUID> offlineCompanies = new ArrayList<UUID>();
+		for (String companyIdString : allCompanies)
+		{
+			UUID companyId = UUID.fromString(companyIdString);
+			
+			if (!this.onlineCompanies.contains(companyId))
+			{
+				offlineCompanies.add(companyId);
+			}
+		}
+		return offlineCompanies;
+	}
+	
 	public List<UUID> getTopCompanies()
 	{
 		List<UUID> topCompanies = new ArrayList<UUID>();
@@ -807,7 +823,7 @@ public class CompanyManager
 		
 		this.companyConfig.set(companyId.toString() + ".Round." + round + ".Stock.EndValue", value);
 	}
-	
+		
 	public void setLoanRate(UUID companyId, double value)
 	{
 		int round = this.getCurrentRound(companyId);
@@ -1109,7 +1125,7 @@ public class CompanyManager
 		String description = this.companyConfig.getString(companyId.toString() + ".Name");
 		if (description == null)
 		{
-			description = new String("No name :/");
+			description = new String("Unknown company");
 		}
 		return description;
 	}
@@ -1605,8 +1621,6 @@ public class CompanyManager
 
 		if (PlayerManager.instance().getPlayersInCompany(companyId).size() == 0 || CompanyManager.instance().getCompanyStockStartValueForRound(companyId, currentRound) < 1.0F)
 		{
-			removeCompany(companyId);
-
 			return true;
 		}
 		
@@ -1760,21 +1774,24 @@ public class CompanyManager
 
 			long timeBefore = System.currentTimeMillis();
 
-			List<UUID> godNames = getOfflineCompanies();
-			for (UUID offlineCompanyId : godNames)
+			List<UUID> companies = getCompanies();
+			for (UUID companyId : companies)
 			{
-				if (isDeadCompany(offlineCompanyId))
+				if (isDeadCompany(companyId))
 				{
-					String offlineCompanyName = CompanyManager.instance().getCompanyName(offlineCompanyId);
-					int rounds = CompanyManager.instance().getCurrentRound(offlineCompanyId);
-					Company.instance().log("Removed dead offline Company '" + offlineCompanyName + "'");
-					Company.instance().broadcastInfo(offlineCompanyName + " went bankrupt after " + rounds + " rounds of operation");
+					String companyName = CompanyManager.instance().getCompanyName(companyId);
+					int rounds = CompanyManager.instance().getCurrentRound(companyId);
+
+					removeCompany(companyId);
+
+					Company.instance().log("Removed bankrupt company '" + companyName + "'");
+					Company.instance().broadcastInfo(companyName + " went bankrupt after " + rounds + " rounds of operation");
 				}
 			}
 			
 			long timeAfter = System.currentTimeMillis();
 
-			Company.instance().logDebug("Processed " + godNames.size() + " offline Companies in " + (timeAfter - timeBefore) + " ms");
+			Company.instance().logDebug("Processed " + companies.size() + " Companies in " + (timeAfter - timeBefore) + " ms");
 		}
 
 		List<UUID> companyNames = getOnlineCompanies();

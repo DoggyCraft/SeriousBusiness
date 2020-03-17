@@ -1,6 +1,7 @@
 package com.dogonfire.seriousbusiness;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -16,6 +17,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import com.dogonfire.seriousbusiness.commands.CourtCaseType;
 
 
 public class EventListener implements Listener
@@ -36,14 +39,37 @@ public class EventListener implements Listener
 	public void onPlayerChat(AsyncPlayerChatEvent event)
 	{
 		final Player player = event.getPlayer();
+
+		UUID companyId = CourtManager.instance().getPlayerLawsuitCompany(player.getUniqueId());
 		
-		/*
-		int index = event.getMessage().indexOf(">>");
-		
-		if(index == -1)
+		if(companyId != null)
 		{
-			return;			
-		}*/
+			int amount = SeriousBusinessConfiguration.instance().getCourtCaseCost();
+
+			CourtManager.instance().removePlayerLawsuitCompany(player.getUniqueId());
+			
+			if(!Company.instance().getEconomyManager().has(player, amount))
+			{
+				player.sendMessage(ChatColor.RED + "You need " + amount + " to file a lawsuit");
+				return;
+			}
+			
+			int caseId = CourtManager.instance().applyCase(CourtCaseType.FreeForm, player.getUniqueId(), companyId, event.getMessage());
+			
+			if(caseId != 0)
+			{
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Your case number is " + ChatColor.WHITE + "#" + caseId, 1);
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Your paid " + ChatColor.WHITE + amount + ChatColor.AQUA + " wanks for your lawsuit.", 1);
+				//Company.instance().getEconomyManager().withdrawPlayer(player, amount);
+			}
+			else
+			{
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "The court has rejected your application. You already have a similiar case under review.", 1);
+			}
+			
+			event.setCancelled(true);
+			return;
+		}
 		
 		String newMessage = PatentManager.instance().handleChatWord(event.getPlayer(), event.getMessage());
 

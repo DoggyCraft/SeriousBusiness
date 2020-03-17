@@ -3,6 +3,7 @@ package com.dogonfire.seriousbusiness;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Random;
@@ -29,6 +30,7 @@ public class CourtManager
 	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
 	private Queue<CourtCase>			playerCases 		= new PriorityQueue<CourtCase>(); // TODO: Should be a queue
 	private int courtCaseid = 1;
+	private HashMap<UUID, UUID>			playerLawsuitCompanies = new HashMap<UUID, UUID>();
 	
 	DateFormat							formatter			= new SimpleDateFormat(this.pattern);
 
@@ -38,13 +40,17 @@ public class CourtManager
 		final public UUID playerId;
 		final public UUID companyId;
 		final public CourtCaseType caseType;
+		final public String description;
+		final public int bribes;
 		
-		CourtCase(int id, CourtCaseType caseType, UUID playerId, UUID companyId)		
+		CourtCase(int id, CourtCaseType caseType, UUID playerId, UUID companyId, String description)		
 		{
 			this.Id = id;
 			this.companyId = companyId;
 			this.playerId = playerId;
 			this.caseType = caseType;
+			this.description = description;
+			this.bribes = 0;
 		}		
 	}
 	
@@ -93,6 +99,22 @@ public class CourtManager
 		
 		save();
 	}
+	
+	public void setPlayerLawsuitCompany(UUID playerId, UUID companyId)
+	{
+		playerLawsuitCompanies.put(playerId, companyId);
+	}
+
+	
+	public UUID getPlayerLawsuitCompany(UUID playerId)
+	{
+		if(!playerLawsuitCompanies.containsKey(playerId))
+		{
+			return null;
+		}
+		
+		return playerLawsuitCompanies.get(playerId);
+	}
 
 	public Object[] getCases()
 	{	
@@ -114,8 +136,13 @@ public class CourtManager
 		return "UNKNOWN";
 	}
 	
+	public void removePlayerLawsuitCompany(UUID playerId)
+	{
+		this.playerLawsuitCompanies.remove(playerId);		
+	}
+	
 	// Players can randomly (without actual knowledge) fire court cases against companies and hope that they will actually hit criminal behaviour
-	public int applyCase(CourtCaseType caseType, UUID playerId, UUID companyId)
+	public int applyCase(CourtCaseType caseType, UUID playerId, UUID companyId, String description)
 	{
 		// Check whether player case exist, too many, irrelevant and other reasons to reject the case
 		for(CourtCase courtCase : playerCases)
@@ -131,17 +158,18 @@ public class CourtManager
 		
 		PlayerManager.instance().addXP(playerId, JobPosition.Law, 1);
 		
-		return createCase(caseType, playerId, companyId);
+		return createCase(caseType, playerId, companyId, description);
 	}	
 	
-	public int createCase(CourtCaseType caseType, UUID playerId, UUID companyId)
+	public int createCase(CourtCaseType caseType, UUID playerId, UUID companyId, String description)
 	{
-		playerCases.add(new CourtCase(courtCaseid++, caseType, playerId, companyId));
-		
+		CourtCase courtCase = new CourtCase(courtCaseid++, caseType, playerId, companyId, description);
+		playerCases.add(courtCase);
+			
 		save();
 		
 		String companyName = CompanyManager.instance().getCompanyName(companyId);
-		Company.instance().broadcastInfo(Company.instance().getServer().getPlayer(playerId).getDisplayName() + ChatColor.AQUA + " filed a lawsuit against " + ChatColor.GOLD + companyName + ChatColor.AQUA + " for " + ChatColor.GOLD + getCaseTypeDescription(caseType) + "!");
+		Company.instance().broadcastInfo(Company.instance().getServer().getPlayer(playerId).getDisplayName() + ChatColor.AQUA + " filed a lawsuit against " + ChatColor.GOLD + companyName + ChatColor.AQUA + " for " + ChatColor.GOLD + courtCase.description + "!");
 		
 		return courtCaseid - 1;
 	}
@@ -151,8 +179,8 @@ public class CourtManager
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
 		
-		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
-		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.GREEN + " NOT GUILTY" + ChatColor.AQUA + " of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().getServer().broadcastMessage("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + ":");		
+		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.GREEN + " NOT GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
 		Company.instance().broadcastInfo(companyName + " was given " + amount + " wanks as compensation for emotional damage!");		
 
 		int repuationChange = 1;
@@ -173,8 +201,8 @@ public class CourtManager
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
 		
-		Company.instance().broadcastInfo("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + " on the accusation of " + getCaseTypeDescription(courtCase.caseType) + "!");		
-		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.RED + "GUILTY" + ChatColor.AQUA + " of " + getCaseTypeDescription(courtCase.caseType) + "!");		
+		Company.instance().getServer().broadcastMessage("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + ":");		
+		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.RED + "GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
 		Company.instance().broadcastInfo(companyName + " was fined " + amount + " wanks!");
 	
 		int repuationChange = -1;
@@ -198,7 +226,14 @@ public class CourtManager
 					
 			if(courtCase!=null)
 			{						
-				if(random.nextInt(3) > 0)
+				int guiltyProbability = 40 + courtCase.bribes / 1000; 
+				
+				if(guiltyProbability > 100)
+				{
+					guiltyProbability = 100;
+				}
+				
+				if((1 + random.nextInt(100)) > guiltyProbability)
 				{
 					int amount = SeriousBusinessConfiguration.instance().getCourtCaseCost();
 					decideNotGuilty(courtCase, amount);

@@ -51,7 +51,7 @@ public class CommandLawsuitList extends SeriousBusinessCommand
 			String fullCompanyName = String.format("%-16s", String.format("%-16s", CompanyManager.instance().getCompanyName(courtCase.companyId)));
 			
 			String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
-			String description = CourtManager.instance().getCaseTypeDescription(courtCase.caseType);
+			String description = courtCase.description;
 			
 			if (sender != null)
 			{

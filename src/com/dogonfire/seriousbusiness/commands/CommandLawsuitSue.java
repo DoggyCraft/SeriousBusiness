@@ -44,6 +44,7 @@ public class CommandLawsuitSue extends SeriousBusinessCommand
 		//TAV TaxAvoidance,   	 // Company has invested in cryptocurrency/items in order to avoid taxes		
 		//TII TradingIllegalItems, 		
 
+		/*
 		switch(args[1].toLowerCase())
 		{
 			case "help"	: onHelp(player); break;
@@ -54,11 +55,11 @@ public class CommandLawsuitSue extends SeriousBusinessCommand
 			case "tav"	: courtCaseType = CourtCaseType.TaxAvoidance; break;
 			case "tii"	: courtCaseType = CourtCaseType.TradingIllegalItems; break;
 			default 	: player.sendMessage(ChatColor.RED + "That is not a valid legal charge type"); return; 
-		}
+		}*/
 		
-		String companyName = args[2];
+		String companyName = args[1];
 		
-		for(int a=3; a<args.length; a++)
+		for(int a=2; a<args.length; a++)
 		{
 			companyName += " " + args[a];
 		}
@@ -75,20 +76,24 @@ public class CommandLawsuitSue extends SeriousBusinessCommand
 		
 		if(!Company.instance().getEconomyManager().has(player, amount))
 		{
-			player.sendMessage(ChatColor.RED + "You need " + amount + " to file a lawsuit");
+			player.sendMessage(ChatColor.RED + "You need " + amount + " wanks to file a lawsuit against " + ChatColor.GOLD + companyName);
 			return;									
 		}
+
+		CourtManager.instance().setPlayerLawsuitCompany(player.getUniqueId(), companyId);
 		
-		int caseId = CourtManager.instance().applyCase(courtCaseType, player.getUniqueId(), companyId);
+		player.sendMessage(ChatColor.AQUA + "What do you want to sue " + ChatColor.GOLD + companyName + ChatColor.AQUA + " for?");
+
+		//int caseId = CourtManager.instance().applyCase(courtCaseType, player.getUniqueId(), companyId);
 		
-		if(caseId != 0)
-		{
-			Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Your case number is " + ChatColor.WHITE + "#" + caseId, 1);
-			Company.instance().getEconomyManager().withdrawPlayer(player, amount);
-		}
-		else
-		{
-			Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "The court has rejected your application. You already have a similiar case under review.", 1);
-		}
+		//if(caseId != 0)
+		//{
+		//	Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Your case number is " + ChatColor.WHITE + "#" + caseId, 1);
+		//	Company.instance().getEconomyManager().withdrawPlayer(player, amount);
+		//}
+		//else
+		//{
+		//	Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "The court has rejected your application. You already have a similiar case under review.", 1);
+		//}
 	}
 }
