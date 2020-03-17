@@ -14,6 +14,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.dogonfire.seriousbusiness.commands.BribeCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.CompanyCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.CryptoCommandExecuter;
 import com.dogonfire.seriousbusiness.commands.JobCommandExecuter;
@@ -160,6 +161,7 @@ public class Company extends JavaPlugin
 		getCommand("crypto").setExecutor(CryptoCommandExecuter.instance());
 		getCommand("lawsuit").setExecutor(LawsuitCommandExecuter.instance());
 		getCommand("loan").setExecutor(LoanCommandExecuter.instance());
+		getCommand("bribe").setExecutor(BribeCommandExecuter.instance());
 		
 		this.configuration = new SeriousBusinessConfiguration();
 		this.permissionsManager = new PermissionsManager();

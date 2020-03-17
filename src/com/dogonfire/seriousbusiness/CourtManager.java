@@ -10,7 +10,6 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -41,7 +40,8 @@ public class CourtManager
 		final public UUID companyId;
 		final public CourtCaseType caseType;
 		final public String description;
-		final public int bribes;
+		public int bribesGuilty;
+		public int bribesNotGuilty;
 		
 		CourtCase(int id, CourtCaseType caseType, UUID playerId, UUID companyId, String description)		
 		{
@@ -50,7 +50,8 @@ public class CourtManager
 			this.playerId = playerId;
 			this.caseType = caseType;
 			this.description = description;
-			this.bribes = 0;
+			this.bribesGuilty = 0;
+			this.bribesNotGuilty = 0;
 		}		
 	}
 	
@@ -107,18 +108,28 @@ public class CourtManager
 
 	
 	public UUID getPlayerLawsuitCompany(UUID playerId)
-	{
-		if(!playerLawsuitCompanies.containsKey(playerId))
-		{
-			return null;
-		}
-		
+	{		
 		return playerLawsuitCompanies.get(playerId);
 	}
 
 	public Object[] getCases()
 	{	
 		return playerCases.toArray();
+	}
+	
+	public CourtCase getCaseById(int caseId)
+	{
+		for(Object caseObject : playerCases.toArray())
+		{
+			CourtCase courtCase = (CourtCase)caseObject;
+			
+			if(courtCase.Id == caseId)
+			{
+				return courtCase;
+			}
+		}
+		
+		return null;
 	}
 		
 	public String getCaseTypeDescription(CourtCaseType caseType)
@@ -141,6 +152,28 @@ public class CourtManager
 		this.playerLawsuitCompanies.remove(playerId);		
 	}
 	
+	public void bribeGuilty(int caseId, int amount)
+	{
+		for(CourtCase courtCase : playerCases)
+		{
+			if(courtCase.Id == caseId)
+			{
+				courtCase.bribesGuilty += amount;
+			}
+		}		
+	}
+	
+	public void bribeNotGuilty(int caseId, int amount)
+	{
+		for(CourtCase courtCase : playerCases)
+		{
+			if(courtCase.Id == caseId)
+			{
+				courtCase.bribesNotGuilty += amount;
+			}
+		}		
+	}
+
 	// Players can randomly (without actual knowledge) fire court cases against companies and hope that they will actually hit criminal behaviour
 	public int applyCase(CourtCaseType caseType, UUID playerId, UUID companyId, String description)
 	{
@@ -226,13 +259,18 @@ public class CourtManager
 					
 			if(courtCase!=null)
 			{						
-				int guiltyProbability = 40 + courtCase.bribes / 1000; 
+				int guiltyProbability = 40 + courtCase.bribesGuilty / 1000 - courtCase.bribesNotGuilty / 1000; 
 				
 				if(guiltyProbability > 100)
 				{
 					guiltyProbability = 100;
 				}
 				
+				if(guiltyProbability < 0)
+				{
+					guiltyProbability = 0;
+				}
+
 				if((1 + random.nextInt(100)) > guiltyProbability)
 				{
 					int amount = SeriousBusinessConfiguration.instance().getCourtCaseCost();

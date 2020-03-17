@@ -44,6 +44,9 @@ commands:
   crypto:
     description: "Controls the Serious Business crypto currency system"
     usage: /crypto
+  bribe:
+    description: "Controls the Serious Business bribe system"
+    usage: /bribe
 permissions: 
   company.*: 
     children: 
@@ -88,6 +91,8 @@ permissions:
       stocks: true
       stocks.buy: true
       stocks.sell: true
+      bribe.guilty: true
+      bribe.notguilty: true
       land.land: true
       lawsuit.sue: true
       loan.issue: true
