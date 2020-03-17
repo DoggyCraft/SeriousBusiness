@@ -1,8 +1,5 @@
 package com.dogonfire.seriousbusiness.commands;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,8 +13,6 @@ import com.dogonfire.seriousbusiness.CourtManager;
 import com.dogonfire.seriousbusiness.CourtManager.CourtCase;
 import com.dogonfire.seriousbusiness.PlayerManager;
 import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
-import com.dogonfire.seriousbusiness.PatentManager;
-import com.dogonfire.seriousbusiness.PatentManager.Patent;
 
 
 
@@ -43,7 +38,7 @@ public class CommandLawsuitList extends SeriousBusinessCommand
 			return;
 		}
 
-		sender.sendMessage(ChatColor.YELLOW + "--- Pending Lawsuits Investigations in " + SeriousBusinessConfiguration.instance().getServerName() + " ---");
+		sender.sendMessage(ChatColor.YELLOW + "--- Pending lawsuit investigations in " + SeriousBusinessConfiguration.instance().getServerName() + " ---");
 
 		for (Object courtCaseObject : lawsuits)
 		{

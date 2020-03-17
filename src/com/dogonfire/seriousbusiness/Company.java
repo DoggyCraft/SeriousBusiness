@@ -199,7 +199,6 @@ public class Company extends JavaPlugin
 		
 		this.configuration.load();
 		this.companyManager.load();
-		this.patentManager.load();
 		this.playerManager.load();
 		this.landManager.load();
 		this.loanManager.load();
@@ -231,7 +230,6 @@ public class Company extends JavaPlugin
 		reloadSettings();
 
 		this.companyManager.save();
-		this.patentManager.save();
 		this.playerManager.save();
 		this.courtManager.save();
 	}	

@@ -195,7 +195,7 @@ public class CompanyCommandExecuter implements CommandExecutor
 				player.sendMessage(ChatColor.AQUA + "  Manager" + ChatColor.WHITE + " - Make sure that the company earns money");
 				player.sendMessage(ChatColor.AQUA + "  Sales" + ChatColor.WHITE + " - Manage shops and sell items for the company");
 				player.sendMessage(ChatColor.AQUA + "  Production" + ChatColor.WHITE + " - Produce items for the company");
-				//player.sendMessage(ChatColor.AQUA + "  Research" + ChatColor.WHITE + " - Improve items for the company");
+				player.sendMessage(ChatColor.AQUA + "  Law" + ChatColor.WHITE + " - Create patents and lawsuits");
 				player.sendMessage(ChatColor.AQUA + "");
 				player.sendMessage(ChatColor.YELLOW + "Time is divided into turns of 1 min and rounds of 1 hour");
 				player.sendMessage(ChatColor.YELLOW + "Players who do their job within a turn will get paid a wage for that turn.");
@@ -205,9 +205,10 @@ public class CompanyCommandExecuter implements CommandExecutor
 				player.sendMessage(ChatColor.AQUA + "");
 				player.sendMessage(ChatColor.RED + "You are not working in a company.");
 
-				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/company list" + ChatColor.YELLOW + " to view the list of companies", 3*20);				
-				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/job" + ChatColor.YELLOW + " to search for a job", 6*20);				
-				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/shop" + ChatColor.YELLOW + " to search for a shop", 9*20);				
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/company create <companyname>" + ChatColor.YELLOW + " create a company", 3*20);				
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/company list" + ChatColor.YELLOW + " to view the list of companies", 6*20);				
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/job" + ChatColor.YELLOW + " to search for a job", 9*20);				
+				Company.instance().sendInfo(player.getUniqueId(), ChatColor.YELLOW + "Use " + ChatColor.WHITE + "/shop" + ChatColor.YELLOW + " to search for a shop", 12*20);				
 			}
 
 						

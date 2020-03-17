@@ -71,7 +71,7 @@ public class CourtManager
 
 		this.courtCaseConfig = YamlConfiguration.loadConfiguration(this.courtCaseConfigFile);
 
-		Company.instance().log("Loaded " + this.courtCaseConfig.getKeys(false).size() + " loans.");
+		Company.instance().log("Loaded " + this.courtCaseConfig.getKeys(false).size() + " courtcases.");
 	}
 
 	public void save()
@@ -119,10 +119,8 @@ public class CourtManager
 	
 	public CourtCase getCaseById(int caseId)
 	{
-		for(Object caseObject : playerCases.toArray())
-		{
-			CourtCase courtCase = (CourtCase)caseObject;
-			
+		for(CourtCase courtCase : playerCases)
+		{			
 			if(courtCase.Id == caseId)
 			{
 				return courtCase;
@@ -202,7 +200,7 @@ public class CourtManager
 		save();
 		
 		String companyName = CompanyManager.instance().getCompanyName(companyId);
-		Company.instance().broadcastInfo(Company.instance().getServer().getPlayer(playerId).getDisplayName() + ChatColor.AQUA + " filed a lawsuit against " + ChatColor.GOLD + companyName + ChatColor.AQUA + " for " + ChatColor.GOLD + courtCase.description + "!");
+		Company.instance().getServer().broadcastMessage(ChatColor.GOLD + Company.instance().getServer().getPlayer(playerId).getDisplayName() + ChatColor.AQUA + " filed a lawsuit against " + ChatColor.GOLD + companyName + ChatColor.AQUA + " for " + ChatColor.GOLD + courtCase.description + "!");
 		
 		return courtCaseid - 1;
 	}
@@ -212,9 +210,9 @@ public class CourtManager
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
 		
-		Company.instance().getServer().broadcastMessage("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + ":");		
-		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.GREEN + " NOT GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
-		Company.instance().broadcastInfo(companyName + " was given " + amount + " wanks as compensation for emotional damage!");		
+		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + ":");		
+		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "The Court ruled " + companyName + ChatColor.GREEN + " NOT GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
+		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + companyName + " was given " + ChatColor.GOLD + amount + " wanks " + ChatColor.AQUA + "as compensation for emotional damage!");		
 
 		int repuationChange = 1;
 
@@ -234,9 +232,9 @@ public class CourtManager
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
 		
-		Company.instance().getServer().broadcastMessage("In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + ":");		
-		Company.instance().broadcastInfo("The Court ruled " + companyName + ChatColor.RED + "GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
-		Company.instance().broadcastInfo(companyName + " was fined " + amount + " wanks!");
+		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + ":");		
+		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "The Court ruled " + companyName + ChatColor.RED + "GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
+		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + companyName + " was fined " + ChatColor.GOLD + amount + " wanks!");
 	
 		int repuationChange = -1;
 		

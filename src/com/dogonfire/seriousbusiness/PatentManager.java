@@ -1,8 +1,5 @@
 package com.dogonfire.seriousbusiness;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -13,22 +10,15 @@ import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 
 public class PatentManager
 {
 	private static PatentManager		instance;
-	private FileConfiguration			patentConfig		= null;
-	private File						patentConfigFile	= null;
 	private Random						random				= new Random();
-	private long						lastSaveTime;
-	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
 	private List<String>				blacklistedWords	= new ArrayList<String>();
 	private HashMap<String, Patent>		patentHolders 		= new HashMap<String, Patent>();
-	DateFormat							formatter			= new SimpleDateFormat(this.pattern);
 
 	final public class Patent
 	{	
@@ -65,42 +55,6 @@ public class PatentManager
 		return instance;
 	}
 	
-	public void load()
-	{
-		this.patentConfigFile = new File(Company.instance().getDataFolder(), "patents.yml");
-
-		this.patentConfig = YamlConfiguration.loadConfiguration(this.patentConfigFile);
-
-		Company.instance().log("Loaded " + this.patentConfig.getKeys(false).size() + " patents.");
-	}
-
-	public void save()
-	{
-		this.lastSaveTime = System.currentTimeMillis();
-		if ((this.patentConfig == null) || (this.patentConfigFile == null))
-		{
-			return;
-		}
-		try
-		{
-			this.patentConfig.save(this.patentConfigFile);
-		}
-		catch (Exception ex)
-		{
-			Company.instance().log("Could not save config to " + this.patentConfigFile + ": " + ex.getMessage());
-		}
-	}
-
-	public void saveTimed()
-	{
-		if (System.currentTimeMillis() - this.lastSaveTime < 180000L)
-		{
-			return;
-		}
-		
-		save();
-	}
-
 	public Collection<Patent> getPatents()
 	{	
 		return patentHolders.values();
@@ -130,9 +84,6 @@ public class PatentManager
 	public void deletePatent(String word)
 	{
 		this.patentHolders.remove(word);
-		this.patentConfig.set("Patents." + word.toLowerCase(), null);
-
-		saveTimed();
 	}
 
 	public boolean patentWordExist(String word)
@@ -201,6 +152,7 @@ public class PatentManager
 		}						
 	}	
 
+	/*
 	public void setExpireDate(UUID userId, int timeInSeconds)
 	{
 		DateFormat formatter = new SimpleDateFormat(this.pattern);
@@ -211,8 +163,9 @@ public class PatentManager
 		
 		this.patentConfig.set(userId.toString() + ".NextRoundTime", formatter.format(thisDate));
 	}
+	*/
 	
-	
+	/*
 	public long getExpireDate(UUID patentId)
 	{
 		String nextRoundTime = this.patentConfig.getString(patentId.toString() + ".NextTurnTime");
@@ -234,7 +187,7 @@ public class PatentManager
 		long diffSeconds = diff / 1000L;
 		
 		return diffSeconds;
-	}
+	}*/
 		
 	public UUID createPatent(UUID companyId, String word)
 	{
@@ -242,9 +195,7 @@ public class PatentManager
 		c.add(Calendar.MINUTE, SeriousBusinessConfiguration.instance().getPatentTime());
 		
 		patentHolders.put(word, new Patent(companyId, word, c.getTime()));
-		
-		save();
-		
+				
 		return companyId;
 	}
 
