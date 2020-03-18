@@ -6,11 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
-import com.dogonfire.seriousbusiness.CourtManager;
 import com.dogonfire.seriousbusiness.PlayerManager;
-import com.dogonfire.seriousbusiness.SeriousBusinessConfiguration;
 
 
 public class CommandLoanIssue extends SeriousBusinessCommand
@@ -65,7 +62,7 @@ public class CommandLoanIssue extends SeriousBusinessCommand
 		String companyName = CompanyManager.instance().getCompanyName(companyId);
 
 		CompanyManager.instance().depositCompanyBalance(companyId, -value);
-		CompanyManager.instance().addLoansIssued(companyId, value);		
+		CompanyManager.instance().addAvailableLoan(companyId, value);		
 		CompanyManager.instance().sendInfoToEmployees(companyId, companyName + " increased their available loan amount by " + value + " wanks", ChatColor.AQUA, 1);
 	}
 }

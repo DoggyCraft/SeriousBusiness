@@ -291,7 +291,7 @@ public class CompanyManager
 		double loanRate = this.getLoanRateForRound(companyId, round);
 		double maxLoanRate = this.getMaxLoanRateForRound(companyId, round);
 		int maxActivePatents = this.getMaxPatentsForRound(companyId, round);
-		double totalIssuedLoans = this.getMaxPatentsForRound(companyId, round);
+		double totalAvailableLoans = this.getAvailableLoanForRound(companyId, round);
 		
 		double profit = patentIncome + totalSoldValue - wagesPaidProduction - wagesPaidSales - taxesPaid - patentExpenses;
 	
@@ -309,7 +309,7 @@ public class CompanyManager
 			stockEndValue = stockStartValue + stockValueChange;			
 		}
 			
-		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid, patentIncome, patentExpenses, totalIssuedLoans, loanRate, maxLoanRate, maxActivePatents);
+		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid, patentIncome, patentExpenses, totalAvailableLoans, loanRate, maxLoanRate, maxActivePatents);
 		
 		return report;		
 	}
@@ -843,11 +843,11 @@ public class CompanyManager
 		this.companyConfig.set(companyId.toString() + ".Round." + round + ".CurrentLoanRate", value);				
 	}
 
-	public void addLoansIssued(UUID companyId, double value)
+	public void addAvailableLoan(UUID companyId, double value)
 	{
 		int round = this.getCurrentRound(companyId);
 		
-		double amount = this.getLoanIssued(companyId);
+		double amount = this.getAvailableLoan(companyId);
 		
 		amount += value;
 
@@ -856,20 +856,25 @@ public class CompanyManager
 
 	public void setLoansIssuedForRound(UUID companyId, int round, double value)
 	{
-		double loanRate = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".CurrentLoansIssued");
+		double loanRate = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".CurrentAvailableLoan");
 
 		if(value > loanRate)
 		{
-			this.companyConfig.set(companyId.toString() + ".Round." + round + ".MaxLoanIssued", value);				
+			this.companyConfig.set(companyId.toString() + ".Round." + round + ".MaxLoanAvailable", value);				
 		}		
 
-		this.companyConfig.set(companyId.toString() + ".Round." + round + ".CurrentLoansIssued", value);				
+		this.companyConfig.set(companyId.toString() + ".Round." + round + ".CurrentAvailableLoan", value);				
 	}
 
-	public double getLoanIssued(UUID companyId)
+	public double getAvailableLoanForRound(UUID companyId, int round)
+	{	
+		return this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".CurrentAvailableLoan");
+	}
+
+	public double getAvailableLoan(UUID companyId)
 	{
 		int round = this.getCurrentRound(companyId);
-		return this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".CurrentLoansIssued");		
+		return getAvailableLoanForRound(companyId, round);
 	}
 	
 	public double getLoanRateForRound(UUID companyId, int round)
@@ -1483,12 +1488,6 @@ public class CompanyManager
 			return false;
 		}
 		
-		//if(PlayerManager.instance().getEmployeeCompanyPosition(player.getUniqueId()) != JobPosition.Production)
-		//{
-		//	Company.instance().sendInfo(player.getUniqueId(), ChatColor.RED + "You must work in production to use this sign.", 2);	
-		//	return false;
-		//}
-
 		UUID companyId = CompanyManager.instance().getCompanyIdByName(companyName);
 		
 		Material itemType = player.getInventory().getItemInMainHand().getType();
@@ -1659,7 +1658,7 @@ public class CompanyManager
 		this.setCompanyStockEndValueForRound(companyId, currentRound, currentStockValue);
 		this.setCompanyStockStartValueForRound(companyId, currentRound + 1, currentStockValue);
 
-		double currentLoanIssued = this.getLoanIssued(companyId);	
+		double currentLoanIssued = this.getAvailableLoan(companyId);	
 		this.setLoansIssuedForRound(companyId, currentRound + 1, currentLoanIssued);
 
 		double currentLoanRate = this.getLoanRate(companyId);
@@ -1718,50 +1717,7 @@ public class CompanyManager
 
 		return true;
 	}
-	
-	
-/*
-	private void manageLostEmployees(UUID companyId)
-	{
-		if (this.random.nextInt(100) > 0)
-		{
-			return;
-		}
-
-		Set<UUID> employees = this.plugin.getEmployeeManager().getEmployeesInCompanyByPosition(companyId);
-		Set<UUID> managedBelievers = new HashSet();
-
-		if (employees.size() == 0)
-		{
-			return;
-		}
-
-		this.plugin.logDebug("Managing lost believers for " + godName);
-
-		for (int n = 0; n < 5; n++)
-		{
-			UUID believerId = (UUID) believers.toArray()[this.random.nextInt(believers.size())];
-			if (!managedBelievers.contains(believerId))
-			{
-				Date thisDate = new Date();
-
-				long timeDiff = thisDate.getTime() - this.plugin.getServer().getOfflinePlayer(believerId).getLastPlayed();
-
-				if (timeDiff > 3600000 * this.plugin.maxEmployeeOfflineTimeInDays)
-				{
-					String believerName = plugin.getServer().getOfflinePlayer(believerId).getName();
-
-					companySayToEmployees(godName, this.plugin.getServer().getOfflinePlayer(believerId).getName() + " was fired from the company due to inactity", 2 + this.random.nextInt(100));
-
-					this.plugin.getEmployeeManager().removeEmployee(godName, believerId);
-				}
-			}
-
-			managedBelievers.add(believerId);
-		}
-	}	
-	*/
-	
+		
 	public void update()
 	{
 		if (this.random.nextInt(50) == 0)
