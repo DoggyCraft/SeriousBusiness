@@ -122,7 +122,7 @@ public class CommandInfo extends SeriousBusinessCommand
 		
 		if(report.stockValueChange > 0)
 		{
-			sender.sendMessage(ChatColor.AQUA + " StockValue: " + (int)report.stockEndValue + ChatColor.GREEN + "+" + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%");
+			sender.sendMessage(ChatColor.AQUA + " StockValue: " + (int)report.stockEndValue + ChatColor.GREEN + " (+" + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%)");
 		}
 		else if(report.stockValueChange == 0)
 		{
@@ -130,7 +130,7 @@ public class CommandInfo extends SeriousBusinessCommand
 		}		
 		else
 		{
-			sender.sendMessage(ChatColor.AQUA + " StockValue: " + (int)report.stockEndValue + ChatColor.RED + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%");			
+			sender.sendMessage(ChatColor.AQUA + " StockValue: " + (int)report.stockEndValue + ChatColor.RED + " (" + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%)");			
 		}		
 		
 		sender.sendMessage(ChatColor.YELLOW + "People:");
