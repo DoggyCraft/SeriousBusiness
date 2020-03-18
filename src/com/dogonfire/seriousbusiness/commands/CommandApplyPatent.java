@@ -91,7 +91,6 @@ public class CommandApplyPatent extends SeriousBusinessCommand
 		
 		Company.instance().getServer().broadcastMessage(ChatColor.WHITE + CompanyManager.instance().getCompanyName(companyId) + ChatColor.AQUA + " patented the word " + ChatColor.WHITE + "'" + patentWord + "'");
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You patented the word " + ChatColor.WHITE + "'" + patentWord + "'" + ChatColor.AQUA + " for the next " + ChatColor.WHITE + SeriousBusinessConfiguration.instance().getPatentTime() + ChatColor.AQUA + " minutes", 1);
-		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You paid " + ChatColor.WHITE + cost + ChatColor.AQUA + " for the patent.", 1);
-		//Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company patents" + ChatColor.AQUA +  " to see all your companys patents", 3*20);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "You paid " + ChatColor.WHITE + cost + " wanks" + ChatColor.AQUA + " for the patent.", 1);
 	}
 }

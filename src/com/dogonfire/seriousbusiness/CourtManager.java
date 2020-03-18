@@ -188,7 +188,8 @@ public class CourtManager
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
 		
 		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + ":");		
-		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "The Court ruled " + companyName + ChatColor.RED + "GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
+		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "The Court ruled " + companyName + ChatColor.RED + ""
+				+ "	GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
 		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + companyName + " was fined " + ChatColor.GOLD + amount + " wanks!");
 	
 		int repuationChange = -1;
@@ -200,6 +201,23 @@ public class CourtManager
 		//Company.instance().getEconomyManager().depositPlayer(player, amount);
 	}
 
+	public int getGuiltyProbability(CourtCase courtCase)
+	{
+		int guiltyProbability = 40 + courtCase.bribesGuilty / 1000 - courtCase.bribesNotGuilty / 1000;
+		
+		if(guiltyProbability > 100)
+		{
+			guiltyProbability = 100;
+		}
+		
+		if(guiltyProbability < 0)
+		{
+			guiltyProbability = 0;
+		}
+
+		return guiltyProbability;
+	}
+	
 	public void update()
 	{
 		if (this.random.nextInt(500) == 0)
@@ -212,18 +230,8 @@ public class CourtManager
 					
 			if(courtCase!=null)
 			{						
-				int guiltyProbability = 40 + courtCase.bribesGuilty / 1000 - courtCase.bribesNotGuilty / 1000; 
+				int guiltyProbability = getGuiltyProbability(courtCase); 
 				
-				if(guiltyProbability > 100)
-				{
-					guiltyProbability = 100;
-				}
-				
-				if(guiltyProbability < 0)
-				{
-					guiltyProbability = 0;
-				}
-
 				if((1 + random.nextInt(100)) > guiltyProbability)
 				{
 					int amount = SeriousBusinessConfiguration.instance().getCourtCaseCost();

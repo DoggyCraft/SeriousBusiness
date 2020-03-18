@@ -66,6 +66,6 @@ public class CommandLoanIssue extends SeriousBusinessCommand
 
 		CompanyManager.instance().depositCompanyBalance(companyId, -value);
 		CompanyManager.instance().addLoansIssued(companyId, value);		
-		CompanyManager.instance().sendInfoToEmployees(companyId, companyName + " increased their issued loan amount by " + value + " wanks", ChatColor.AQUA, 1);
+		CompanyManager.instance().sendInfoToEmployees(companyId, companyName + " increased their available loan amount by " + value + " wanks", ChatColor.AQUA, 1);
 	}
 }
