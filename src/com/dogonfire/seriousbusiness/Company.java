@@ -7,8 +7,6 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -38,7 +36,6 @@ public class Company extends JavaPlugin
 	private StockManager stockManager = null;
 	private LoanManager loanManager = null;
 	private CourtManager courtManager = null;
-	private PolicyManager policyManager = null;
 	private CryptocoinManager cryptoCoinManager = null;
 	private PermissionsManager permissionsManager = null;
 	private SeriousBusinessConfiguration configuration = null;
@@ -175,7 +172,6 @@ public class Company extends JavaPlugin
 		this.loanManager = new LoanManager();
 		this.cryptoCoinManager = new CryptocoinManager();
 		this.courtManager = new CourtManager();
-		this.policyManager = new PolicyManager();
 		
 		PluginManager pm = getServer().getPluginManager();
 
@@ -204,7 +200,6 @@ public class Company extends JavaPlugin
 		this.loanManager.load();
 		this.stockManager.load();
 		this.cryptoCoinManager.load();
-		this.courtManager.load();
 		
 		getServer().getPluginManager().registerEvents(new EventListener(), this);
 		getServer().getPluginManager().registerEvents(signManager, this);
@@ -231,6 +226,5 @@ public class Company extends JavaPlugin
 
 		this.companyManager.save();
 		this.playerManager.save();
-		this.courtManager.save();
 	}	
 }

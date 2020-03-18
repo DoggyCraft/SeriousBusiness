@@ -899,10 +899,11 @@ public class CompanyManager
 		int round = CompanyManager.instance().getCurrentRound(companyId);
 		List<Patent> existingPatents = PatentManager.instance().getCompanyPatents(companyId);
 		int maxPatents = companyConfig.getInt(companyId.toString() + ".Round." + round + ".MaxPatents");
-
+		int patents = existingPatents.size();
+		
 		if(existingPatents.size() > maxPatents)
 		{
-			companyConfig.set(companyId.toString() + ".Round." + round + ".MaxPatents", existingPatents);
+			companyConfig.set(companyId.toString() + ".Round." + round + ".MaxPatents", patents);
 		}
 	}
 	

@@ -1,38 +1,26 @@
 package com.dogonfire.seriousbusiness;
 
-import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.PriorityQueue;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
 import com.dogonfire.seriousbusiness.commands.CourtCaseType;
 
 
 
-
 public class CourtManager
 {
 	private static CourtManager			instance;
-	private FileConfiguration			courtCaseConfig		= null;
-	private File						courtCaseConfigFile	= null;
 	private Random						random				= new Random();
-	private long						lastSaveTime;
-	private String						pattern				= "HH:mm:ss dd-MM-yyyy";
-	private Queue<CourtCase>			playerCases 		= new PriorityQueue<CourtCase>(); // TODO: Should be a queue
+	private Queue<CourtCase>			playerCases 		= new LinkedList<CourtCase>(); // TODO: Should be a queue
 	private int courtCaseid = 1;
 	private HashMap<UUID, UUID>			playerLawsuitCompanies = new HashMap<UUID, UUID>();
 	
-	DateFormat							formatter			= new SimpleDateFormat(this.pattern);
-
 	final public class CourtCase
 	{
 		final public int Id;
@@ -64,43 +52,7 @@ public class CourtManager
 	{
 		return instance;
 	}
-	
-	public void load()
-	{
-		this.courtCaseConfigFile = new File(Company.instance().getDataFolder(), "courtcases.yml");
-
-		this.courtCaseConfig = YamlConfiguration.loadConfiguration(this.courtCaseConfigFile);
-
-		Company.instance().log("Loaded " + this.courtCaseConfig.getKeys(false).size() + " courtcases.");
-	}
-
-	public void save()
-	{
-		this.lastSaveTime = System.currentTimeMillis();
-		if ((this.courtCaseConfig == null) || (this.courtCaseConfigFile == null))
-		{
-			return;
-		}
-		try
-		{
-			this.courtCaseConfig.save(this.courtCaseConfigFile);
-		}
-		catch (Exception ex)
-		{
-			Company.instance().log("Could not save config to " + this.courtCaseConfigFile + ": " + ex.getMessage());
-		}
-	}
-
-	public void saveTimed()
-	{
-		if (System.currentTimeMillis() - this.lastSaveTime < 180000L)
-		{
-			return;
-		}
 		
-		save();
-	}
-	
 	public void setPlayerLawsuitCompany(UUID playerId, UUID companyId)
 	{
 		playerLawsuitCompanies.put(playerId, companyId);
@@ -139,7 +91,8 @@ public class CourtManager
 		case StockManipulation : return "Stock manipulation";
 		case LoanSharking : return "Loan sharking";
 		case TaxAvoidance : return "Tax avoidance";
-		case TradingIllegalItems : return "Trading illegal Items";		
+		case TradingIllegalItems : return "Trading illegal Items";	
+		default : break;
 		}
 		
 		return "UNKNOWN";
@@ -178,6 +131,10 @@ public class CourtManager
 		// Check whether player case exist, too many, irrelevant and other reasons to reject the case
 		for(CourtCase courtCase : playerCases)
 		{
+			Company.instance().log("courtCase is: " + courtCase);
+			Company.instance().log("courtCase playerId is: " + courtCase.playerId);
+			Company.instance().log("playerId is: " + playerId);
+			
 			if(courtCase.playerId.equals(playerId))
 			{
 				if(courtCase.caseType == caseType && courtCase.companyId.equals(companyId))
@@ -196,9 +153,7 @@ public class CourtManager
 	{
 		CourtCase courtCase = new CourtCase(courtCaseid++, caseType, playerId, companyId, description);
 		playerCases.add(courtCase);
-			
-		save();
-		
+					
 		String companyName = CompanyManager.instance().getCompanyName(companyId);
 		Company.instance().getServer().broadcastMessage(ChatColor.GOLD + Company.instance().getServer().getPlayer(playerId).getDisplayName() + ChatColor.AQUA + " filed a lawsuit against " + ChatColor.GOLD + companyName + ChatColor.AQUA + " for " + ChatColor.GOLD + courtCase.description + "!");
 		
