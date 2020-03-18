@@ -133,11 +133,11 @@ public class CommandInfo extends SeriousBusinessCommand
 			sender.sendMessage(ChatColor.AQUA + " StockValue: " + (int)report.stockEndValue + ChatColor.RED + " (" + df.format(100 * (report.stockValueChange / report.stockStartValue)) + "%)");			
 		}		
 		
-		sender.sendMessage(ChatColor.YELLOW + "People:");
+		//sender.sendMessage(ChatColor.YELLOW + "People:");
 		
-		sender.sendMessage(ChatColor.AQUA + " Manager employees: " + ChatColor.WHITE + PlayerManager.instance().getEmployeesInCompanyByPosition(companyId, JobPosition.Manager).size());
-		sender.sendMessage(ChatColor.AQUA + " Sales employees: " + ChatColor.WHITE + PlayerManager.instance().getEmployeesInCompanyByPosition(companyId, JobPosition.Sales).size());
-		sender.sendMessage(ChatColor.AQUA + " Production employees: " + ChatColor.WHITE + PlayerManager.instance().getEmployeesInCompanyByPosition(companyId, JobPosition.Production).size());
+		//sender.sendMessage(ChatColor.AQUA + " Manager employees: " + ChatColor.WHITE + PlayerManager.instance().getEmployeesInCompanyByPosition(companyId, JobPosition.Manager).size());
+		//sender.sendMessage(ChatColor.AQUA + " Sales employees: " + ChatColor.WHITE + PlayerManager.instance().getEmployeesInCompanyByPosition(companyId, JobPosition.Sales).size());
+		//sender.sendMessage(ChatColor.AQUA + " Production employees: " + ChatColor.WHITE + PlayerManager.instance().getEmployeesInCompanyByPosition(companyId, JobPosition.Production).size());
 		
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company people" + ChatColor.AQUA +  " to view the people employed by a company", 40);
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "Use " + ChatColor.WHITE + "/company report" + ChatColor.AQUA +  " to view the latest financial report for the company", 80);

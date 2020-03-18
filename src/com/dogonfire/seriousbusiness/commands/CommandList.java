@@ -95,11 +95,11 @@ public class CommandList extends SeriousBusinessCommand
 				{
 					playerCompanyShown = true;
 										
-					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.getStockValue())).append(changeColor + " (").append(df.format(companyStock.getStockChange())).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.getNumberOfEmployees()).toString(), 2));
+					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + "Stock value " + ChatColor.WHITE + companyStock.getStockValue() + changeColor + " (" + companyStock.getStockChange() + "%)");
 				}
 				else
 				{
-					sender.sendMessage(ChatColor.YELLOW + String.format("%2d", n) + ChatColor.GOLD + " - " + fullCompanyName + ChatColor.AQUA + StringUtils.rightPad(new StringBuilder().append(" Stock value ").append(ChatColor.WHITE + df.format(companyStock.getStockValue())).append(changeColor + " (").append(df.format(companyStock.getStockChange())).append("%)").toString(), 2) + StringUtils.rightPad(new StringBuilder().append(ChatColor.AQUA + " Employees ").append(ChatColor.WHITE + "" + companyStock.getNumberOfEmployees()).toString(), 2));
+					sender.sendMessage(ChatColor.WHITE + String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + " Stock value " + ChatColor.WHITE + companyStock.getStockValue() + changeColor + " (" + companyStock.getStockChange() + "%)");
 				}
 			}
 			//else
