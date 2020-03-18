@@ -228,7 +228,7 @@ public class EventListener implements Listener
 					return;
 				}
 
-				companyName = sign.getLine(1);
+				companyName = sign.getLine(2);
 
 				if (companyName.trim().length() == 0)
 				{
