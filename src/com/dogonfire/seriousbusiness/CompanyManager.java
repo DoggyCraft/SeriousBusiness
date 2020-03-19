@@ -341,7 +341,7 @@ public class CompanyManager
 	
 	public void setHeadquartersHomeForCompany(UUID companyId, Location location, Location previousLocation)
 	{
-		long hash = Company.instance().getLandManager().registerCompanyLocation(companyId, location, previousLocation);
+		long hash = LandManager.instance().registerCompanyLocation(companyId, location, previousLocation);
 		
 		this.companyConfig.set(companyId.toString() + ".Home.Headquarters.X", location.getX());
 		this.companyConfig.set(companyId.toString() + ".Home.Headquarters.Y", location.getY());
@@ -354,7 +354,7 @@ public class CompanyManager
 
 	public void setSalesHomeForCompany(UUID companyId, Location location, Location previousLocation)
 	{
-		long hash = Company.instance().getLandManager().registerCompanyLocation(companyId, location, previousLocation);
+		long hash = LandManager.instance().registerCompanyLocation(companyId, location, previousLocation);
 
 		this.companyConfig.set(companyId.toString() + ".Home.Sales.X", location.getX());
 		this.companyConfig.set(companyId.toString() + ".Home.Sales.Y", location.getY());

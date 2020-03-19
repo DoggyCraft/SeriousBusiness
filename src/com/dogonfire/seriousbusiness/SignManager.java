@@ -116,9 +116,9 @@ public class SignManager implements Listener
 				
 		Block block = event.getBlock();
 		
-		if (Company.instance().getSignManager().isSellSign(block, event.getLine(0)))
+		if (SignManager.instance().isSellSign(block, event.getLine(0)))
 		{			
-			if (!Company.instance().getSignManager().handleNewSellSign(event))
+			if (!SignManager.instance().handleNewSellSign(event))
 			{
 				event.setCancelled(true);
 				event.getBlock().setType(Material.AIR);
@@ -133,9 +133,9 @@ public class SignManager implements Listener
 			return;
 		}
 		
-		if (Company.instance().getSignManager().isSupplySign(block, event.getLine(0)))
+		if (SignManager.instance().isSupplySign(block, event.getLine(0)))
 		{
-			if (!Company.instance().getChestManager().handleNewSupplyChest(event))
+			if (!ChestManager.instance().handleNewSupplyChest(event))
 			{
 				event.setCancelled(true);
 				event.getBlock().setType(Material.AIR);

@@ -13,6 +13,7 @@ import com.dogonfire.seriousbusiness.Company;
 import com.dogonfire.seriousbusiness.CompanyManager;
 import com.dogonfire.seriousbusiness.CompanyManager.FinancialReport;
 import com.dogonfire.seriousbusiness.CompanyManager.JobPosition;
+import com.dogonfire.seriousbusiness.LandManager;
 import com.dogonfire.seriousbusiness.LandManager.LandReport;
 import com.dogonfire.seriousbusiness.PlayerManager;
 
@@ -132,18 +133,18 @@ public class CommandReport extends SeriousBusinessCommand
 		Location headquartersLocation = CompanyManager.instance().getHeadquartersForCompany(companyId);
 		if(headquartersLocation != null)
 		{
-			LandReport landReport = Company.instance().getLandManager().getLandReport(headquartersLocation);
+			LandReport landReport = LandManager.instance().getLandReport(headquartersLocation);
 			totalTax += landReport.companyTaxEndValue;
-			sender.sendMessage(ChatColor.RED + "" + df.format(landReport.companyTaxEndValue) + "% company taxes (HQ in " + Company.instance().getLandManager().getLandName(headquartersLocation) + "):   " + report.income * landReport.companyTaxEndValue);
+			sender.sendMessage(ChatColor.RED + "" + df.format(landReport.companyTaxEndValue) + "% company taxes (HQ in " + LandManager.instance().getLandName(headquartersLocation) + "):   " + report.income * landReport.companyTaxEndValue);
 		}
 
 		// Sales Taxes 
 		Location salesLocation = CompanyManager.instance().getSalesHomeForCompany(companyId);
 		if(salesLocation != null)
 		{
-			LandReport landReport = Company.instance().getLandManager().getLandReport(salesLocation);
+			LandReport landReport = LandManager.instance().getLandReport(salesLocation);
 			totalTax += landReport.salesTaxEndValue;
-			sender.sendMessage(ChatColor.RED + "" + df.format(landReport.salesTaxEndValue) + "% sales taxes (Store in " + Company.instance().getLandManager().getLandName(salesLocation) + "):   " + report.income * landReport.salesTaxEndValue);
+			sender.sendMessage(ChatColor.RED + "" + df.format(landReport.salesTaxEndValue) + "% sales taxes (Store in " + LandManager.instance().getLandName(salesLocation) + "):   " + report.income * landReport.salesTaxEndValue);
 		}
 
 		sender.sendMessage(ChatColor.YELLOW + "Total Taxes: " + ChatColor.RED + report.income * totalTax + "%");

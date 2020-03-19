@@ -47,51 +47,11 @@ public class Company extends JavaPlugin
 		return instance;
 	}
 	
-	public PatentManager getPatentManager()
-	{
-		return patentManager;
-	}
-
-	public CryptocoinManager getCryptoCoinManager()
-	{
-		return cryptoCoinManager;
-	}
-
-	public LandManager getLandManager()
-	{
-		return landManager;
-	}
-	
-	public PermissionsManager getPermissionsManager()
-	{
-		return this.permissionsManager;
-	}
-
-	public SignManager getSignManager()
-	{
-		return this.signManager;
-	}
-	
-	public ChestManager getChestManager()
-	{
-		return this.chestManager;
-	}
-
 	public Economy getEconomyManager()
 	{
 		return economyManager;
 	}
 	
-	public StockManager getStockManager()
-	{
-		return stockManager;
-	}
-
-	public LoanManager getLoanManager()
-	{
-		return loanManager;
-	}
-
 	public Material getMaterialById(String materialString)
 	{		
 		try

@@ -79,6 +79,6 @@ public class CommandBribeGuilty extends SeriousBusinessCommand
 		String companyName = CompanyManager.instance().getCompanyName(courtCase.companyId);
 		
 		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "Someone bribed the judges for the lawsuit " + ChatColor.GOLD + "#" + courtCase.Id + ": " + playerName + " vs " + companyName);
-		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "The Court guilty oppinion has been changed to " + ChatColor.GOLD + CourtManager.instance().getGuiltyProbability(courtCase) + "%", 1);
+		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + "The Court guilty oppinion has been changed to " + ChatColor.GOLD + String.format("%.2f", CourtManager.instance().getGuiltyProbability(courtCase)) + "%", 1);
 	}
 }
