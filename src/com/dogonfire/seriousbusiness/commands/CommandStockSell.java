@@ -67,7 +67,7 @@ public class CommandStockSell extends SeriousBusinessCommand
 			return;			
 		}
 		
-		Company.instance().broadcastInfo(ChatColor.AQUA + player.getName() + ChatColor.AQUA + " sold " + soldAmount + " " + companyName + " stocks at " + ChatColor.GOLD + report.stockEndValue);		
+		Company.instance().broadcastInfo(ChatColor.AQUA + player.getName() + ChatColor.AQUA + " sold " + soldAmount + " " + companyName + " stocks at " + ChatColor.GOLD + String.format("%.2f", report.stockEndValue));		
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + " You recieved " + report.stockEndValue*soldAmount + " wanks", 1);		
 	}
 }

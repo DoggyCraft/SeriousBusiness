@@ -60,7 +60,7 @@ public class CommandStockBuy extends SeriousBusinessCommand
 		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);
 		
 		StockManager.instance().buyStock(player.getUniqueId(), companyId, amount);		
-		Company.instance().broadcastInfo(ChatColor.AQUA + player.getName() + ChatColor.AQUA + " bought " + amount + " " + companyName + " stocks at " + ChatColor.GOLD + report.stockEndValue);		
+		Company.instance().broadcastInfo(ChatColor.AQUA + player.getName() + ChatColor.AQUA + " bought " + amount + " " + companyName + " stocks at " + ChatColor.GOLD + String.format("%.2f", report.stockEndValue));		
 		Company.instance().sendInfo(player.getUniqueId(), ChatColor.AQUA + " You paid " + (report.stockEndValue*amount) + " wanks.", 1);		
 	}
 }

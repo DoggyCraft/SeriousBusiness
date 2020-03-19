@@ -95,11 +95,11 @@ public class CommandList extends SeriousBusinessCommand
 				{
 					playerCompanyShown = true;
 										
-					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + "Stock value " + ChatColor.WHITE + String.format("%.2f", companyStock.getStockValue()) + changeColor + " (" + String.format("%.2f", companyStock.getStockChange()) + "%)");
+					sender.sendMessage(ChatColor.GOLD +	String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + "Stock value " + ChatColor.WHITE + String.format("%.2f", companyStock.getStockValue()) + " " + changeColor + String.format("%.2f", companyStock.getStockChange()) + "%");
 				}
 				else
 				{
-					sender.sendMessage(ChatColor.WHITE + String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + " Stock value " + ChatColor.WHITE + String.format("%.2f", companyStock.getStockValue()) + changeColor + " (" + String.format("%.2f", companyStock.getStockChange()) + "%)");
+					sender.sendMessage(ChatColor.WHITE + String.format("%2d", n) + " - " + fullCompanyName + ChatColor.AQUA + " Stock value " + ChatColor.WHITE + String.format("%.2f", companyStock.getStockValue()) + " " + changeColor + String.format("%.2f", companyStock.getStockChange()) + "%");
 				}
 			}
 			//else
