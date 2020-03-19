@@ -154,7 +154,7 @@ public class EventListener implements Listener
 
 				if (CompanyManager.instance().handleSignSell(block.getLocation(), event.getPlayer(), companyName, itemType))
 				{
-					Company.instance().log(event.getPlayer().getDisplayName() + " sold to " + companyName + " using a sell sign");
+					Company.instance().log(event.getPlayer().getDisplayName() + " bought " + ChatColor.stripColor(itemName) + " from " + companyName + " using a sell sign");
 				}
 			}
 			
@@ -215,7 +215,7 @@ public class EventListener implements Listener
 
 				if (CompanyManager.instance().handleSignBuy(block.getLocation(), event.getPlayer(), companyName, itemType))
 				{
-					Company.instance().log(event.getPlayer().getDisplayName() + " sold to " + companyName + " using a buy sign");
+					Company.instance().log(event.getPlayer().getDisplayName() + " bought " + ChatColor.stripColor(itemName) + " from " + companyName + " using a buy sign");
 				}
 			}
 			

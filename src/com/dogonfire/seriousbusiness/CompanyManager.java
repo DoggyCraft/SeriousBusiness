@@ -1289,8 +1289,14 @@ public class CompanyManager
 	
 	public boolean handleSignSell(Location location, Player player, String companyName, Material itemType)
 	{
-		UUID playerCompanyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());	
-		String playerCompanyName = CompanyManager.instance().getCompanyName(playerCompanyId);	
+		UUID playerCompanyId = PlayerManager.instance().getCompanyForEmployee(player.getUniqueId());
+		String playerCompanyName = null;
+		
+		if(playerCompanyId!=null) {
+			playerCompanyName = CompanyManager.instance().getCompanyName(playerCompanyId);
+		}
+		
+		
 		
 		if(playerCompanyName!=null && playerCompanyName.equals(companyName))
 		{
