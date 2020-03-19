@@ -3,10 +3,11 @@ package com.dogonfire.seriousbusiness;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Random;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,7 +21,6 @@ public class StockManager
 	private static StockManager			instance;
 	private FileConfiguration			stockConfig		= null;
 	private File						stockConfigFile	= null;
-	private Random						random			= new Random();
 	private long						lastSaveTime;
 	private String						pattern			= "HH:mm:ss dd-MM-yyyy";
 	DateFormat							formatter		= new SimpleDateFormat(this.pattern);
@@ -28,20 +28,15 @@ public class StockManager
 	final public class Stock
 	{	
 		final public UUID companyId;
-		final public String word;
-		final public Date expireDate;
+		final public int amount;
+		final public double value;		
 		
-		Stock(UUID companyId, String word, Date expireDate)		
+		Stock(UUID companyId, int amount, double value)		
 		{
 			this.companyId = companyId;
-			this.word = word;
-			this.expireDate = expireDate;
-		}
-		
-		public boolean isExpired()
-		{
-			return new Date().after(expireDate);
-		}
+			this.amount = amount;
+			this.value = value;
+		}		
 	}
 	
 	StockManager()
@@ -155,7 +150,26 @@ public class StockManager
 
 		save();
 	}
-			
+	
+	public List<Stock> getOwnedStock(UUID playerId)
+	{		
+		List<Stock> stockList = new ArrayList<Stock>();	
+		List<String> transactionList = stockConfig.getStringList(playerId.toString() + ".Stocks");	
+							
+		for(String transactionId : transactionList)
+		{
+			String stockCompanyId = stockConfig.getString(playerId.toString() + ".Stocks." + transactionId + ".CompanyId");	
+			double stockValue = stockConfig.getDouble(playerId.toString() + ".Stocks." + transactionId + ".Value");	
+			int stockAmount = stockConfig.getInt(playerId.toString() + ".Stocks." + transactionId + ".Amount");	
+
+			Stock stock = new Stock(UUID.fromString(stockCompanyId), stockAmount, stockValue);
+			stockList.add(stock);
+		}
+		
+		return stockList;
+	}
+
+	
 	public UUID createStock(UUID companyId)
 	{
 		Calendar c = Calendar.getInstance();

@@ -203,8 +203,8 @@ public class CourtManager
 
 	public int getGuiltyProbability(CourtCase courtCase)
 	{
-		int lawsuitBribePrPercentage = SeriousBusinessConfiguration.instance().getLawsuitBribePrPercentage();
-		int guiltyProbability = 40 + courtCase.bribesGuilty / lawsuitBribePrPercentage - courtCase.bribesNotGuilty / lawsuitBribePrPercentage;
+		double lawsuitBribePrPercentage = SeriousBusinessConfiguration.instance().getLawsuitBribePrPercentage();
+		double guiltyProbability = 40.0 + courtCase.bribesGuilty / lawsuitBribePrPercentage - courtCase.bribesNotGuilty / lawsuitBribePrPercentage;
 		
 		if(guiltyProbability > 100)
 		{
@@ -216,7 +216,7 @@ public class CourtManager
 			guiltyProbability = 0;
 		}
 
-		return guiltyProbability;
+		return (int)guiltyProbability;
 	}
 	
 	public void update()

@@ -1054,7 +1054,7 @@ public class CompanyManager
 
 		return invitedPlayers;
 	}
-
+	
 	public boolean companyExist(String companyName)
 	{
 		return getCompanyIdByName(companyName) != null;
