@@ -582,7 +582,7 @@ public class CompanyManager
 			productName = material.name();
 		}
 		
-		return ChatColor.GOLD + productName;
+		return ChatColor.GOLD + ChatColor.translateAlternateColorCodes('&', productName);
 	}
 	
 	public List<String> getItemProductDescription(UUID companyId, Material material)
