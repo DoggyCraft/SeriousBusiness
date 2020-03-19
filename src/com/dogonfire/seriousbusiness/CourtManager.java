@@ -184,8 +184,7 @@ public class CourtManager
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
 		
 		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "In the case #" + courtCase.Id + ": " + playerName + " vs " + companyName + ":");		
-		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "The Court ruled " + companyName + ChatColor.RED + ""
-				+ "	GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
+		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + "The Court ruled " + companyName + ChatColor.RED + "" + "	GUILTY" + ChatColor.AQUA + " of " + courtCase.description + "!");		
 		Company.instance().getServer().broadcastMessage(ChatColor.AQUA + companyName + " was fined " + ChatColor.GOLD + amount + " wanks!");
 	
 		int repuationChange = -1;
@@ -236,13 +235,8 @@ public class CourtManager
 				}
 				else
 				{
-					int amount = (int)(CompanyManager.instance().getBalance(courtCase.companyId) * SeriousBusinessConfiguration.instance().getLawsuitFinePercentage() / 100);
-							
-					if(amount < 10)
-					{
-						amount = 10;
-					}
-							
+					int amount = 10 + (int)(CompanyManager.instance().getBalance(courtCase.companyId) * SeriousBusinessConfiguration.instance().getLawsuitFinePercentage() / 100.0);
+														
 					decideGuilty(courtCase, amount);					
 				}			
 			}

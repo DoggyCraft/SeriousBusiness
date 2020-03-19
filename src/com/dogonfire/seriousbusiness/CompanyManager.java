@@ -70,6 +70,9 @@ public class CompanyManager
 		final public double patentIncome;
 		final public double patentExpenses;
 
+		final public double lawsuitIncome;
+		final public double lawsuitExpenses;
+
 		final public double companyTaxPercent;
 		final public double salesTaxPercent;
 		
@@ -89,7 +92,7 @@ public class CompanyManager
 		final public int maxActivePatents;
 
 		FinancialReport(double companyTaxPercent, double salesTaxPercent, double income, double profit, double stockStartValue, double stockEndValue, double stockValueChange, double balance, HashMap<Material, Integer> itemsSoldAmount, HashMap<Material, Double> itemsSoldValues, 
-				HashMap<Material, Integer> itemsProducedAmount, HashMap<JobPosition, Double> wagesPaid, double patentIncome, double patentExpenses, double issuedLoans, double loanRate, double maxLoanRate, int maxActivePatents)		
+				HashMap<Material, Integer> itemsProducedAmount, HashMap<JobPosition, Double> wagesPaid, double patentIncome, double patentExpenses, double issuedLoans, double loanRate, double maxLoanRate, int maxActivePatents, double lawsuitIncome, double lawsuitExpenses)		
 		{
 			this.companyTaxPercent = companyTaxPercent;
 			this.salesTaxPercent = salesTaxPercent;
@@ -109,6 +112,8 @@ public class CompanyManager
 			this.issuedLoans = issuedLoans;
 			this.maxLoanRate = maxLoanRate;
 			this.maxActivePatents = maxActivePatents;
+			this.lawsuitIncome = lawsuitIncome;
+			this.lawsuitExpenses = lawsuitExpenses;
 		}
 	}
 
@@ -262,6 +267,8 @@ public class CompanyManager
 
 		double patentIncome = this.getPatentIncomeByRound(companyId, round);
 		double patentExpenses = this.getPatentExpensesByRound(companyId, round);
+		double lawsuitIncome = this.getLawsuitIncomeByRound(companyId, round);
+		double lawsuitExpenses = this.getLawsuitExpensesByRound(companyId, round);
 
 		double income = totalSoldValue + patentIncome;
 		
@@ -293,7 +300,7 @@ public class CompanyManager
 		int maxActivePatents = this.getMaxPatentsForRound(companyId, round);
 		double totalAvailableLoans = this.getAvailableLoanForRound(companyId, round);
 		
-		double profit = patentIncome + totalSoldValue - wagesPaidProduction - wagesPaidSales - taxesPaid - patentExpenses;
+		double profit = patentIncome + lawsuitIncome + totalSoldValue - wagesPaidProduction - wagesPaidSales - taxesPaid - patentExpenses - lawsuitExpenses;
 	
 		double stockStartValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.StartValue");
 		double stockEndValue = this.companyConfig.getDouble(companyId.toString() + ".Round." + round + ".Stock.EndValue");
@@ -309,7 +316,7 @@ public class CompanyManager
 			stockEndValue = stockStartValue + stockValueChange;			
 		}
 			
-		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid, patentIncome, patentExpenses, totalAvailableLoans, loanRate, maxLoanRate, maxActivePatents);
+		FinancialReport report = new FinancialReport(companyTaxPercent, salesTaxPercent, income, profit, stockStartValue, stockEndValue, stockValueChange, balance, itemsSoldAmount, itemsSoldValues, itemsProducedAmount, wagesPaid, patentIncome, patentExpenses, totalAvailableLoans, loanRate, maxLoanRate, maxActivePatents, lawsuitIncome, lawsuitExpenses);
 		
 		return report;		
 	}
@@ -470,6 +477,23 @@ public class CompanyManager
 		save();				
 	}
 
+	public void increaseLawsuitExpensesPaidThisRound(UUID companyId, int round, double value)
+	{
+		int currentExpenses = companyConfig.getInt(companyId.toString() + ".Round." + round + ".LawsuitExpenses");	
+		currentExpenses += value;		
+		companyConfig.set(companyId.toString() + ".Round." + round + ".PatentExpenses", currentExpenses);	
+
+		save();								
+	}
+
+	public void increaseLawsuitIncomeThisRound(UUID companyId, int round, double value)
+	{
+		int currentIncome = companyConfig.getInt(companyId.toString() + ".Round." + round + ".LawsuitIncome");	
+		currentIncome += value;		
+		companyConfig.set(companyId.toString() + ".Round." + round + ".PatentIncome", currentIncome);	
+
+		save();				
+	}
 	
 	public void increaseItemsBoughtThisRound(UUID companyId, int round, Material itemType, int amount, double value)
 	{
@@ -557,6 +581,16 @@ public class CompanyManager
 	public int getPatentIncomeByRound(UUID companyId, int round)
 	{
 		return companyConfig.getInt(companyId.toString() + ".Round." + round + ".PatentIncome");			
+	}
+
+	public int getLawsuitExpensesByRound(UUID companyId, int round)
+	{
+		return companyConfig.getInt(companyId.toString() + ".Round." + round + ".LawsuitExpenses");			
+	}
+
+	public int getLawsuitIncomeByRound(UUID companyId, int round)
+	{
+		return companyConfig.getInt(companyId.toString() + ".Round." + round + ".LawsuitIncome");			
 	}
 
 	public void setItemProductName(UUID companyId, Material material, String name)
