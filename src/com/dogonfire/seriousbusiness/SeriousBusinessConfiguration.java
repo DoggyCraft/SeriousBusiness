@@ -29,7 +29,7 @@ public class SeriousBusinessConfiguration
 	public int renameCompanyCost = 10;
 	public int courtCaseCost = 100;
 	public int lawsuitFinePercentage = 5;
-	public int lawsuitBribePrPercentage = 1000;
+	public int lawsuitBribePrPercentage = 100;
 
 	public SeriousBusinessConfiguration()
 	{

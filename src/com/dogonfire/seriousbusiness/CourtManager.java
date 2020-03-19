@@ -130,11 +130,7 @@ public class CourtManager
 	{
 		// Check whether player case exist, too many, irrelevant and other reasons to reject the case
 		for(CourtCase courtCase : playerCases)
-		{
-			Company.instance().log("courtCase is: " + courtCase);
-			Company.instance().log("courtCase playerId is: " + courtCase.playerId);
-			Company.instance().log("playerId is: " + playerId);
-			
+		{			
 			if(courtCase.playerId.equals(playerId))
 			{
 				if(courtCase.caseType == caseType && courtCase.companyId.equals(companyId))

@@ -71,7 +71,8 @@ public class CommandBribeGuilty extends SeriousBusinessCommand
 			player.sendMessage(ChatColor.RED + "You do not have " + ChatColor.GOLD + bribeamount + " wanks");
 			return;									
 		}
-
+		
+		//Company.instance().getEconomyManager().withdraw(player, bribeamount);
 		CourtManager.instance().bribeGuilty(courtCase.Id, bribeamount);
 		
 		String playerName = Company.instance().getServer().getOfflinePlayer(courtCase.playerId).getName();
