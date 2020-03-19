@@ -1,22 +1,26 @@
 package com.dogonfire.seriousbusiness;
 
-import java.io.IOException;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.dogonfire.seriousbusiness.commands.CourtCaseType;
 
@@ -228,11 +232,11 @@ public class EventListener implements Listener
 					return;
 				}
 
-				companyName = sign.getLine(1);
+				companyName = sign.getLine(2);
 
 				if (companyName.trim().length() == 0)
 				{
-					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 2.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A company name must be on line 3.", 1);
 					return;
 				}
 
@@ -240,7 +244,7 @@ public class EventListener implements Listener
 
 				if (companyName.length() <= 1)
 				{
-					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid company name must be on line 2.", 1);
+					Company.instance().sendInfo(event.getPlayer().getUniqueId(), ChatColor.RED + "A valid company name must be on line 3.", 1);
 					return;
 				}
 
@@ -271,4 +275,30 @@ public class EventListener implements Listener
 	{
 		CompanyManager.instance().updateOnlineCompanies();
 	}	
+	
+	
+	@EventHandler
+    public void onInventoryClick(final InventoryClickEvent e) 
+	{ 
+        Player player = (Player) e.getWhoClicked();
+  
+        if(e.getView().getTopInventory().getType().equals(InventoryType.CHEST))
+        {
+        	Chest chest = (Chest) e.getView().getTopInventory().getHolder();
+        	
+        	if( chest != null )
+        	{
+        	    Block block = chest.getBlock();
+        	    
+            	if(ChestManager.instance().isSupplyChest(block))
+            	{        	
+            		ItemStack item = e.getCurrentItem();
+            		
+            		// Absorb it into company inventory here
+            		
+            		player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 1, 1);
+            	}
+        	}                	
+        }
+	}
 }
