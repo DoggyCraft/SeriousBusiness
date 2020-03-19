@@ -1499,6 +1499,10 @@ public class CompanyManager
 		
 		Material itemType = player.getInventory().getItemInMainHand().getType();
 		int itemAmount = 1;
+		
+		if(player.isSneaking()) {
+			itemAmount = player.getInventory().getItemInMainHand().getAmount();
+		}
 
 		if(!CompanyManager.instance().isCompanyTradingItem(companyId, itemType))
 		{
@@ -1512,7 +1516,7 @@ public class CompanyManager
 		
 		if(player.getInventory().getItemInMainHand().getAmount() > itemAmount)
 		{
-			player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
+			player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-itemAmount);
 		}
 		else
 		{
