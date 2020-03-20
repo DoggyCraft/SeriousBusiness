@@ -88,6 +88,7 @@ public class ChestManager
 		event.setLine(0, "[Supply]");
 		event.setLine(1, "for");
 		event.setLine(2, companyName);
+		
 
 		Company.instance().sendInfo(player.getUniqueId(), "Place items in the chest to supply your company with items.", 20);	
 			

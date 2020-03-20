@@ -38,6 +38,7 @@ public class Company extends JavaPlugin
 	private CourtManager courtManager = null;
 	private CryptocoinManager cryptoCoinManager = null;
 	private PermissionsManager permissionsManager = null;
+	private ShopManager shopManager = null;
 	private SeriousBusinessConfiguration configuration = null;
 	static private Company instance;
 	
@@ -172,6 +173,7 @@ public class Company extends JavaPlugin
 		this.loanManager = new LoanManager();
 		this.cryptoCoinManager = new CryptocoinManager();
 		this.courtManager = new CourtManager();
+		this.shopManager = new ShopManager();
 		
 		PluginManager pm = getServer().getPluginManager();
 
@@ -200,6 +202,7 @@ public class Company extends JavaPlugin
 		this.loanManager.load();
 		this.stockManager.load();
 		this.cryptoCoinManager.load();
+		this.shopManager.load();
 		
 		getServer().getPluginManager().registerEvents(new EventListener(), this);
 		getServer().getPluginManager().registerEvents(signManager, this);
