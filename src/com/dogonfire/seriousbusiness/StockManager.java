@@ -146,7 +146,7 @@ public class StockManager
 
 		Player player = Company.instance().getServer().getPlayer(playerId);
 		
-		Company.instance().getEconomyManager().depositPlayer(player, -amount * stockValue);
+		Company.instance().getEconomyManager().withdrawPlayer(player, amount * stockValue);
 
 		save();
 	}

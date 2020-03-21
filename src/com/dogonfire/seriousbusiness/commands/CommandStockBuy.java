@@ -58,6 +58,12 @@ public class CommandStockBuy extends SeriousBusinessCommand
 											
 		int currentRound = CompanyManager.instance().getCurrentRound(companyId);
 		FinancialReport report = CompanyManager.instance().getFinancialReport(companyId, currentRound);
+
+		if ((report.stockEndValue*amount) > 0.0D && !Company.instance().getEconomyManager().has(player, (report.stockEndValue*amount)))
+		{
+			player.sendMessage(ChatColor.RED + "You need " + (report.stockEndValue*amount) + " wanks to buy these stocks!");
+			return;
+		}
 		
 		StockManager.instance().buyStock(player.getUniqueId(), companyId, amount);		
 		Company.instance().broadcastInfo(ChatColor.AQUA + player.getName() + ChatColor.AQUA + " bought " + amount + " " + companyName + " stocks at " + ChatColor.GOLD + String.format("%.2f", report.stockEndValue));		

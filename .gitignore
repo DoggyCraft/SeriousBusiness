@@ -12,5 +12,9 @@ dependency-reduced-pom.xml
 .project
 /.settings/
 
+# IDEA
+/.idea/
+SeriousBusiness.iml
+
 # Maven build
 /target/
